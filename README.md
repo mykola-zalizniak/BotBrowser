@@ -211,7 +211,7 @@ Our compatibility research examines browser fingerprinting techniques across dif
 | Service | Technology | Results |
 |---------|------------|---------|
 | **[Cloudflare](tests/tests/antibots/cloudflare.spec.ts)** | Turnstile, Bot Management | [▶️ Turnstile Demo](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-cloudflare-turnstile) |
-| **[DataDome](tests/tests/antibots/datadome.spec.ts)** | ML-based detection | [▶️ PayPal Test](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-datadome-paypal) |
+| **[DataDome](tests/tests/antibots/datadome.spec.ts)** | ML-based detection | [▶️ FIFA](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-datadome-fifa) |
 | **[PerimeterX](tests/tests/antibots/perimeterx.spec.ts)** | Behavioral analysis | [▶️ Zillow Demo](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-perimeterx-zillow) |
 
 **Fingerprinting Systems:**

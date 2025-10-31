@@ -15,7 +15,7 @@ BotBrowser is a dual-use research platform. These guidelines clarify the expecta
 - Circumventing anti-abuse or anti-bot mechanisms on production services without consent.
 - Harvesting personal data, account credentials, session tokens, or payment information.
 - Providing the software to third parties who intend to violate laws or service terms.
-- Using BotBrowser outputs to enable fraud, spam, scalping, or other abusive automation.
+- Using BotBrowser outputs to enable fraud, spam, scalping, automated ticket purchasing, or other abusive automation.
 
 ## RESPONSIBLE DISCLOSURE & COOPERATION
 

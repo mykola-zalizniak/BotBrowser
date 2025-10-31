@@ -25,6 +25,7 @@ This software is intended for legitimate purposes only:
 - **Security research in controlled environments**
 - **Browser compatibility studies**
 - **Fingerprint consistency analysis**
+- **Ticketing system compatibility audits under authorized programs**
 - **Authorized penetration testing**
 - **Academic coursework and educational purposes**
 - **Open source security research**
@@ -67,6 +68,11 @@ The following uses are strictly prohibited:
 - **PROHIBITED:** Bypassing rate limits on public APIs
 - **PROHIBITED:** Circumventing CAPTCHA on production websites
 - **PROHIBITED:** Automated account creation against ToS
+
+**Ticketing & Event Systems:**
+- **PROHIBITED:** Automated ticket purchasing, queue bypassing, or inventory hoarding
+- **PROHIBITED:** Testing production ticketing flows without written authorization from the event operator
+- **PROHIBITED:** Using BotBrowser to conduct or facilitate ticket scalping activities
 
 **Data Harvesting:**
 - **PROHIBITED:** Scraping personal information

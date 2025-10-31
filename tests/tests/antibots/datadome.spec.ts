@@ -1,5 +1,5 @@
 /**
- * E-COMMERCE & PAYMENT SERVICES TESTING - AUTHORIZED USE ONLY
+ * E-COMMERCE, TICKETING & PAYMENT SERVICES TESTING - AUTHORIZED USE ONLY
  *
  * This test demonstrates DataDome fingerprinting in AUTHORIZED TEST ENVIRONMENTS ONLY.
  *
@@ -127,4 +127,9 @@ test('allegro', async ({ page }) => {
     const pageResponse = await pageResponsePromise;
     const pageResponseText = await pageResponse.text();
     expect(/"price":\s*"[\d,]+/.test(pageResponseText)).toBeTruthy();
+});
+
+test('fifa', async ({ page }) => {
+    await page.goto('https://fifa-fwc26-us.tickets.fifa.com/');
+    await page.locator('#titre >> text=Almost there').waitFor({ state: 'visible' });
 });
