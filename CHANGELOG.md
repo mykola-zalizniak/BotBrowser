@@ -3,7 +3,28 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse—report concerns to [botbrowser@bk.ru](mailto:botbrowser@bk.ru).
 
 
-## [2025-10-31] 
+## [2025-11-10] 
+
+### Major
+- **Chromium 142.0.7444.135 parity** — Synced core to the latest Chrome 142 stable build for up‑to‑date security patches, modern Web APIs, and version parity that reduces “version skew” signals used by anti‑bot systems.
+
+### New
+- **Locked user data directory protection** — On startup, if the provided `--user-data-dir` is already held by a running Chromium/BotBrowser process, BotBrowser now **shows a clear message and exits** instead of silently attaching to the old process. This prevents cross‑session contamination (cookies, storage, profile state) and hard‑to‑trace side‑effects.
+- **OS‑specific AudioContext defaults** — Normalized **AudioContext** defaults per OS (e.g., base characteristics like sample rate/latency and related init parameters) so audio capability fingerprints line up with the target platform. This removes subtle OS drift that some risk engines use for anomaly scoring.
+
+### Improvements
+- **Emoji & font fallback stability across platforms** — Refined the font fallback chain and glyph selection so **emoji and CJK glyphs** render consistently on Windows/macOS/Linux. This reduces cross‑platform text‑metrics variance and avoids mixed‑glyph fallbacks that can change hashes or layout in edge cases.
+- **Touch events in OOPIF** — Improved routing of emulated touch gestures for **Out‑Of‑Process IFrames (OOPIF)**, ensuring CDP commands like `Input.synthesizeTapGesture` work reliably inside OOPIF trees. Mobile flows embedded in cross‑origin iframes now respond as expected.
+
+### Fixes
+- **Ubuntu Bluetooth spoof leakage** — Fixed a Linux/Ubuntu‑specific issue where forged Bluetooth properties could leak inconsistent state. Spoofed Bluetooth exposure is now unified so websites can’t infer environment details from mismatched availability/signaling.
+- **Media types (expand) default** — Resolved an issue where `--bot-config-media-types=expand` (and the default behavior) could be ignored in some scenarios. With this fix, local decoders are correctly surfaced so users can **select resolutions** on major video sites.
+- **WebRTC SDP negotiation** — Corrected edge cases where SDP **audio codec selection or direction attributes** failed to negotiate. More robust media negotiation prevents call/setup loops and reduces fingerprinting surface from abnormal SDP.
+
+---
+
+
+## [2025-11-02] 
 
 ### Major
 - **Chromium Core Upgrade → 142.0.7444.60**  
