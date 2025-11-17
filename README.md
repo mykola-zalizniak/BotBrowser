@@ -70,17 +70,17 @@ Automatic touch simulation, device metrics, and unified fingerprint rendering ac
 
 **Windows:**
 ```cmd
-chrome.exe --no-sandbox --bot-profile="C:\\absolute\\path\\to\\chrome139_win11_x64.enc" --user-data-dir="%TEMP%\\botprofile_%RANDOM%"
+chrome.exe --no-sandbox --bot-profile="C:\\absolute\\path\\to\\profile.enc" --user-data-dir="%TEMP%\\botprofile_%RANDOM%"
 ```
 
 **macOS:**
 ```bash
-/Applications/Chromium.app/Contents/MacOS/Chromium --no-sandbox --user-data-dir="$(mktemp -d)" --bot-profile="/absolute/path/to/chrome139_win11_x64.enc"
+/Applications/Chromium.app/Contents/MacOS/Chromium --no-sandbox --user-data-dir="$(mktemp -d)" --bot-profile="/absolute/path/to/profile.enc"
 ```
 
 **Ubuntu:**
 ```bash
-chromium-browser --no-sandbox --user-data-dir="$(mktemp -d)" --bot-profile="/absolute/path/to/chrome139_win11_x64.enc"
+chromium-browser --no-sandbox --user-data-dir="$(mktemp -d)" --bot-profile="/absolute/path/to/profile.enc"
 ```
 
 **Step 3: Test**
@@ -96,7 +96,7 @@ Visit [CreepJS](https://abrahamjuliot.github.io/creepjs/) to see fingerprint con
 const browser = await chromium.launch({
   headless: true,
   executablePath: BOTBROWSER_EXEC_PATH,
-  args: [`--bot-profile=${BOT_PROFILE_PATH}`],
+  args: ['--no-sandbox', `--bot-profile=${BOT_PROFILE_PATH}`],
   '--proxy-server="socks5://usr:pwd@127.0.0.1:8989"',  // or: "http://usr:pwd@127.0.0.1:8989"
 });
 const page = await browser.newPage();

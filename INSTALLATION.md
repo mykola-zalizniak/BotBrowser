@@ -26,7 +26,7 @@ Get the installer for your OS from the [Releases](https://github.com/botswin/Bot
 
 #### Windows Command-Line Example
 ```cmd
-chrome.exe --no-sandbox --bot-profile="C:\\path\\to\\chrome139_win11_x64.enc" --user-data-dir="%TEMP%\\botprofile_%RANDOM%"
+chrome.exe --no-sandbox --bot-profile="C:\\absolute\\path\\to\\profile.enc" --user-data-dir="%TEMP%\\botprofile_%RANDOM%"
 ```
 
 ### 3. macOS Installation
@@ -78,7 +78,7 @@ The script will automatically:
 /Applications/Chromium.app/Contents/MacOS/Chromium \
   --no-sandbox \
   --user-data-dir="$(mktemp -d)" \
-  --bot-profile="/path/to/chrome139_win11_x64.enc"
+  --bot-profile="/absolute/path/to/profile.enc"
 ```
 
 ### 4. Ubuntu Installation
@@ -114,7 +114,7 @@ sudo apt-get install -y \
 chromium-browser \
   --no-sandbox \
   --user-data-dir="$(mktemp -d)" \
-  --bot-profile="/path/to/chrome139_win11_x64.enc"
+  --bot-profile="/absolute/path/to/profile.enc"
 ```
 
 ---
@@ -135,7 +135,8 @@ docker run -d \
   -v /path/to/profiles:/app/profiles \
   -p 9222:9222 \
   botbrowser/botbrowser:latest \
-  --bot-profile="/app/profiles/chrome139_win11_x64.enc" \
+  --no-sandbox \
+  --bot-profile="/absolute/path/to/profile.enc" \
   --remote-debugging-port=9222
 ```
 
@@ -158,10 +159,10 @@ After installation, verify BotBrowser is working correctly:
 
 ```bash
 # Test basic launch (replace with your executable path)
-./chrome.exe --no-sandbox --bot-profile="/absolute/path/to/demo.enc" --version
+chrome.exe --no-sandbox --bot-profile="C:\\absolute\\path\\to\\profile.enc" --version
 
 # Test with remote debugging
-./chrome.exe --no-sandbox --bot-profile="/absolute/path/to/demo.enc" --remote-debugging-port=9222
+chrome.exe --no-sandbox --bot-profile="C:\\absolute\\path\\to\\profile.enc" --remote-debugging-port=9222
 
 # Verify remote debugging is active
 curl http://localhost:9222/json/version
@@ -176,7 +177,7 @@ Ensure your profiles are working correctly:
 ls -la ./profiles/*.enc
 
 # Test profile loading
-./chrome.exe --no-sandbox --bot-profile="/absolute/path/to/chrome139_win11_x64.enc" --headless --dump-dom https://httpbin.org/user-agent
+chrome.exe --no-sandbox --bot-profile="C:\\absolute\\path\\to\\profile.enc" --headless --dump-dom https://httpbin.org/user-agent
 ```
 
 ---
@@ -197,26 +198,6 @@ For advanced users building from source:
 1. Contact [botbrowser@bk.ru](mailto:botbrowser@bk.ru) for source access
 2. Follow the build instructions in [build/README.md](build/)
 3. Compile with custom modifications if needed
-
-### System Integration
-
-#### Linux Desktop Integration
-```bash
-# Create desktop entry
-cat > ~/.local/share/applications/botbrowser.desktop << EOF
-[Desktop Entry]
-Name=BotBrowser
-Comment=Cross-Platform Browser for Fingerprint Consistency Testing
-Exec=/path/to/botbrowser --bot-profile=/path/to/profile.enc
-Icon=/path/to/botbrowser/icon.png
-Terminal=false
-Type=Application
-Categories=Network;WebBrowser;
-EOF
-```
-
-#### Windows Registry Integration
-Advanced users can register BotBrowser as a browser option via registry changes. Contact support for enterprise deployment scripts.
 
 ---
 

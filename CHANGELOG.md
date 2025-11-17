@@ -118,7 +118,7 @@
   - **Use cases**: Reverse‑inspect how a site draws charts/captchas/signature pads; reproduce rendering flows; compare visual diffs across hosts/profiles.
   - **Enable**:
     ```bash
-    chrome.exe --bot-canvas-record-file=/abs/path/trace.canvas.jsonl --bot-profile=/abs/path/profile.enc
+    chrome.exe --no-sandbox --bot-canvas-record-file=/abs/path/trace.canvas.jsonl --bot-profile="C:\\absolute\\path\\to\\profile.enc"
     ```
   - **Notes**: Recording is **local** and grows with draw calls; recommended for analysis/debug, not for high‑volume production.
   - **Docs**: https://github.com/botswin/BotBrowser/tree/main/tools/botcanvas
@@ -316,7 +316,7 @@
   - Execute a JavaScript file **right after BotBrowser starts** in a privileged, non‑extension context where **`chrome.debugger`** is available.
   - Build automation **without Playwright/Puppeteer** while still driving CDP via `chrome.debugger` — reducing framework/CDP leak surface and giving **pre‑navigation control**.
   - **Docs:** Chrome `chrome.debugger` — <https://developer.chrome.com/docs/extensions/reference/api/debugger/>
-  - **Usage:** `botbrowser --bot-profile=/path/profile.enc --bot-script=/path/boot.js`
+  - **Usage:** `botbrowser --no-sandbox --bot-profile=/absolute/path/to/profile.enc --bot-script=/path/boot.js`
   - **Examples:** [Bot Script Automation](examples/bot-script) (includes Cloudflare Turnstile automation)
 
 ### Improved

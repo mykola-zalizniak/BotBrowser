@@ -51,6 +51,7 @@ BotCanvas is a comprehensive canvas recording system that captures all Canvas 2D
 **Step 1: Launch with recording enabled**
 ```bash
 chromium \
+  --no-sandbox \
   --bot-profile=/absolute/path/to/profile.enc \
   --bot-canvas-record-file=/tmp/botcanvas.jsonl \
   --user-data-dir="$(mktemp -d)"

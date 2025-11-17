@@ -52,7 +52,7 @@ BOT_PROFILE_PATH=/absolute/path/to/profile.enc
 **Example Configuration:**
 ```bash
 BOTBROWSER_EXEC_PATH=/usr/local/bin/chromium
-BOT_PROFILE_PATH=/home/user/profiles/chrome139_win11_x64.enc
+BOT_PROFILE_PATH=/home/user/profiles/profile.enc
 ```
 
 **Required Configuration:**

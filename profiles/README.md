@@ -83,7 +83,7 @@ Premium profiles are available to qualified academic institutions with proper et
 ### CLI Usage
 
 ```bash
-chromium --bot-profile="/absolute/path/to/chrome139_win11_x64.enc"
+chromium --no-sandbox --bot-profile="/absolute/path/to/profile.enc"
 ```
 
 **⚠️ Version Compatibility**
@@ -102,6 +102,7 @@ const browser = await chromium.launch({
   headless: true,
   executablePath: BOTBROWSER_EXEC_PATH,
   args: [
+    '--no-sandbox',
     `--bot-profile=${BOT_PROFILE_PATH}`,
     // ⚠️ PROXY CONFIGURATION:
     // Use --proxy-server flag instead of framework-specific proxy options
@@ -142,9 +143,10 @@ await page.goto("https://abrahamjuliot.github.io/creepjs/");
 ```bash
 # Keep profile data in profile
 # Override session-specific settings via CLI
---bot-profile="/absolute/path/to/user_profile.enc" \
---proxy-server="session_specific_proxy" \
---bot-title="current_session_id"
+chromium --no-sandbox \
+  --bot-profile="/absolute/path/to/profile.enc" \
+  --proxy-server="session_specific_proxy" \
+  --bot-title="current_session_id"
 ```
 
 ## ⚡ Why CLI Flags Matter

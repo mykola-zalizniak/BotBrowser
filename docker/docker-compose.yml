@@ -18,7 +18,7 @@ services:
 
     # Pass browser args via environment variables
     environment:
-      - CHROME_ARGS=--user-data-dir=/botbrowser/user-data-dir --bot-profile=/botbrowser/profiles/chrome136_mac_arm64.enc
+      - CHROME_ARGS=--user-data-dir=/botbrowser/user-data-dir --bot-profile=/botbrowser/profiles/chrome142_mac_arm64.enc
 
     # Add init to handle zombie processes
     init: true
