@@ -3,6 +3,46 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse—report concerns to [botbrowser@bk.ru](mailto:botbrowser@bk.ru).
 
 
+## [2025-11-17] 
+
+### Major
+**Chromium Core → 142.0.7444.163**  
+Engine updated to Chrome’s current stable. You get up‑to‑date security work and web‑platform behavior, and version‑based heuristics have less room to flag mismatches.
+
+### New
+**Brand full‑version override**  
+`--bot-config-brand-full-version` sets the brand’s full version independently of the UA full version. Helpful where a vendor’s cadence diverges from Chromium and sites cross‑check UA‑CH with brand metadata.
+
+Example (Edge spoofing):
+```bash
+--bot-config-browser-brand=edge \
+--bot-config-ua-full-version=142.0.7444.135 \
+--bot-config-brand-full-version=142.0.3595.65
+```
+
+**Opera brand**  
+`--bot-config-browser-brand=opera` is supported. UA, Client Hints and brand cues are shaped to look like real Opera.
+
+### Improvements
+**Canvas2D noise**  
+Noise insertion is steadier frame‑to‑frame and less tied to individual draw operations. Probes see a calmer fingerprint surface while the image stays the same.
+
+**Android DevTools ergonomics**  
+Under Android emulation, the inspector no longer inherits page zoom or CSS font scaling. Tool panes and monospace fonts stay consistent regardless of emulated viewport.
+
+### Fixes
+**Touch emulation**  
+In touch mode, `Input.dispatchMouseEvent` could miss. The pointer/touch bridge is corrected; synthesized taps and clicks land reliably, including inside iframe trees.
+
+**Brave parity**  
+When brand=Brave, the UA full version and selected Client Hints are now hidden the same way real Brave does it.
+
+**Edge on Android UA**  
+User‑Agent construction for Edge on Android now carries accurate brand/version tokens and platform identifiers.
+
+---
+
+
 ## [2025-11-10] 
 
 ### Major
