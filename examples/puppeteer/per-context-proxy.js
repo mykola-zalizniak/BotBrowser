@@ -36,26 +36,20 @@ const os = require('os');
   try {
     // Context 1: US Proxy
     console.log('\n📍 Creating Context 1 with US proxy...');
-    const context1 = await browser.createIncognitoBrowserContext({
-      proxy: {
-        server: 'http://username:password@us-proxy.example.com:8080' // Replace with your US proxy
-      }
+    const context1 = await browser.createBrowserContext({
+      proxyServer: 'http://username:password@us-proxy.example.com:8080', // Replace with your US proxy
     });
 
     // Context 2: EU Proxy
     console.log('📍 Creating Context 2 with EU proxy...');
-    const context2 = await browser.createIncognitoBrowserContext({
-      proxy: {
-        server: 'socks5://username:password@eu-proxy.example.com:1080' // Replace with your EU proxy
-      }
+    const context2 = await browser.createBrowserContext({
+      proxyServer: 'socks5://username:password@eu-proxy.example.com:1080', // Replace with your EU proxy
     });
 
     // Context 3: APAC Proxy
     console.log('📍 Creating Context 3 with APAC proxy...');
-    const context3 = await browser.createIncognitoBrowserContext({
-      proxy: {
-        server: 'http://username:password@apac-proxy.example.com:8080' // Replace with your APAC proxy
-      }
+    const context3 = await browser.createBrowserContext({
+      proxyServer: 'http://username:password@apac-proxy.example.com:8080', // Replace with your APAC proxy
     });
 
     // Test each context
