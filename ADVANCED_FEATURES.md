@@ -244,12 +244,17 @@ Eliminates host‑specific rendering differences for accurate cross‑platform e
 - macOS profile runs authentically on Windows/Linux hosts
 - Android profile fully emulated on any desktop OS
 - Consistent behavior regardless of host operating system
+- Android DevTools panes stay readable under emulation—the inspector now ignores page zoom/font scaling so toolbars and monospace panes match real devices
 
 **Rendering Consistency:**
 - Eliminates host OS rendering artifacts
 - Platform-specific UI element simulation
 - Consistent touch/mouse event patterns
 - Authentic device behavior emulation
+
+### Touch & Input Reliability
+- Pointer/touch bridging fixes ensure `Input.dispatchMouseEvent` and synthesized taps land reliably, even in nested iframe trees
+- Mobile flows keep consistent tap timing and coordinates when `mobileForceTouch` is enabled, avoiding accidental double dispatches
 
 ### Hardware Fingerprint Control
 Comprehensive hardware emulation and fingerprint management.

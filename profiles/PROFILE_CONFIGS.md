@@ -47,7 +47,8 @@ BotBrowser uses a three-tier priority system for configuration:
 chromium-browser \
   --no-sandbox \
   --bot-profile="/absolute/path/to/profile.enc" \
-  --bot-config-browser-brand="edge"
+  --bot-config-browser-brand="edge" \
+  --bot-config-brand-full-version="142.0.3595.65"
 ```
 
 > 📖 **Complete CLI flags reference:** [CLI Flags Reference](../CLI_FLAGS.md#⚙️-profile-configuration-override-flags)
@@ -90,7 +91,8 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 | `disableConsoleMessage`         | Suppresses console message forwarding into page contexts and automation logs.            | `true`     |
 | `timezone`                      | `auto` = IP-based; `real` = system timezone; any other string = custom timezone name. | `auto`    |
 | `location`                      | `auto` = IP-based; `real` = system (GPS); object = custom coordinates (`lat`, `lon`). | `auto`    |
-| `browserBrand`                  | override for `navigator.userAgentData.brands` and related UA fields. Supports chromium, chrome, edge, brave. | `chrome`    |
+| `browserBrand`                  | override for `navigator.userAgentData.brands` and related UA fields. Supports chromium, chrome, edge, brave, opera. | `chrome`    |
+| `brandFullVersion`              | Optional brand-specific full version string for UA-CH tuples (Edge/Opera cadences). | `""`    |
 | `injectRandomHistory`           | Optionally injects synthetic navigation history for academic experiments in browser state testing. | `false`    |
 | `disableDebugger`               | Prevents unintended interruptions from JavaScript debugger statements during automated academic workflows. | `true`     |
 | `keyboard`                      | Choose keyboard fingerprint source: `profile` (emulated from profile) or `real` (use system keyboard). | `profile` |
@@ -230,8 +232,11 @@ All configurations are embedded in the `configs` field inside your profile JSON 
     // noiseTextRects: Introduce controlled variance to TextRects for academic fingerprint resilience testing
     "noiseTextRects": true,
 
-    // browserBrand: override for `navigator.userAgentData.brands` and related UA fields. Supports "chromium", "chrome", "edge", "brave"
+    // browserBrand: override for `navigator.userAgentData.brands` and related UA fields. Supports "chromium", "chrome", "edge", "brave", "opera"
     "browserBrand": "chrome",
+
+    // brandFullVersion: optional brand-specific full version string for UA-CH tuples when the vendor’s cadence diverges
+    "brandFullVersion": "142.0.3595.65",
 
     // injectRandomHistory: Optionally injects synthetic navigation history for academic experiments in browser state testing
     "injectRandomHistory": false,
@@ -290,6 +295,7 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 - If a field is omitted, BotBrowser uses profile defaults where appropriate.
 - CLI `--bot-config-*` flags override profile `configs` with the highest priority
 - **uaFullVersion Tip:** When JavaScript calls `navigator.userAgentData.fullVersion`, BotBrowser replaces the default value with this field. Ensure the full version matches the Chromium major version (e.g., Chromium 138 → full version starts with “138.”). See https://chromiumdash.appspot.com/releases.
+- **brandFullVersion Tip:** Pair this with `browserBrand` when mimicking Edge/Opera/Brave cadences so UA-CH tuples expose the vendor’s own full-version token instead of the Chromium one.
 
 ---
 

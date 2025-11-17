@@ -165,7 +165,7 @@ BotBrowser now supports command-line flags that override profile configuration v
 The following `--bot-config-*` flags map directly to profile `configs`:
 
 ```bash
---bot-config-browser-brand=chrome             # Browser brand: chrome, chromium, edge, brave
+--bot-config-browser-brand=chrome             # Browser brand: chrome, chromium, edge, brave, opera
 --bot-config-color-scheme=light               # Color scheme: light, dark
 --bot-config-disable-debugger=true            # Disable JavaScript debugger: true, false
 --bot-config-disable-device-scale-factor=true # Disable device scale factor: true, false
@@ -186,6 +186,7 @@ The following `--bot-config-*` flags map directly to profile `configs`:
 --bot-config-screen=profile                   # Screen properties: profile (use profile), real (system screen)
 --bot-config-speech-voices=profile            # Speech voices: profile (synthetic), real (system voices)
 --bot-config-timezone=auto                    # Timezone: auto (IP-based), real (system), or timezone name
+--bot-config-brand-full-version=142.0.3595.65 # Brand-specific full version (Edge/Opera cadence) for UA-CH congruence
 --bot-config-ua-full-version=142.0.7444.60    # User agent version: full version string matching Chromium major
 --bot-config-webgl=profile                    # WebGL: profile (use profile), real (system), disabled (off)
 --bot-config-webgpu=profile                   # WebGPU: profile (use profile), real (system), disabled (off)
@@ -196,7 +197,7 @@ The following `--bot-config-*` flags map directly to profile `configs`:
 --bot-config-mobile-force-touch=false         # Mobile touch: force touch events on/off for mobile device simulation
 ```
 
-> **Note — UA/Engine Congruence:** For `--bot-config-ua-full-version`, use a value that matches the Chromium major version in your build, and keep brands/`userAgentData` aligned to avoid fingerprint mismatches.
+> **Note — UA/Engine Congruence:** Keep `--bot-config-ua-full-version` aligned with your Chromium major version, and use `--bot-config-brand-full-version` when a vendor’s cadence (Edge, Opera, Brave) diverges so UA-CH metadata stays internally consistent.
 
 ### Key Benefits of CLI Configuration Flags
 
@@ -205,11 +206,11 @@ The following `--bot-config-*` flags map directly to profile `configs`:
 - **Dynamic Configuration:** Perfect for automation and CI/CD
 - **Session Isolation:** Different settings per instance
 
-### Spotlight: BotBrowser v142 20251031 Additions
+### Spotlight: BotBrowser v142 20251117 Additions
 
-- **Chromium 142.0.7444.60 base** — aligns rendering, networking, and security surfaces with the current Chrome stable channel.
-- **`--bot-config-disable-console-message`** — silences console output to keep CDP logging noise out of page scripts and production logs.
-- **`--bot-config-fonts=expand`** — loads supplemental system fonts when profiles lack coverage to improve authenticity while keeping profile baselines.
+- **Chromium 142.0.7444.163 base** — keeps rendering, networking, and storage surfaces in lockstep with Chrome Stable for minimum version skew.
+- **`--bot-config-brand-full-version`** — decouples UA full version and brand cadence so Edge/Opera style UA-CH tuples remain believable.
+- **Opera brand mode** — `--bot-config-browser-brand=opera` mirrors Opera UA-CH data and branding, while Brave parity fixes hide disallowed fields exactly like the real browser.
 
 ### Configuration Priority
 
