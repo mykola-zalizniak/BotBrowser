@@ -41,10 +41,14 @@ Designed for automation testing, cross-platform compatibility validation, and ma
 
 > **What makes BotBrowser different:** Cross-platform browser with unified fingerprint technology that keeps fingerprints identical everywhere.
 
-<table>
+<table style="table-layout:fixed; width:100%;">
+  <colgroup>
+    <col style="width:50%">
+    <col style="width:50%">
+  </colgroup>
   <tr>
-    <th style="width:50%;">Core Advantages</th>
-    <th style="width:50%;">Technical Excellence</th>
+    <th>Core Advantages</th>
+    <th>Technical Excellence</th>
   </tr>
   <tr>
     <td><strong>High-fidelity Profile Simulation</strong> – Synthetic/aggregated profiles for realistic, policy-compliant testing</td>
@@ -195,12 +199,18 @@ Our compatibility research examines browser fingerprinting techniques across dif
 
 > ⚠️ Research demos in authorized environments. See [DISCLAIMER](DISCLAIMER.md).
 
-<table>
+<table style="table-layout:fixed; width:100%;">
+  <colgroup>
+    <col style="width:20%">
+    <col style="width:30%">
+    <col style="width:20%">
+    <col style="width:30%">
+  </colgroup>
   <tr>
-    <th style="width:20%;">Service</th>
-    <th style="width:30%;">Demo</th>
-    <th style="width:20%;">Service</th>
-    <th style="width:30%;">Demo</th>
+    <th>Service</th>
+    <th>Demo</th>
+    <th>Service</th>
+    <th>Demo</th>
   </tr>
   <tr>
     <td><strong><a href="tests/tests/antibots/cloudflare.spec.ts">Cloudflare</a></strong></td>
