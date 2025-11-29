@@ -163,9 +163,9 @@ chromium --no-sandbox \
 
 ## Key Features
 
-### Unique Capabilities
-
 ⚠️ **All features are intended for compatibility testing and academic research only, not for use in production against third-party services.**
+
+### Unique Capabilities
 
 - [x] **Provides compatibility in incognito-mode environments**
 - [x] **CDP artifact minimization**: native CDP fingerprint consistency
@@ -183,6 +183,14 @@ chromium --no-sandbox \
 - [x] **Advanced matchMedia simulation** for CSS feature compatibility
 - [x] **Android behavior simulation** for mobile compatibility
 - [x] **Precision GPU and WebGL parameter configuration**
+
+### Tiered capabilities (subscription-gated):
+
+- **PRO** — Browser brand/UA overrides (`browserBrand`, `uaFullVersion`, `brandFullVersion`), WebRTC ICE presets, injected history, always-active tabs.
+- **ENT Tier1** — Runtime timing scaler (`--bot-time-scale`) for compressing `performance.now()` intervals.
+- **ENT Tier2** — Deterministic noise seed (`--bot-noise-seed`) to stabilize Canvas/WebGL/Audio noise across sessions.
+- **ENT Tier3** — UDP-over-SOCKS5 tunneling for QUIC/STUN when the proxy supports UDP associate.
+- See [CLI_FLAGS](CLI_FLAGS.md) and [PROFILE_CONFIGS](PROFILE_CONFIGS.md) for full flag coverage and usage examples.
 
 ---
 
