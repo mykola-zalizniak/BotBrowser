@@ -10,6 +10,7 @@ This repository contains a Docker setup for WizzAir website compatibility testin
 2. Performs compatibility validation on WizzAir's interface over a date range.
 3. Analyzes API responses for compatibility assessment.
 4. Saves analysis data to `flight_data/` and screenshots to `screenshots/` for academic review.
+5. The target site is protected by **Kasada**, but we can still obtain data using any profile.
 
 ---
 
