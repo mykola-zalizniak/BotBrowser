@@ -3,47 +3,27 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [botbrowser@bk.ru](mailto:botbrowser@bk.ru).
 
 
-## [2025-12-03] 
-
+## [2025-12-03]
 ### Major
-**Chromium Core → 143.0.7499.52**  
-Core aligned with Chrome 143 stable. You pick up the latest security work, platform refinements and the 143 UA‑CH major for sites that already gate on it.
+- **Chromium Core → 143.0.7499.52**: Core aligned with Chrome 143 stable. You pick up the latest security work, platform refinements, and the 143 UA‑CH major for sites that already gate on it.
 
 ### Fixes
-**x‑browser client marker**  
-Only **Chrome brand** emits the x‑browser marker. Other brands no longer inherit it, which avoids unnecessary compatibility checks on non‑Chrome brands.
-
-**Android connection type**  
-Android emulation now reports the correct network connection type so network heuristics match the emulated device.
-
-**WebGL context attributes**  
-`getContext('webgl/webgl2', attrs)` receives the intended `contextAttributes` again. The change improves driver compatibility and feature negotiation.
-
-**OOPIF devicePixelRatio**  
-Out‑of‑process iframes now inherit the right `devicePixelRatio`, which keeps layout, media queries and canvas scaling consistent across frame trees.
-
-**JS heap size limit**  
-`js_heap_size_limit` is read from the fingerprint in all environments. Memory‑related probes no longer see host defaults.
-
-**matchMedia: device‑width / device‑height**  
-Media queries now reflect the actual emulated device metrics. Breakpoints and responsive rules evaluate to the expected values.
-
-**Android brand exposure**  
-`chrome.app` is no longer present in Android emulation. The surface aligns with what real mobile Chrome exposes.
-
-**Screen metrics from profile**  
-`screen.width/height` now reliably come from the profile on every path, avoiding one‑off host reads in edge cases.
+- **x‑browser client marker**: Only **Chrome brand** emits the x‑browser marker. Other brands no longer inherit it, which avoids unnecessary compatibility checks on non‑Chrome brands.
+- **Android connection type**: Android emulation now reports the correct network connection type so network heuristics match the emulated device.
+- **WebGL context attributes**: `getContext('webgl/webgl2', attrs)` receives the intended `contextAttributes` again, which improves driver compatibility and feature negotiation.
+- **OOPIF devicePixelRatio**: Out‑of‑process iframes now inherit the right `devicePixelRatio`, keeping layout, media queries, and canvas scaling consistent across frame trees.
+- **JS heap size limit**: `js_heap_size_limit` is read from the fingerprint in all environments so memory‑related probes no longer see host defaults.
+- **matchMedia: device‑width / device‑height**: Media queries now reflect the actual emulated device metrics. Breakpoints and responsive rules evaluate to the expected values.
+- **Android brand exposure**: `chrome.app` is no longer present in Android emulation, aligning the surface with what real mobile Chrome exposes.
+- **Screen metrics from profile**: `screen.width/height` now reliably come from the profile on every path, avoiding one‑off host reads in edge cases.
 
 ### Improvements
-**SOCKS5H support**  
-Name resolution for SOCKS5H is more robust across platforms and failure modes. DNS resolution stays in the tunnel and connection setup is snappier on flaky endpoints.
+- **SOCKS5H support**: Name resolution for SOCKS5H is more robust across platforms and failure modes. DNS resolution stays in the tunnel and connection setup is snappier on flaky endpoints.
+- **Noise‑seed stability**: Noise seeds adapt more naturally to environment changes so fingerprints remain consistent across runs while keeping per‑profile diversity.
 
-**Noise‑seed stability**  
-Noise seeds adapt more naturally to environment changes. Fingerprints remain consistent across runs while keeping per‑profile diversity.
+---
 
-
-## [2025-11-29] 
-
+## [2025-11-29]
 ### New
 - **Runtime timing scaler (ENT Tier1)**: `--bot-time-scale` compresses `performance.now()` deltas to emulate lower CPU load profiles for timing-sensitive research flows.
 - **Deterministic noise seed (ENT Tier2)**: `--bot-noise-seed` stabilizes noise distributions across sessions for reproducible analysis.
@@ -55,32 +35,25 @@ Noise seeds adapt more naturally to environment changes. Fingerprints remain con
 - **Cached-font CJK rendering**: Corrected a font cache edge case that could suppress CJK glyphs in some flows; characters now render consistently.
 
 
-## [2025-11-24] 
+---
 
-
+## [2025-11-24]
 ### Major
-**Chromium Core → 143.0.7499.40 (Early Stable)**  
-The core moves to Chrome 143 early stable. You gain the latest security work, platform refinements and DevTools/CDP updates from the 143 line. Version‑based heuristics on target sites have less drift to key on, and UA‑CH now reports the expected major for 143‑gated features.
+- **Chromium Core → 143.0.7499.40 (Early Stable)**: The core moves to Chrome 143 early stable. You gain the latest security work, platform refinements, and DevTools/CDP updates from the 143 line. Version‑based heuristics on target sites have less drift to key on, and UA‑CH now reports the expected major for 143‑gated features.
 
 ### Notes
-**API and feature parity**  
-Small shifts are expected around UA‑CH negotiation, CSS/JS behavior tightened by spec clarifications, and CDP domain schemas that reflect 143. Nothing in BotBrowser’s flag surface changes for this bump.
-
-**Rollout guidance**  
-If you pin site‑specific workarounds to a Chrome major, run quick validation on your critical flows with 143 before rolling to full traffic. A short canary helps catch sites that already gate on 143.
+- **API and feature parity**: Small shifts are expected around UA‑CH negotiation, CSS/JS behavior tightened by spec clarifications, and CDP domain schemas that reflect 143. Nothing in BotBrowser’s flag surface changes for this bump.
+- **Rollout guidance**: If you pin site‑specific workarounds to a Chrome major, run quick validation on your critical flows with 143 before rolling to full traffic. A short canary helps catch sites that already gate on 143.
 
 
 ---
 
-## [2025-11-17] 
-
+## [2025-11-17]
 ### Major
-**Chromium Core → 142.0.7444.163**  
-Engine updated to Chrome’s current stable. You get up‑to‑date security work and web‑platform behavior, and version‑based heuristics have less room to flag mismatches.
+- **Chromium Core → 142.0.7444.163**: Engine updated to Chrome’s current stable. You get up‑to‑date security work and web‑platform behavior, and version‑based heuristics have less room to flag mismatches.
 
 ### New
-**Brand full‑version override**  
-`--bot-config-brand-full-version` sets the brand’s full version independently of the UA full version. Helpful where a vendor’s cadence diverges from Chromium and sites cross‑check UA‑CH with brand metadata.
+- **Brand full‑version override**: `--bot-config-brand-full-version` sets the brand’s full version independently of the UA full version. Helpful where a vendor’s cadence diverges from Chromium and sites cross‑check UA‑CH with brand metadata.
 
 Example (Edge spoofing):
 ```bash
@@ -89,31 +62,21 @@ Example (Edge spoofing):
 --bot-config-brand-full-version=142.0.3595.65  # PRO feature
 ```
 
-**Opera brand**  
-`--bot-config-browser-brand=opera` is supported. UA, Client Hints and brand cues are shaped to look like real Opera.
+- **Opera brand**: `--bot-config-browser-brand=opera` is supported. UA, Client Hints, and brand cues are shaped to look like real Opera.
 
 ### Improvements
-**Canvas2D noise**  
-Noise insertion is steadier frame‑to‑frame and less tied to individual draw operations. Probes see a calmer fingerprint surface while the image stays the same.
-
-**Android DevTools ergonomics**  
-Under Android emulation, the inspector no longer inherits page zoom or CSS font scaling. Tool panes and monospace fonts stay consistent regardless of emulated viewport.
+- **Canvas2D noise**: Noise insertion is steadier frame‑to‑frame and less tied to individual draw operations. Probes see a calmer fingerprint surface while the image stays the same.
+- **Android DevTools ergonomics**: Under Android emulation, the inspector no longer inherits page zoom or CSS font scaling. Tool panes and monospace fonts stay consistent regardless of emulated viewport.
 
 ### Fixes
-**Touch emulation**  
-In touch mode, `Input.dispatchMouseEvent` could miss. The pointer/touch bridge is corrected; synthesized taps and clicks land reliably, including inside iframe trees.
-
-**Brave parity**  
-When brand=Brave, the UA full version and selected Client Hints are now hidden the same way real Brave does it.
-
-**Edge on Android UA**  
-User‑Agent construction for Edge on Android now carries accurate brand/version tokens and platform identifiers.
+- **Touch emulation**: In touch mode, `Input.dispatchMouseEvent` could miss. The pointer/touch bridge is corrected; synthesized taps and clicks land reliably, including inside iframe trees.
+- **Brave parity**: When brand=Brave, the UA full version and selected Client Hints are now hidden the same way real Brave does it.
+- **Edge on Android UA**: User‑Agent construction for Edge on Android now carries accurate brand/version tokens and platform identifiers.
 
 ---
 
 
-## [2025-11-10] 
-
+## [2025-11-10]
 ### Major
 - **Chromium 142.0.7444.135 parity**: Synced core to the latest Chrome 142 stable build for up‑to‑date security patches, modern Web APIs, and version parity that reduces “version skew” signals used by anti‑bot systems.
 
@@ -133,8 +96,7 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 ---
 
 
-## [2025-11-02] 
-
+## [2025-11-02]
 ### Major
 - **Chromium Core Upgrade → 142.0.7444.60**  
   Synced with the latest Chrome 142 stable to keep rendering, networking, storage, and media behavior aligned with upstream, reduce version‑based heuristics, and inherit current security/perf updates.
@@ -172,16 +134,14 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 ---
 
 
-## [2025-10-23] 
-
+## [2025-10-23]
 ### Major
 - **Chromium Core Upgrade → 142 (Early Stable)**  
   BotBrowser is now aligned with **Chromium 142** (Chrome Early Stable). This keeps Web Platform/DevTools semantics and browser surfaces consistent with upstream Chrome, reduces version‑based heuristics some detectors rely on, and includes the latest security and performance updates.
 
 ---
 
-## [2025-10-20] 
-
+## [2025-10-20]
 ### Major
 - **Chromium Core Upgrade → 141.0.7390.108**  
   Synced to Chrome 141.0.7390.108 to stay aligned with the current stable engine for security patches, performance updates, and API parity. This reduces version‑based heuristics and keeps rendering/network/media behavior consistent with upstream Chrome.
@@ -214,8 +174,7 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 
 ---
 
-## [2025-10-12] 
-
+## [2025-10-12]
 ### Major
 - **Chromium Core Upgrade → 141.0.7390.77**
   - **What**: Sync to the latest stable Chrome 141 release.
@@ -284,8 +243,7 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 
 ---
 
-## [2025-10-02] 
-
+## [2025-10-02]
 ### Major
 - **Chromium Core Upgrade → 141.0.7390.55**  
   Aligned with the latest Chrome 141 for modern API parity, performance, and security fixes.
@@ -323,7 +281,6 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 ---
 
 ## [2025-09-27]
-
 ### Major
 - **Chromium Core Upgrade → 141**  
   Stay in lock‑step with the latest Chrome for modern API parity, performance, and security fixes.
@@ -343,8 +300,6 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 
 
 ## [2025-09-22]
-
-
 ### Improved
 - **Audio fingerprinting on x86 (no-noise hardware modeling)**
   Refined DSP/stack paths so x86 architectures can produce **native‑like audio fingerprints without injecting noise**, improving pass rates on vendors that score audio stability.
@@ -370,7 +325,6 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 
 
 ## [2025-09-15]
-
 ### Major
 - **Chromium Core Upgrade → 140.0.7339.128**
   Keeps BotBrowser in lock‑step with the latest stable Chrome for improved performance, security patches, and parity across modern web/APIs.
@@ -402,7 +356,6 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 ---
 
 ## [2025-09-06]
-
 ### Major
 - **Chromium Core Upgrade → 140**
   Upgraded engine to Chromium **140** to maintain Chrome‑level parity and stealth consistency across APIs and anti‑bot surfaces.
@@ -419,7 +372,6 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 
 
 ## [2025-09-02]
-
 ### Major Feature
 - **Framework‑less Automation: `--bot-script`**
   - Execute a JavaScript file **right after BotBrowser starts** in a privileged, non‑extension context where **`chrome.debugger`** is available.
@@ -440,7 +392,6 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 ---
 
 ## [2025-08-29]
-
 ### Major Update
 - **Chromium 139.0.7258.156**
   Synced BotBrowser to the latest stable Chrome build for feature parity, current security patches, and minimized fingerprint drift.
@@ -502,14 +453,13 @@ User‑Agent construction for Edge on Android now carries accurate brand/version
 ---
 
 ## [2025-08-22]
-
 ### Major Update
 - **Chromium 139.0.7258.139**
-Synced BotBrowser to the latest stable Chrome build for feature parity, security patches, and minimized fingerprint drift.
+  Synced BotBrowser to the latest stable Chrome build for feature parity, security patches, and minimized fingerprint drift.
 
 ### Major Improvement: CLI Configuration Overrides
 - **Configure fingerprints via startup flags (no profile edits required)**
-New `--bot-config-*` flags override corresponding `configs` fields at runtime, enabling per-instance tuning in CI/CD and scripts.
+  New `--bot-config-*` flags override corresponding `configs` fields at runtime, enabling per-instance tuning in CI/CD and scripts.
 
 #### Available Configuration Override Flags
 ```bash
@@ -539,8 +489,8 @@ New `--bot-config-*` flags override corresponding `configs` fields at runtime, e
 --bot-config-window="profile" # Window: profile (use profile), real (system window)
 ```
 
-**Benefits:** Highest priority (overrides profiles) · No JSON editing · Dynamic per-run configuration · Clean session isolation.
-See **`CLI_FLAGS.md`** for details.
+- **Benefits**: Highest priority (overrides profiles) · No JSON editing · Dynamic per-run configuration · Clean session isolation.
+  See **`CLI_FLAGS.md`** for details.
 
 ### Added
 - **Android touch simulation**
@@ -555,7 +505,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-08-17]
-
 ### Added
 - **`configs.disableDebugger` (default: `true`)**
   Prevents JavaScript `debugger` statements from pausing execution, keeping flows non-interactive during automation.
@@ -584,7 +533,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-08-12]
-
 ### Added
 - **Built-in H.264/H.265 (AVC/HEVC) Decoders**
   Enabled AVC/H.264 and HEVC/H.265 decoding out of the box (no external OS codecs required). Improves HTML5 video, MSE/EME playback compatibility, reduces codec-missing fallbacks, and keeps media behavior aligned with stock Chrome.
@@ -596,7 +544,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-08-07]
-
 ### Major Update
 - **Upgraded to Chromium 139**
   Synced BotBrowser to **Chromium 139**, bringing the newest web platform features, performance improvements, and security patches.
@@ -605,7 +552,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-07-31]
-
 ### Added
 - **Browser Brand Config**: New `configs.browserBrand` option for `chromium`, `chrome`, `brave`, or `edge`, enabling high-fidelity brand emulation.
 - **Brave Simulation**: Full Brave browser emulation including `userAgent`, `userAgentData`, and `navigator.brave.isBrave` properties.
@@ -628,7 +574,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-07-21]
-
 ### Major Update
 - **Upgraded to Chromium 138**: BotBrowser now runs on **Chromium 138**, matching the latest Chrome release for up‑to‑date features and security patches. (Ensures continued compatibility testing accuracy.)
 
@@ -639,7 +584,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 
 
 ## [2025-07-18]
-
 ### Improved
 - **macOS Auto-Quit on Last Tab**
   When the final tab closes on macOS, BotBrowser now quits automatically.
@@ -678,7 +622,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-07-09]
-
 ### Added
 1. **SOCKS5 Proxy Authentication**
    Support for SOCKS5 proxies with username/password to secure authentication.
@@ -812,7 +755,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 
 
 ## [2025-06-15]
-
 ### Improved
 - **On-Demand Proxy Geo & Timezone Fetch**
   - Shifted proxy geolocation, timezone, and public IP retrieval from browser startup to page load via a request interceptor.
@@ -822,7 +764,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-06-10]
-
 ### Major Update
 - **Upgraded to Chromium 137**
   - Synced BotBrowser with the latest **Chromium 137** core, ensuring compatibility with new browser features, performance improvements, and security patches.
@@ -835,7 +776,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-05-25]
-
 ### Major Update
 - **WebRTC Fingerprinting Refactor & Media Simulation**
   - Fully rewrote internal WebRTC logic to eliminate local IP leaks.
@@ -876,7 +816,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-05-13]
-
 ### Added
 - **Auto Timezone via IP Lookup**
   - Introduced built-in IP geolocation detection based on proxy exit IP, allowing automatic adjustment of timezone and location.
@@ -911,7 +850,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-05-01]
-
 ### Improved
 - **Upgraded to Chromium 136**
   - Synced BotBrowser to the latest **Chromium 136**, ensuring full compatibility with the most recent Chrome features, rendering behavior, and security updates.
@@ -920,7 +858,6 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ---
 
 ## [2025-04-26]
-
 ### Improved
 - **Audio Fingerprint Noise Simulation**
   - Further optimized audio noise generation to better simulate realistic audio fingerprints, successfully supporting compatibility testing with **FunCaptcha** environments.
@@ -977,7 +914,6 @@ Example:
 ---
 
 ## [2025-04-15]
-
 ### Added
 - **Android Fingerprint Emulation**
   - Introduced high-fidelity **Android fingerprint simulation** that successfully supports compatibility testing with advanced security systems.
@@ -996,7 +932,6 @@ Example:
 ---
 
 ## [2025-04-13]
-
 ### Added
 - **Proxy, Timezone, Locale Support via Profile**
   - You can now configure `proxy` (with embedded credentials), `timezone`, and `locale` directly through the **profile**, removing the need for CDP-based injection.
@@ -1021,7 +956,6 @@ Example:
 ---
 
 ## [2025-04-06]
-
 ### Improved
 - **Upgraded to Chromium 135**
   - Synchronized BotBrowser with the latest **Chromium 135**, ensuring full compatibility with the most recent Chrome version.
@@ -1031,7 +965,6 @@ Example:
 ---
 
 ## [2025-03-31]
-
 ### Improved
 - **Faster Profile Loading**
   - Optimized the profile loading logic to significantly reduce load time and improve overall performance.
@@ -1071,7 +1004,6 @@ Example:
 
 
 ## [2025-03-20]
-
 ### Improved
 - **Upgraded to Chromium 134.0.6998.95**
   - Synced to the latest **Chromium 134.0.6998.95**, improving compatibility testing accuracy with modern web environments.
@@ -1085,7 +1017,6 @@ Example:
 ---
 
 ## [2025-03-10]
-
 ### Improved
 - **Kasada Compatibility Enhancement**
   - Updated core logic to successfully support the latest **Kasada** compatibility testing, ensuring uninterrupted testing workflows.
@@ -1093,7 +1024,6 @@ Example:
 ---
 
 ## [2025-03-04]
-
 ### Improved
 - **GPU Emulation Performance Optimization**
   - Improved GPU simulation to run smoother in headless mode, reducing stutters and ensuring more stable performance.
@@ -1112,7 +1042,6 @@ Example:
 ---
 
 ## [2025-02-23]
-
 ### Added
 - **GPU Simulation Toggle for Headless Devices**
   - Introduced a new **toggle** that determines whether to simulate **GPU** based on the presence of a graphical interface, preventing failures on devices without GPU support.
@@ -1150,7 +1079,6 @@ Example:
 ---
 
 ## [2025-02-04]
-
 ### Improved
 - **Enhanced Fingerprint Protection in AnalyserNode**
   - Added **noise injection** to **AnalyserNode**, making it significantly harder for detection systems to identify synthetic audio processing behavior.
@@ -1160,7 +1088,6 @@ Example:
 ---
 
 ## [2025-02-02]
-
 ### Major Upgrade
 - **Canvas Noise Algorithm Overhaul:**
   Completely reworked the **Canvas noise algorithm** by integrating noise injection into **Skia's anti-aliasing process**, significantly reducing the likelihood of detection by advanced fingerprinting systems.
@@ -1177,7 +1104,6 @@ Example:
 ---
 
 ## [2025-01-24]
-
 ### Major Update
 - **GPU Emulation on Headless Servers:** Introduced full emulation of GPU-related fingerprints on devices without dedicated GPUs. This allows **VPS servers (Linux, Windows)** without GPUs to accurately simulate GPU information, including `navigator.gpu`, `GPUAdapter`, `GPUAdapterInfo`, `GPUDevice`, `WebGLRenderingContext`, and `WebGL2RenderingContext`. This significantly reduces GPU rental costs while supporting GPU-sensitive testing systems, such as the latest **hCaptcha** environments, which validate `navigator.gpu`.
 
@@ -1190,7 +1116,6 @@ Example:
 ---
 
 ## [2025-01-22]
-
 ### Improved
 - **MimeTypes Fingerprinting:** Optimized **mimeTypes** fingerprinting by converting them to **ContentType**, followed by parsing `type` and `codecs` separately. This enhancement strengthens mimeTypes matching and reduces detection risks from antifraud techniques, such as those used by **Incapsula**.
 - **Font Matching Accuracy:** Improved font matching logic to avoid unnecessary matches, significantly enhancing font accuracy and reducing false positives.
@@ -1202,7 +1127,6 @@ Example:
 ---
 
 ## [2025-01-17]
-
 ### Improved
 - **System Colors Configuration:** Added support for configuring system colors with **RGBA**, enabling more flexible and realistic color rendering.
 
@@ -1216,7 +1140,6 @@ Example:
 ---
 
 ## [2025-01-12]
-
 ### Fixed
 - **Mimetypes, MediaRecorder, and MediaSource Fingerprints:** Fixed issues where fingerprints were not correctly recognized under certain conditions. Optimized handling to ignore spaces after `;` in mimetypes, addressing antifraud tricks that exploit this discrepancy.
   [Issue Reference: #8](https://github.com/botswin/BotBrowser/issues/8)
@@ -1236,7 +1159,6 @@ Example:
 ---
 
 ## [2025-01-03]
-
 ### Improved
 - **SwiftShader Parameter Adjustment:** Enhanced **SwiftShader** parameters on **Linux**, providing broader support and improved **EGL compatibility**.
 - **Background Networking Control:** Replaced the `disable-background-networking` flag with a custom `botbrowser-disable-background-networking` flag to prevent **CDP** from interfering with **CDM downloads**.
@@ -1252,7 +1174,6 @@ Example:
 ---
 
 ## [2024-12-29]
-
 ### Fixed
 - **Pixelscan PDF Viewer Compatibility Fix:** Successfully resolved PDF viewer compatibility issues during **Pixelscan** testing. This issue was categorized as **P0 severity**.  [#11](https://github.com/botswin/BotBrowser/issues/11)
 
@@ -1273,7 +1194,6 @@ Example:
 ---
 
 ## [2024-12-26]
-
 ### Added
 - **Enhanced GPU Fingerprinting:** Further improved support for **GPUSupportedLimits**, ensuring clear differentiation between **GPUDevice** and **GPUAdapter** data.
 
@@ -1285,7 +1205,6 @@ Example:
 ---
 
 ## [2024-12-25]
-
 ### Added
 - **GPU Fingerprinting Simulation:** Implemented support for simulating **GPUAdapter**, **GPUSupportedFeatures**, and **GPULimits** fingerprints.
 - **WebGL Extension Support:** Added fingerprint support for the **MaxDrawBuffers** WebGL extension.
