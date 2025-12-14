@@ -1,17 +1,17 @@
 # LEGAL DISCLAIMER AND TERMS OF USE
 
-## ACADEMIC & RESEARCH USE DISCLAIMER
+## PRIVACY BROWSER USE DISCLAIMER
 
-**BotBrowser** is designed exclusively for **academic research, security analysis, and authorized testing environments** that comply with all applicable **laws, regulations, and institutional ethics guidelines**. Review the companion [RESPONSIBLE_USE.md](RESPONSIBLE_USE.md) for operational expectations and reporting procedures.
+**BotBrowser** is designed as a privacy-focused browser core for **academic research, fingerprint consistency analysis, and authorized privacy testing** that complies with all applicable **laws, regulations, and institutional ethics guidelines**. Review the companion [RESPONSIBLE_USE.md](RESPONSIBLE_USE.md) for operational expectations and responsible deployment practices.
 
-## DUAL-USE TECHNOLOGY NOTICE
+## TECHNOLOGY NOTICE
 
-BotBrowser is a **dual-use technology** - it can be used for both legitimate research and potentially harmful purposes. Like many security research tools, the ethical and legal use depends entirely on the user's intent and authorization.
+BotBrowser is a **privacy protection technology** designed to prevent fingerprint based tracking and user identification across platforms. Like any browser technology, it can be used responsibly or irresponsibly depending on the user's intent and authorization.
 
-**Legitimate Use:** Browser compatibility research, security analysis, fingerprinting studies
-**Harmful Misuse:** Fraud, unauthorized access, ToS violations
+**Authorized Uses:** Privacy research, fingerprint consistency testing, cross platform browser compatibility analysis
+**Prohibited Uses:** Unauthorized access, fraud, violation of terms of service
 
-**The developers have designed this tool for legitimate purposes and expressly condemn any misuse.**
+**The developers have created this technology for privacy protection purposes and expect all users to deploy it in authorized contexts only.**
 
 ## AGE RESTRICTION
 

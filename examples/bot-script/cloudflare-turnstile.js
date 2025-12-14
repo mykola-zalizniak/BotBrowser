@@ -1,6 +1,6 @@
 /**
- * ⚠️ ACADEMIC RESEARCH USE ONLY
- * For authorized testing environments that comply with all applicable laws.
+ * ⚠️ PRIVACY RESEARCH USE ONLY
+ * Run exclusively inside authorized privacy research environments.
  * See: https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
 
@@ -232,4 +232,3 @@ function getAutomationStatus() {
 }
 
 console.log("Frame automation script initialized. Monitoring started...");
-

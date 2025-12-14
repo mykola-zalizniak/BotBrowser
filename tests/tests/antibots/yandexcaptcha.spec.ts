@@ -1,14 +1,13 @@
 /**
- * ACADEMIC RESEARCH USE ONLY
+ * PRIVACY RESEARCH USE ONLY
  *
- * This test demonstrates Yandex SmartCaptcha compatibility in AUTHORIZED TEST ENVIRONMENTS ONLY.
- * - Uses Yandex's official SmartCaptcha demo page (smartcaptcha.yandexcloud.net)
- * - For CAPTCHA accessibility and fingerprint research
- * - Read-only demo interaction
+ * Run exclusively inside authorized privacy research labs with synthetic data only.
+ * Never target production traffic or violate any Terms of Service.
  *
  * See https://github.com/botswin/BotBrowser/blob/main/tests/README.md
  * and https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
+
 
 import { test } from '../global-setup';
 

@@ -1,6 +1,6 @@
 # RESPONSIBLE USE GUIDELINES
 
-BotBrowser is a dual-use research platform. These guidelines clarify the expectations for anyone who accesses binaries, profiles, or source artifacts.
+BotBrowser is a privacy protection platform designed for fingerprint consistency research. These guidelines clarify the expectations for anyone who accesses binaries, profiles, or source artifacts.
 
 ## REQUIRED CONDITIONS
 
@@ -12,10 +12,10 @@ BotBrowser is a dual-use research platform. These guidelines clarify the expecta
 
 ## PROHIBITED ACTIVITIES
 
-- Circumventing anti-abuse or automated detection mechanisms on production services without consent.
+- Deploying BotBrowser against production systems without explicit authorization from the system owner.
 - Harvesting personal data, account credentials, session tokens, or payment information.
 - Providing the software to third parties who intend to violate laws or service terms.
-- Using BotBrowser outputs to enable fraud, spam, scalping, automated ticket purchasing, or other abusive automation.
+- Using BotBrowser to facilitate fraud, spam, scalping, unauthorized ticket purchasing, or other unauthorized automated activities.
 
 ## RESPONSIBLE DISCLOSURE & COOPERATION
 
@@ -26,7 +26,7 @@ BotBrowser is a dual-use research platform. These guidelines clarify the expecta
 
 ## PUBLICATION & SHARING
 
-- When publishing research, clearly state the defensive or analytical objective. Do not release step-by-step bypass instructions or targeting details.
+- When publishing research, clearly state the privacy protection or analytical objective. Do not release operational details or techniques that could facilitate unauthorized use.
 - Redact sensitive partner data from papers, blog posts, talks, and sample code.
 - Respect third-party disclosure timelines and embargo agreements.
 

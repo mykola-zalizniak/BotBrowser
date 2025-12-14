@@ -1,6 +1,6 @@
 # 🖥️ BotBrowserConsole
 
-BotBrowserConsole is the desktop companion to **[BotBrowser](https://github.com/botswin/BotBrowser)**. It simplifies fingerprint configuration and multi‑profile management for academic study and professional workflows. It also supports API‑based extensions for custom requirements.
+BotBrowserConsole is the desktop companion to **[BotBrowser](https://github.com/botswin/BotBrowser)**. It simplifies privacy-focused fingerprint configuration and multi-profile management for academic study and professional workflows. It also supports API-based extensions for custom requirements in authorized labs.
 
 <img width="800" alt="image" src="https://github.com/user-attachments/assets/e9c0b656-83b0-4be5-986e-d4bc3c04b4b5">
 
@@ -12,9 +12,9 @@ BotBrowserConsole is the desktop companion to **[BotBrowser](https://github.com/
 - Clone existing profiles for faster setup and consistency
 - Import/export profiles for seamless team collaboration
 
-### Network & Security
-- Per‑profile proxies for secure, privacy‑focused testing
-- Optional fingerprint noise to evaluate consistency
+### Network & Privacy
+- Per-profile proxies for secure, privacy-respecting testing
+- Optional fingerprint noise to evaluate cross-platform consistency
 
 ### Advanced Operations
 - Launch multiple isolated browsers with complete data separation
@@ -55,7 +55,7 @@ Quick Start
 
 1. Download and install BotBrowserConsole
 2. Create your first browser profile
-3. Configure fingerprints, proxies, and settings
+3. Configure fingerprints, privacy controls, and settings
 4. Start preparing research profiles and test environments
 
 ## 🛠️ Technical Stack

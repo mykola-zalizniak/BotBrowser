@@ -1,14 +1,13 @@
 /**
- * ACADEMIC RESEARCH USE ONLY
+ * PRIVACY RESEARCH USE ONLY
  *
- * Internal tests for detecting common fingerprint inconsistencies (lies).
- * - Tests browser implementation consistency
- * - For quality assurance and fingerprint validation
- * - No external data submission
+ * Run exclusively inside authorized privacy research labs with synthetic data only.
+ * Never target production traffic or violate any Terms of Service.
  *
  * See https://github.com/botswin/BotBrowser/blob/main/tests/README.md
  * and https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
+
 
 import { test, expect } from './global-setup';
 
@@ -236,7 +235,7 @@ test('results of the measureText empty string should be 0', async ({ page }) => 
     await expect(result).toBe(undefined);
 });
 
-test('detect headless userAgent', async ({ page }) => {
+test('verify userAgent contains no headless indicators', async ({ page }) => {
     const userAgent = (await page.evaluate(() => navigator.userAgent)).toLowerCase();
 
     expect(
@@ -249,7 +248,7 @@ test('detect headless userAgent', async ({ page }) => {
     ).toBe(false);
 });
 
-test('detect headless properties', async ({ page }) => {
+test('verify window contains no headless automation properties', async ({ page }) => {
     const result = await page.evaluate(() => {
         return (
             window['__$webdriverAsyncExecutor'] ||

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-⚠️ ACADEMIC RESEARCH USE ONLY
-For authorized testing environments that comply with all applicable laws.
+⚠️ PRIVACY RESEARCH USE ONLY
+Run exclusively inside authorized privacy research labs with synthetic data only.
+Never target production traffic or violate any Terms of Service.
 See: https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
 """
 

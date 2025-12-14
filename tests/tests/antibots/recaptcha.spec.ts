@@ -1,14 +1,13 @@
 /**
- * ACADEMIC RESEARCH USE ONLY
+ * PRIVACY RESEARCH USE ONLY
  *
- * This test demonstrates reCAPTCHA compatibility in AUTHORIZED TEST ENVIRONMENTS ONLY.
- * - Uses Google's official reCAPTCHA demo pages (recaptcha-demo.appspot.com)
- * - For fingerprint consistency and accessibility research
- * - Includes audio CAPTCHA transcription for accessibility testing
+ * Run exclusively inside authorized privacy research labs with synthetic data only.
+ * Never target production traffic or violate any Terms of Service.
  *
  * See https://github.com/botswin/BotBrowser/blob/main/tests/README.md
  * and https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
+
 
 import { execFile } from 'child_process';
 import fs from 'node:fs';

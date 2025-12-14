@@ -1,9 +1,9 @@
 <h1 align="center">🤖 BotBrowser</h1>
 
-<h4 align="center">Professional Cross-Platform Browser with Unified Fingerprint Technology 🚀</h4>
+<h4 align="center">Advanced Privacy Browser Core with Unified Fingerprint Defense 🚀</h4>
 
 <p align="center">
-  Identical fingerprints on any OS • Cross-platform compatibility • Validated against 31+ detection systems for research benchmarking
+  Identical privacy posture on any OS • Cross-platform compatibility • Fingerprint consistency validated across 31+ detection scenarios
 </p>
 
 <p align="center">
@@ -31,35 +31,35 @@
 ---
 ## 📖 What Is BotBrowser?
 
-BotBrowser delivers identical browser fingerprints across all platforms. Run the same profile on Windows, macOS, or Linux and you'll see the exact same fingerprint every time.  
+BotBrowser is a privacy first browser core that keeps fingerprint signals uniform across every platform so hostile trackers cannot build per-machine dossiers. Run the same profile on Windows, macOS, or Linux and the fingerprint posture stays identical each time.
 
-Designed for automation testing, cross-platform compatibility validation, and maintaining consistent browser environments in authorized research and defensive benchmarking settings. Review the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md) before using the software.  
+All engineering focuses on automation-assisted privacy research, cross-platform tracking-resistance validation, and maintaining consistent environments for authorized defensive benchmarking. Review the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md) before using the software.
 
 ---
 
 ## 🏆 Why BotBrowser
 
-> **What makes BotBrowser different:** Cross-platform browser with unified fingerprint technology that keeps fingerprints identical everywhere.
+> **What makes BotBrowser different:** Cross-platform privacy browser core with unified fingerprint technology that stops fingerprint drift everywhere.
 
 <table cellspacing="0" cellpadding="8">
   <tr>
-    <td width="50%"><strong>High-fidelity Profile Simulation</strong> – Synthetic/aggregated profiles for realistic, policy-compliant testing</td>
-    <td width="50%"><strong>Latest Chromium Base</strong> – Always synced to newest stable Chrome for zero fingerprint drift</td>
+    <td width="50%"><strong>High-fidelity Profile Simulation</strong> keeps synthetic and aggregated fingerprints ready for policy-compliant privacy experiments</td>
+    <td width="50%"><strong>Latest Chromium Base</strong> stays synced to the newest stable Chrome so trackers cannot key on stale engines</td>
   </tr>
   <tr>
-    <td width="50%"><strong>Zero-Config Intelligence</strong> – Auto-detects timezone/locale/language from IP</td>
-    <td width="50%"><strong>Advanced Programmatic Control</strong> – <a href="examples/">Playwright/Puppeteer integration</a> with CDP leak blocking</td>
+    <td width="50%"><strong>Zero-Config Intelligence</strong> reads timezone, locale, and languages from IP to mirror the network story without extra scripting</td>
+    <td width="50%"><strong>Advanced Programmatic Control</strong> offers <a href="examples/">Playwright/Puppeteer integration</a> with CDP leak blocking so privacy tooling leaves no automation residue</td>
   </tr>
   <tr>
-    <td width="50%"><strong>Network Stack Parity</strong> – Browser-level proxies keep geo signals consistent</td>
-    <td width="50%"><strong>Full-Proxy QUIC/STUN</strong> – Chromium-level UDP associate keeps QUIC/STUN proxied; ICE presets only needed when UDP is unavailable (ENT Tier3 feature, see <a href="ADVANCED_FEATURES.md#network-fingerprint-control">Network Fingerprint Control</a>)</td>
+    <td width="50%"><strong>Network Stack Parity</strong> keeps browser-level proxies aligned so geo metadata does not leak real locations</td>
+    <td width="50%"><strong>Full-Proxy QUIC/STUN</strong> delivers Chromium-level UDP associate so QUIC and STUN stay proxied, giving privacy labs clean transport parity (ENT Tier3 feature, see <a href="ADVANCED_FEATURES.md#network-fingerprint-control">Network Fingerprint Control</a>)</td>
   </tr>
 </table>
 
 ### 📱 Cross-Platform Fingerprint Consistency
 
-- Single profile, every host OS: identical UA, screen metrics, touch surfaces, fonts, and device APIs on Windows/macOS/Linux + Android emulation.
-- Built-in automation handles touch simulation, device metrics, and locale/timezone detection from the proxy IP while still allowing CLI overrides when you truly need them.
+- Single profile, every host OS: identical UA, screen metrics, touch surfaces, fonts, and device APIs on Windows, macOS, Linux, and Android emulation so trackers see the same fingerprint everywhere.
+- Built-in automation handles touch simulation, device metrics, and locale/timezone detection from the proxy IP while still allowing CLI overrides when privacy experiments require them.
 - Quick demos: [▶️ CreepJS Android](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs-Android) • [▶️ Iphey](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-iphey-iphey-Android) • [▶️ Pixelscan](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-pixelscan-pixelscan-Android)
 
 ---
@@ -80,7 +80,7 @@ Designed for automation testing, cross-platform compatibility validation, and ma
 - macOS/Linux commands follow the same pattern; see [INSTALLATION.md](INSTALLATION.md) for full instructions.
 
 **Step 3: Verify**
-- Visit [CreepJS](https://abrahamjuliot.github.io/creepjs/) or your preferred test harness to confirm identical fingerprints.
+- Visit [CreepJS](https://abrahamjuliot.github.io/creepjs/) or your preferred fingerprint observatory to confirm identical privacy posture.
 - Timezone/locale/language auto-derive from your proxy/IP; override via CLI only when needed.
 
 
@@ -102,8 +102,8 @@ await page.goto('https://abrahamjuliot.github.io/creepjs/');
 
 **Notes:**
 - Use `--user-data-dir` with a unique temporary folder to avoid conflicts with running Chromium instances
-- Prefer `--proxy-server` or per‑context proxies (ENT Tier1); auto timezone/locale detection applies in both cases
-- Avoid framework‑specific proxy/auth options (e.g., `page.authenticate()`), which bypass BotBrowser geo detection
+- Prefer `--proxy-server` or per-context proxies (ENT Tier1); auto timezone/locale detection applies in both cases
+- Avoid framework-specific proxy/auth options (e.g., `page.authenticate()`), which disable BotBrowser's geo-detection and may leak location information
 - `socks5h://` is supported when you need hostnames resolved by the proxy
 
 Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/)
@@ -114,40 +114,40 @@ Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/
 - Full flags: [CLI_FLAGS.md](CLI_FLAGS.md)
 
 ## 🛠️ Advanced Capabilities
-> **Professional-grade browser technology** through multi-layer fingerprint consistency, network-stack control, and automation-hardening.
+> **Professional-grade privacy technology** built on multi-layer fingerprint consistency, network-stack control, and automation-hardening.
 
-- **Multi‑Layer Noise**: Canvas/WebGL/WebGPU/Text/Audiocontext surfaces share deterministic, cross-worker noise with low-level Skia/HarfBuzz tuning
-- **Automation Hardening**: CDP/WebDriver artifact scrubbing, framework-less `--bot-script`, and console suppression PRO toggles keep detectors blind
-- **Configurable Stack**: 30+ CLI overrides, ENT Tier1 per-context proxies with auto geo, and session tooling (cookies/bookmarks/title/history)
-- **Typography Fidelity**: DOM text renders from embedded Windows/macOS/Android font packs so host fonts never leak during cross-OS simulation
-- **Client Hints Lockstep**: DPR/device-memory/UA-CH headers match JavaScript-visible values for airtight CH vs JS parity
-- **Headless ↔ GUI Parity**: Identical GPU/WebGPU/media signals across browser modes for stable automation baselines
-- **Performance Controls**: Precision FPS/memory timings plus ENT Tier1 timing/seed controls for reproducible benchmarks
-- **Focus & Session Control**: Always-active tabs, configurable ICE presets, and expanded media reporting keep sessions believable
-- **Network Enhancements**: ENT Tier1 per-context proxies, UDP-over-SOCKS5 (ENT Tier3), and SOCKS5H DNS-in-tunnel behavior for clean geo signals
+- **Multi Layer Noise**: Canvas, WebGL, WebGPU, text, and AudioContext surfaces share deterministic, cross-worker noise with low-level Skia and HarfBuzz tuning so observers cannot correlate runs
+- **Execution Environment Isolation**: Clean execution contexts prevent framework artifacts from exposing automation details, framework-less `--bot-script`, and console suppression PRO toggles maintain consistent fingerprints across automation modes
+- **Configurable Stack**: 30+ CLI overrides, ENT Tier1 per-context proxies with auto geo, and session tooling (cookies, bookmarks, title, history) make privacy scripting flexible
+- **Typography Fidelity**: DOM text renders from embedded Windows, macOS, and Android font packs so host fonts never leak during cross-OS simulation
+- **Client Hints Lockstep**: DPR, device-memory, and UA-CH headers match JavaScript-visible values to keep header data in sync with runtime fingerprints
+- **Headless ↔ GUI Parity**: Identical GPU, WebGPU, and media signals across browser modes so privacy regression tests remain stable
+- **Performance Controls**: Precision FPS and memory timings plus ENT Tier1 timing and seed controls for reproducible privacy benchmarks
+- **Focus & Session Control**: Always-active tabs, configurable ICE presets, and expanded media reporting keep privacy sessions believable
+- **Network Enhancements**: ENT Tier1 per-context proxies, UDP-over-SOCKS5 (ENT Tier3), and SOCKS5H DNS in tunnel behavior for clean geo signals
 
 <details>
-<summary><strong>Coverage Map: Detection Surfaces → Capabilities → Evidence</strong></summary>
+<summary><strong>Fingerprint Consistency Implementation: Privacy Controls → Technical Design → Validation</strong></summary>
 
-This map links common detection surfaces to BotBrowser capabilities and the exact docs/tests where they are demonstrated.
+This reference maps privacy protection goals to BotBrowser implementation details and validation evidence.
 
-| Detection Surface | Capability | Evidence |
+| Privacy Protection | Implementation | Reference |
 |---|---|---|
-| navigator.webdriver | Removed/hidden at engine level | [ADVANCED_FEATURES#Chrome Behavior Emulation](ADVANCED_FEATURES.md#chrome-behavior-emulation) |
-| JS Execution Isolation | CDP/WebDriver artifact blocking | [ADVANCED_FEATURES#Playwright/Puppeteer Integration](ADVANCED_FEATURES.md#playwright-puppeteer-integration) |
-| Canvas/WebGL/WebGPU/Audio/Text metrics | Deterministic noise + parameter controls and cross‑worker consistency | [ADVANCED_FEATURES#Graphics & Rendering Engine](ADVANCED_FEATURES.md#graphics-rendering-engine) |
-| WebGPU fingerprinting | Canvas/WebGPU share deterministic noise so GPU-only probes like [WebBrowserTools](https://webbrowsertools.com/webgpu-fingerprint/) stay consistent | [CHANGELOG#2025-12-08](CHANGELOG.md#2025-12-08) |
-| Fonts/Text | Built-in fonts + HarfBuzz shaping | [ADVANCED_FEATURES#Cross-Platform Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) |
-| DOM Font Enumeration | DOM text renders from embedded Windows/macOS/Linux/Android font bundles; host fonts never leak | [ADVANCED_FEATURES#Cross-Platform Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) |
-| MediaDevices | Profile-based device spoofing | [Profile Configs](profiles/PROFILE_CONFIGS.md) |
-| WebRTC | SDP/ICE manipulation, candidate filtering | [ADVANCED_FEATURES#WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection) |
-| UA Congruence | Brand + full-version alignment | [CLI_FLAGS#Profile Configuration Override Flags](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) |
-| UA Congruence | Brand + full-version alignment | [CLI_FLAGS#Profile Configuration Override Flags](CLI_FLAGS.md#profile-configuration-override-flags) |
-| Client Hints vs JS metrics | CH DPR/device-memory/UA-CH stay in lockstep with JavaScript-visible values | [ADVANCED_FEATURES#Browser & OS Fingerprinting](ADVANCED_FEATURES.md#browser--os-fingerprinting) |
-| Headless Parity | GPU/WebGPU/media signals stable | [ADVANCED_FEATURES#Headless & Incognito Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) |
-| DNS Leaks | SOCKS5 DNS-through-proxy | [ADVANCED_FEATURES#Enhanced Proxy System](ADVANCED_FEATURES.md#enhanced-proxy-system) |
-| HTTP Headers | Chrome-like headers, HTTP/2/3 behavior | [ADVANCED_FEATURES#Chrome Behavior Emulation](ADVANCED_FEATURES.md#chrome-behavior-emulation) |
-| TLS Fingerprint | JA3/JARM/ALPN control (Roadmap) | [CHANGELOG](CHANGELOG.md) |
+| API standardization | navigator.webdriver standardized across all platforms so trackers cannot use API presence/absence as identification signal | [ADVANCED_FEATURES#Chrome Behavior Emulation](ADVANCED_FEATURES.md#chrome-behavior-emulation) |
+| Execution environment consistency | Isolated execution context prevents framework artifacts from exposing automation details | [ADVANCED_FEATURES#Playwright/Puppeteer Integration](ADVANCED_FEATURES.md#playwright-puppeteer-integration) |
+| Graphics rendering parity | Deterministic noise across Canvas, WebGL, WebGPU, and audio ensures consistent fingerprints even in GPU-dependent scenarios | [ADVANCED_FEATURES#Graphics & Rendering Engine](ADVANCED_FEATURES.md#graphics-rendering-engine) |
+| GPU fingerprint uniformity | Canvas and WebGPU rendering shares deterministic properties so GPU probes like [WebBrowserTools](https://webbrowsertools.com/webgpu-fingerprint/) return consistent results | [CHANGELOG#2025-12-08](CHANGELOG.md#2025-12-08) |
+| Typography consistency | Embedded font engines for Windows, macOS, Linux, and Android ensure text rendering remains identical across platforms | [ADVANCED_FEATURES#Cross-Platform Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) |
+| Font availability uniformity | DOM queries return consistent font lists from embedded bundles so host system fonts cannot leak platform identity | [ADVANCED_FEATURES#Cross-Platform Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) |
+| Device capabilities | Profile-based device properties maintain consistent device claims across all platforms | [Profile Configs](profiles/PROFILE_CONFIGS.md) |
+| Network topology privacy | WebRTC signaling stays consistent through SDP and ICE controls preventing network topology leakage | [ADVANCED_FEATURES#WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection) |
+| User agent coherence | Browser brand and version consistency prevents UA string from revealing platform differences | [CLI_FLAGS#Profile Configuration Override Flags](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) |
+| User agent coherence | Browser brand and version consistency prevents UA string from revealing platform differences | [CLI_FLAGS#Profile Configuration Override Flags](CLI_FLAGS.md#profile-configuration-override-flags) |
+| Header to API parity | Client Hints headers DPR, device-memory, and UA-CH align with JavaScript reported values preventing header based identification | [ADVANCED_FEATURES#Browser & OS Fingerprinting](ADVANCED_FEATURES.md#browser--os-fingerprinting) |
+| Execution mode consistency | GPU, WebGPU, and media signals remain identical whether running headless or in GUI mode | [ADVANCED_FEATURES#Headless & Incognito Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) |
+| DNS privacy | DNS queries route through proxy to prevent ISP level tracking | [ADVANCED_FEATURES#Enhanced Proxy System](ADVANCED_FEATURES.md#enhanced-proxy-system) |
+| Protocol conformance | HTTP/2 and HTTP/3 behavior matches Chrome specifications preventing protocol based differentiation | [ADVANCED_FEATURES#Chrome Behavior Emulation](ADVANCED_FEATURES.md#chrome-behavior-emulation) |
+| TLS fingerprint consistency | JA3, JARM, and ALPN parameters optimized for uniform TLS negotiation across platforms | [CHANGELOG](CHANGELOG.md) |
 
 **Fingerprint Consistency Matrix: Cross‑Platform Coverage**
 
@@ -169,60 +169,60 @@ This map links common detection surfaces to BotBrowser capabilities and the exac
 
 ## ⚙️ Configuration & Profiles
 
-> 📢 BotBrowser combines synthetic/aggregated profiles with flexible configuration for authorized research. Profile consistency and CLI settings enable comparative analysis.
+> 📢 BotBrowser combines synthetic and aggregated profiles with flexible configuration for authorized privacy research. Profile consistency and CLI settings enable comparative analysis without leaking host traits.
 
-- **Profile Foundation:** Synthetic/aggregated profiles provide realistic fingerprint data for authorized testing
+- **Profile Foundation:** Synthetic and aggregated profiles provide realistic fingerprint data for authorized privacy testing
 - **CLI Flexibility:** Override profile settings at runtime without modifying encrypted files
 - **Cross-Platform Compatibility:** A *macOS profile* works on Ubuntu; a *Windows profile* works on macOS; an *Android profile* can be fully emulated on any OS
 - **Auto-Configuration:** Timezone, locale, and languages automatically detected from IP/proxy
 - **CLI Flags:** See the [⚙️ CLI flags reference](CLI_FLAGS.md) - *Recommended for most users*
 
 
-> ⚠️ Note: This project must only be used in environments you own or where you have explicit authorization. Use against third-party services without permission is strictly prohibited.
+> ⚠️ Note: This project must only be used in environments you own or where you have explicit authorization. Use against third-party services without permission is strictly prohibited and undermines the privacy mission.
 
 ---
 
 ## 🖥️ BotBrowserConsole (GUI Tool)
 
-Prefer a GUI launcher? See [console/README.md](console) for BotBrowserConsole usage, multi-instance management, and profile selection.
+Prefer a GUI launcher? See [console/README.md](console) for BotBrowserConsole usage, multi-instance management, and privacy profile selection.
 
 ---
 
-## 🎯 Research Validation
+## 🎯 Fingerprint Consistency Research
 
-### Academic Research Overview
+### Research Methodology
 
-Our compatibility research examines browser fingerprinting techniques across different client configurations to improve web compatibility and understand fingerprint consistency.
+Our fingerprint consistency research examines how standardized browser fingerprints protect users from cross-platform tracking and identification. By maintaining identical fingerprints across operating systems, we demonstrate how privacy protection through consistency prevents the tracking methods that malicious observers rely on.
 
-> ⚠️ Research demos in authorized environments. See [DISCLAIMER](DISCLAIMER.md).
+> ⚠️ Research validation uses authorized test environments. See [DISCLAIMER](DISCLAIMER.md).
 
 <table cellspacing="0" cellpadding="8">
   <tr>
-    <td width="20%"><strong><a href="tests/tests/antibots/cloudflare.spec.ts">Cloudflare</a></strong></td>
-    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-cloudflare-turnstile">▶️ Turnstile Demo</a></td>
-    <td width="20%"><strong><a href="tests/tests/antibots/creepjs.spec.ts">CreepJS</a></strong></td>
-    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs">▶️ Desktop Test</a> / <a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs-Android">▶️ Android Profile</a></td>
+    <td width="20%"><strong><a href="tests/tests/antibots/cloudflare.spec.ts">Cloudflare Consistency Research</a></strong></td>
+    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-cloudflare-turnstile">▶️ Validation Recording</a></td>
+    <td width="20%"><strong><a href="tests/tests/antibots/creepjs.spec.ts">CreepJS Fingerprint Analysis</a></strong></td>
+    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs">▶️ Desktop Consistency</a> / <a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs-Android">▶️ Android Profile</a></td>
   </tr>
   <tr>
-    <td width="20%"><strong><a href="tests/tests/antibots/datadome.spec.ts">DataDome</a></strong></td>
-    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-datadome-fifa">▶️ FIFA2026 Demo</a></td>
-    <td width="20%"><strong><a href="tests/tests/antibots/fingerprintjs.spec.ts">FingerprintJS Pro</a></strong></td>
-    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-fingerprintjs-botdetection">▶️ Bot Detection</a></td>
+    <td width="20%"><strong><a href="tests/tests/antibots/datadome.spec.ts">DataDome Detection Environment</a></strong></td>
+    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-datadome-fifa">▶️ Scenario Analysis</a></td>
+    <td width="20%"><strong><a href="tests/tests/antibots/fingerprintjs.spec.ts">FingerprintJS Pro Analysis</a></strong></td>
+    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-fingerprintjs-botdetection">▶️ Fingerprinting Methodology</a></td>
   </tr>
   <tr>
-    <td width="20%"><strong><a href="tests/tests/antibots/perimeterx.spec.ts">PerimeterX</a></strong></td>
-    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-perimeterx-zillow">▶️ Zillow Demo</a></td>
-    <td width="20%"><strong><a href="tests/tests/antibots/pixelscan.spec.ts">Pixelscan</a></strong></td>
-    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-pixelscan-pixelscan">▶️ Comprehensive Scan</a></td>
+    <td width="20%"><strong><a href="tests/tests/antibots/perimeterx.spec.ts">PerimeterX Protection Study</a></strong></td>
+    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-perimeterx-zillow">▶️ Consistency Validation</a></td>
+    <td width="20%"><strong><a href="tests/tests/antibots/pixelscan.spec.ts">Pixelscan Fingerprint Assessment</a></strong></td>
+    <td width="30%"><a href="//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-pixelscan-pixelscan">▶️ Comprehensive Study</a></td>
   </tr>
 </table>
 
-### Cross-Platform Validation
-- **Windows Profile on macOS:** Fingerprint consistency maintained
-- **Android Emulation on Desktop:** Complete mobile API simulation
-- **Headless vs GUI Mode:** Identical fingerprint stability
+### Cross-Platform Consistency Validation
+- **Windows Profile on macOS:** Fingerprint consistency maintained so privacy protections remain effective across platforms
+- **Android Emulation on Desktop:** Mobile API consistency enables fingerprint parity testing for cross-device privacy research
+- **Headless vs GUI Mode:** Identical fingerprint behavior ensures privacy validation results remain consistent across execution contexts
 
-📖 **[Complete Validation Results & Research Data →](VALIDATION.md)** - 31+ detection systems, 15+ fingerprinting tools, statistical analysis
+📖 **[Complete Validation Results & Research Data →](VALIDATION.md)** - 31+ fingerprint analysis scenarios, 15+ fingerprinting methodologies, statistical analysis
 
 ---
 
@@ -233,8 +233,8 @@ Our compatibility research examines browser fingerprinting techniques across dif
 | Document | Description | Content Preview |
 |----------|-------------|-----------------|
 | **[Installation Guide](INSTALLATION.md)** | Platform-specific setup | Windows/macOS/Ubuntu guides, Docker deployment, troubleshooting |
-| **[Advanced Features](ADVANCED_FEATURES.md)** | Technical capabilities | 30+ CLI flags, noise injection, GPU micro-benchmarks |
-| **[Validation Results](VALIDATION.md)** | Research data | 31+ detection systems, 50,000+ test sessions, statistical analysis |
+| **[Advanced Features](ADVANCED_FEATURES.md)** | Technical capabilities | 30+ CLI flags, privacy noise injection, GPU micro-benchmarks |
+| **[Validation Results](VALIDATION.md)** | Research data | 31+ fingerprint observatories, 50,000+ test sessions, statistical analysis |
 | **[CLI Flags Reference](CLI_FLAGS.md)** | Command-line options | `--bot-config-*` flags, proxy auth, session management |
 | **[Profile Configuration](profiles/PROFILE_CONFIGS.md)** | Profile customization | Fingerprint control, cross-platform compatibility |
 | **[BotCanvasLab](tools/botcanvas/)** | Canvas forensics tool | Canvas 2D recording with JSONL viewer (deterministic replay under development) |
@@ -249,7 +249,7 @@ Our compatibility research examines browser fingerprinting techniques across dif
 
 **Profile Management:**
 - Demo profiles available in [profiles/](profiles/) directory
-- Premium profiles: Contact [botbrowser@bk.ru](mailto:botbrowser@bk.ru)
+- Premium privacy profiles: Contact [botbrowser@bk.ru](mailto:botbrowser@bk.ru)
 
 ### 🆘 Support Channels
 

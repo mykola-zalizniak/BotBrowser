@@ -3,8 +3,8 @@
  *
  * Playwright test configuration for BotBrowser test suite.
  * - Configures default timeouts and cleanup behaviors
- * - Removes Playwright detection artifacts for realistic testing
- * - For academic research test automation purposes
+ * - Removes Playwright artifacts to maintain consistent fingerprint for validation
+ * - For academic research and privacy testing purposes
  *
  * See https://github.com/botswin/BotBrowser/blob/main/tests/README.md
  */

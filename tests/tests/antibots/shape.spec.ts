@@ -1,16 +1,13 @@
 /**
- * ACADEMIC RESEARCH USE ONLY
+ * PRIVACY RESEARCH USE ONLY
  *
- * This test demonstrates Shape Security compatibility in AUTHORIZED TEST ENVIRONMENTS ONLY.
- * - Uses publicly accessible pages (flight search, login pages)
- * - Submits ONLY synthetic/invalid test data
- * - Does NOT complete purchases or create real accounts
- * - For fingerprint consistency research purposes
- * DEMO USE ONLY: For demonstration and learning purposes. Never use to violate any website Terms of Service.
+ * Run exclusively inside authorized privacy research labs with synthetic data only.
+ * Never target production traffic or violate any Terms of Service.
  *
  * See https://github.com/botswin/BotBrowser/blob/main/tests/README.md
  * and https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
+
 
 import { expect, test } from '../global-setup';
 import { generateRandomEmail, generateRandomPassword, generateRandomUsername, getDateFormatted, sleep } from '../utils';

@@ -1,42 +1,42 @@
-# 🎯 BotBrowser Test Results
+# 🎯 BotBrowser Fingerprint Consistency Research
 
-Compatibility Testing Across Platforms and Websites.
+Fingerprint Consistency Validation Across Platforms and Deployment Scenarios.
 
-Real‑world data showing how BotBrowser performs with a range of sites and security systems.
+Research data demonstrating how BotBrowser maintains standardized fingerprints for privacy protection across real-world deployment contexts.
 
 ---
 
-## 🔬 How We Test
+## 🔬 Research Methodology
 
-We verify fingerprint consistency across platforms with a repeatable process.
+We validate fingerprint consistency across platforms and scenarios using repeatable scientific testing.
 
-### What We Test
-- Same profile on Windows, macOS, and Linux: does it produce identical fingerprints?
-- Mobile profiles on desktop: do they behave like real mobile devices?
-- Long‑term stability: do fingerprints remain consistent over time?
-- Popular websites: how well does BotBrowser work in practice?
+### What We Validate
+- Same profile on Windows, macOS, and Linux: does it maintain identical fingerprints?
+- Mobile profiles on desktop: do they simulate realistic mobile APIs?
+- Long-term stability: do fingerprints remain consistent over repeated sessions?
+- Deployment scenarios: how effectively does BotBrowser preserve privacy in real-world environments?
 
-### Test Setup
+### Validation Infrastructure
 - Multiple operating systems (Windows, macOS, Linux)
 - Desktop and mobile device profiles
-- Automated scripts using Playwright
-- Regular runs to detect regressions
+- Automated validation using Playwright
+- Continuous testing to identify consistency regressions
 
 ---
 
-## 📊 Test Results
+## 📊 Research Results
 
-> ⚠️ **Research Purpose Only:** These results demonstrate fingerprint consistency for academic analysis exclusively. Not intended for bypassing security systems or unauthorized access to production services. All tests were conducted in controlled environments with proper authorization in place.
+> ⚠️ **Authorization & Compliance:** All research validation occurs in authorized test environments with explicit approval. Not intended for unauthorized access or production system testing. All validation was conducted with proper authorization agreements.
 >
-> ⚠️ **Test Data Policy:** All tests use synthetic or invalid data (random usernames, fake SSNs like "6789", non-existent credentials). No real user data or valid credentials are collected or stored.
+> ⚠️ **Synthetic Data:** All tests use synthetic or non-existent data (random usernames, invalid identifiers). No real user data or valid credentials are involved in any validation.
 >
-> ⚠️ **Financial Services Testing:** Scripts that interact with financial brands (e.g., Vanguard, Fidelity) run only against authorized demo flows or staging endpoints. Production testing requires written authorization from the service provider.
+> ⚠️ **Service Provider Testing:** Tests involving financial services or branded platforms execute only against authorized demo environments or documented test endpoints. Production validation requires written authorization from the service provider.
 >
-> ⚠️ Review the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md) before reproducing or adapting these tests.
+> ⚠️ Review the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md) before adapting or reproducing these tests.
 
-### Website Compatibility
+### Cross-Platform Fingerprint Consistency
 
-Testing results with popular websites and their security systems. Shows how well BotBrowser works in real scenarios.
+Validation results across real-world platforms and services. Demonstrates how BotBrowser maintains privacy protection through fingerprint consistency in practical scenarios.
 
 | Service & Scripts | Test Results |
 |-------------------|--------------|

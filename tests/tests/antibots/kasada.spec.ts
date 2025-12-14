@@ -1,15 +1,13 @@
 /**
- * ACADEMIC RESEARCH USE ONLY
+ * PRIVACY RESEARCH USE ONLY
  *
- * This test demonstrates Kasada bot detection compatibility in AUTHORIZED TEST ENVIRONMENTS ONLY.
- * - Uses publicly accessible booking/search endpoints (does NOT complete transactions)
- * - Submits ONLY synthetic/invalid test data
- * - For fingerprint consistency research purposes in authorized environments
- * DEMO USE ONLY: Never use to violate any website Terms of Service.
+ * Run exclusively inside authorized privacy research labs with synthetic data only.
+ * Never target production traffic or violate any Terms of Service.
  *
  * See https://github.com/botswin/BotBrowser/blob/main/tests/README.md
  * and https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
+
 
 import { expect, test } from '../global-setup';
 import { getDateFormatted } from '../utils';

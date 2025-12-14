@@ -1,6 +1,6 @@
 /**
- * ⚠️ ACADEMIC RESEARCH USE ONLY
- * For authorized testing environments that comply with all applicable laws.
+ * ⚠️ PRIVACY RESEARCH USE ONLY
+ * Run exclusively in authorized privacy research labs that comply with all applicable laws.
  * See: https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
 
@@ -32,7 +32,7 @@ const browser = await chromium.launch({
 
 const page = await browser.newPage();
 
-// Remove Playwright's bindings to avoid detection.
+// Remove Playwright's bindings to maintain consistent fingerprint.
 await page.addInitScript(() => {
   delete window.__playwright__binding__;
   delete window.__pwInitScripts;

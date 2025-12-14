@@ -1,14 +1,13 @@
 /**
- * ACADEMIC RESEARCH USE ONLY
+ * PRIVACY RESEARCH USE ONLY
  *
- * This test demonstrates AdScore bot detection compatibility in AUTHORIZED TEST ENVIRONMENTS ONLY.
- * - Uses publicly accessible AdScore signature verification
- * - For fingerprint consistency research purposes
- * - Read-only analysis
+ * Run exclusively inside authorized privacy research labs with synthetic data only.
+ * Never target production traffic or violate any Terms of Service.
  *
  * See https://github.com/botswin/BotBrowser/blob/main/tests/README.md
  * and https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
+
 
 import { expect, test } from '../global-setup';
 

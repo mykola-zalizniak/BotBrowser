@@ -1,6 +1,6 @@
 /**
- * ⚠️ ACADEMIC RESEARCH USE ONLY
- * For authorized testing environments that comply with all applicable laws.
+ * ⚠️ PRIVACY RESEARCH USE ONLY
+ * Run exclusively in authorized privacy research labs that comply with all applicable laws.
  * See: https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
  */
 
@@ -82,7 +82,7 @@ async function testContext(context, label, testUrl) {
 
   const page = await context.newPage();
 
-  // Remove Playwright bindings to avoid detection
+  // Remove Playwright bindings to maintain consistent fingerprint
   await page.addInitScript(() => {
     delete window.__playwright_binding__;
     delete window.__pwInitScripts;

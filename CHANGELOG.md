@@ -561,7 +561,7 @@ Refined per‑OS rendering differences (fonts, CSS, anti‑aliasing, text sizing
 ### Major Update
 - **Upgraded to Chromium 139**
   Synced BotBrowser to **Chromium 139**, bringing the newest web platform features, performance improvements, and security patches.
-  Aligns rendering, networking, and fingerprint surfaces with upstream Chrome 139 to reduce detection risk and maintain site compatibility.
+  Aligns rendering, networking, and fingerprint surfaces with upstream Chrome 139 for improved consistency and site compatibility.
 
 ---
 
@@ -1131,7 +1131,7 @@ Example:
 
 ## [2025-01-22]
 ### Improved
-- **MimeTypes Fingerprinting:** Optimized **mimeTypes** fingerprinting by converting them to **ContentType**, followed by parsing `type` and `codecs` separately. This enhancement strengthens mimeTypes matching and reduces detection risks from antifraud techniques, such as those used by **Incapsula**.
+- **MimeTypes Fingerprinting:** Optimized **mimeTypes** fingerprinting by converting them to **ContentType**, followed by parsing `type` and `codecs` separately. This enhancement improves fingerprint consistency and accuracy across systems.
 - **Font Matching Accuracy:** Improved font matching logic to avoid unnecessary matches, significantly enhancing font accuracy and reducing false positives.
 
 ### Major Update
@@ -1182,7 +1182,7 @@ Example:
 - **Document Client Rects Noise:** Resolved an issue where unnecessary noise was added to **Document client rects**, reducing false positives in certain detection pipelines.
 
 ### Added
-- **TextMetrics Algorithm Enhancement:** Introduced a new **TextMetrics** algorithm that hashes text and the provided **factor** instead of relying on simple cumulative factors. This improvement reduces detection risks from advanced systems.
+- **TextMetrics Algorithm Enhancement:** Introduced a new **TextMetrics** algorithm that hashes text and the provided **factor** instead of relying on simple cumulative factors. This improvement enhances fingerprint consistency and stability.
 
 
 ---

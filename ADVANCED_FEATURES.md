@@ -1,12 +1,12 @@
 # BotBrowser Advanced Features
 
-Robust capabilities for fingerprint‑consistency testing and automation research.
+Comprehensive technical controls for fingerprint consistency and privacy-focused research automation.
 
-Use this document when you need the “deep dive” behind the [README](README.md): CLI semantics, detection-surface coverage, and differentiators that don’t fit on the landing page. Each section links back to the relevant quick-start guide (CLI flags, README, validation repos) so you can jump between overview and detail quickly. For overall usage terms, refer to the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
+Use this document when you need detailed technical reference behind the [README](README.md): implementation strategies, fingerprint consistency controls, and privacy protection mechanisms that don't fit on the main page. Each section links back to the relevant quick-start guide (CLI flags, README, validation data) so you can jump between overview and implementation details quickly. For overall usage terms, refer to the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
 
 ## 📘 Overview
 
-BotBrowser offers multi‑layer emulation and control to keep fingerprints consistent across platforms. These controls support research into web compatibility, automation detection, and cross‑environment consistency.
+BotBrowser provides multi-layer controls to maintain consistent fingerprints across all platforms. These mechanisms support research into fingerprint based tracking prevention, cross-platform privacy protection, and automated privacy consistency validation.
 
 ---
 
@@ -114,7 +114,7 @@ DNS‑leak protection:
 
 UDP over SOCKS5 (ENT Tier3): Automatically attempts UDP associate to tunnel QUIC/STUN where supported; ICE presets can often be skipped when UDP is available.
 
-Important: Prefer BotBrowser’s proxy options over framework‑specific settings so geo‑detection remains accurate.
+Important: Always use BotBrowser's proxy options over framework-specific settings to ensure geo-detection remains accurate and consistent.
 
 ```bash
 # Example: true full-proxy QUIC/STUN (Chromium-level UDP associate, no ProxyChains hacks)
@@ -145,31 +145,31 @@ chromium-browser --no-sandbox --bot-profile="/abs/profile.enc" \
 
 ---
 
-## 🎭 Automation Artifact Research
+## 🔒 Privacy Protection & Fingerprint Randomization
 
-### Multi‑Layer Noise Injection
-Sophisticated noise with consistency algorithms. Configure everything through CLI so you never touch encrypted profiles.
+### Multi Layer Fingerprint Noise
+Deterministic noise generation prevents fingerprint reproducibility. Configure all settings through CLI without modifying encrypted profiles.
 
 - **Canvas**: `--bot-config-noise-canvas=true`
 - **WebGL image**: `--bot-config-noise-webgl-image=true`
-- **WebGPU**: Deterministic noise is injected into WebGPU canvases by default, so GPU-only probes inherit the same reproducible noise field without extra flags
+- **WebGPU**: Deterministic noise injected into WebGPU canvases by default so GPU-only analysis inherits the same reproducible noise characteristics without extra configuration
 - **AudioContext**: `--bot-config-noise-audio-context=true`
 - **ClientRects/TextRects**: `--bot-config-noise-client-rects=true`, `--bot-config-noise-text-rects=true`
-- **Deterministic seeds (ENT Tier2 feature)**: `--bot-noise-seed=1.05` (1.0–1.2 range) let you pick reproducible yet distinct noise fields for Canvas 2D/WebGL/WebGPU imagery, text metrics/HarfBuzz layout, ClientRects, and offline audio hashes so each seed behaves like its own fingerprint ID.
+- **Deterministic noise seeds (ENT Tier2 feature)**: `--bot-noise-seed=1.05` (1.0 to 1.2 range) enables reproducible yet distinct noise fields for Canvas 2D, WebGL, WebGPU imagery, text metrics with HarfBuzz layout, ClientRects, and audio hashes so each seed configuration produces consistent fingerprints for research purposes.
 
-Patterns:
-- Stabilized noise algorithms keep intra-session stability but vary across sessions.
-- GPU-specific tuning preserves authentic WebGL/WebGPU behavior (1.0/2.0 contexts).
-- Audio noise is tuned (Chromium 141+) for inaudible probe hardening while keeping cross-worker consistency.
-- TextMetrics/ClientRects noise maintains font measurement realism with cross-worker consistency.
+Consistency Model:
+- Stable noise algorithms maintain session consistency while varying across different sessions
+- GPU tuning preserves authentic WebGL and WebGPU behavior (1.0 and 2.0 contexts)
+- Audio noise calibration (Chromium 141+) provides inaudible resistance to analysis while maintaining cross-worker fingerprint consistency
+- Text metrics and ClientRects noise sustains realistic font measurements with cross-worker consistency
 
 <a id="active-window-emulation"></a>
 ### Active Window Emulation
-Keep automation sessions foreground-consistent even when the host window is unfocused.
+Maintains consistent window state to prevent focus-based tracking even when the host window is unfocused.
 
-- `--bot-config-always-active` (PRO feature) defaults to `true`, suppressing `blur`/`visibilitychange` events and pinning `document.hidden=false`.
-- Works per window: disable explicitly when sites must observe genuine focus changes.
-- Prevents detection heuristics that watch caret blinking, FocusManager events, or inactive viewport throttling.
+- `--bot-config-always-active` (PRO feature) defaults to `true`, maintaining consistent `blur` and `visibilitychange` event patterns and keeping `document.hidden=false` for reliable API behavior
+- Configurable per-window to allow legitimate focus-change observation when required by applications
+- Protects against window focus based tracking heuristics that monitor caret blinking, FocusManager events, or inactive viewport throttling
 - README quick link: see [Workflows → Active Window](README.md#advanced-capabilities)
 - CLI reference: [`--bot-always-active`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags)
 
@@ -190,33 +190,33 @@ Consistent behavior across modes with comprehensive simulation.
 
 <a id="webrtc-leak-protection"></a>
 ### WebRTC Leak Protection
-Complete WebRTC fingerprint control and IP protection.
+Complete WebRTC fingerprint consistency and network privacy protection.
 
-**SDP Manipulation:**
-- IPv4/IPv6 Session Description Protocol (SDP) spoofing
-- ICE candidate manipulation and filtering
-- STUN/TURN server response modification
+**SDP Control:**
+- IPv4 and IPv6 Session Description Protocol (SDP) standardization across platforms
+- ICE candidate filtering and consistency management
+- STUN and TURN server response standardization
 
-**Real‑Time Communication Control:**
-- MediaStream API consistency
-- RTCPeerConnection behavior modification
-- Network topology hiding
-- ICE server presets and custom lists via `--bot-webrtc-ice` (PRO feature) to override STUN/TURN endpoints observed by page JavaScript
-- Combined with UDP-over-SOCKS5 (ENT Tier3) you get Chromium-level QUIC/STUN tunneling; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) for examples.
+**Real Time Communication Privacy:**
+- MediaStream API consistency across execution contexts
+- RTCPeerConnection behavior standardization
+- Network topology protection through controlled signal patterns
+- ICE server presets and custom lists via `--bot-webrtc-ice` (PRO feature) to standardize STUN and TURN endpoints observed by page JavaScript
+- Combined with UDP-over-SOCKS5 (ENT Tier3) you achieve Chromium-level QUIC and STUN tunneling for complete network consistency; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) for implementation examples.
 
 <a id="chrome-behavior-emulation"></a>
 ### Chrome Behavior Emulation
-Authentic Google Chrome behaviors and API responses.
+Consistent Chrome compatible behaviors and standardized API responses.
 
-**Google‑Specific Headers:**
-- `X-Browser-*` headers matching authentic Chrome requests
-- Chrome-specific HTTP/2 and HTTP/3 behavior
-- Authentic request timing and patterns
+**Protocol Headers:**
+- Standard HTTP headers matching Chrome specifications
+- Consistent HTTP/2 and HTTP/3 behavior across platforms
+- Standardized request timing and protocol patterns
 
-**Chrome‑Specific APIs:**
-- Chrome extension API simulation
-- Google services integration behavior
-- Chrome-specific JavaScript API responses
+**API Standardization:**
+- Chrome compatible API implementations
+- Consistent behavior with standard services integration
+- Standardized JavaScript API responses matching Chrome specifications
 
 **Widevine CDM Integration:**
 > Note: BotBrowser does not distribute proprietary modules (e.g., Widevine). End users must obtain playback components via official channels.
@@ -253,21 +253,21 @@ Advanced font rendering with consistent results across hosts.
 
 > **Implementation Detail:** Low‑level rendering paths in Skia (2D/Canvas) and HarfBuzz (text shaping) are tuned where needed to align metrics and glyph shaping across OS targets. We also apply targeted WebGL/WebGPU parameter controls to keep visual output stable across contexts.
 
-### Cross‑Platform Consistency
-Eliminates host‑specific rendering differences for accurate cross‑platform emulation.
+### Cross Platform Consistency
+Maintains fingerprint and behavior consistency across different host systems.
 
-**OS‑Emulation Capabilities:**
-- Windows profile works perfectly on macOS/Linux hosts
-- macOS profile runs authentically on Windows/Linux hosts
-- Android profile fully emulated on any desktop OS
-- Consistent behavior regardless of host operating system
-- Android DevTools panes stay readable under emulation because the inspector now ignores page zoom/font scaling so toolbars and monospace panes match real devices
+**Platform Profile Portability:**
+- Windows profile produces identical fingerprints on macOS and Linux hosts
+- macOS profile maintains consistency across Windows and Linux hosts
+- Android profile operates identically when emulated on any desktop OS
+- Fingerprint behavior remains consistent regardless of underlying host operating system
+- Android DevTools interface maintains readability during emulation because the inspector normalizes page zoom and font scaling so UI elements match authentic device behavior
 
-**Rendering Consistency:**
-- Eliminates host OS rendering artifacts
-- Platform-specific UI element simulation
-- Consistent touch/mouse event patterns
-- Authentic device behavior emulation
+**Behavioral Consistency:**
+- Eliminates host OS specific behavioral differences
+- Simulates platform specific UI element behavior consistently
+- Maintains identical touch and mouse event patterns
+- Emulates authentic device behavior across platforms
 
 ### Touch & Input Reliability
 - Pointer/touch bridging fixes ensure `Input.dispatchMouseEvent` and synthesized taps land reliably, even in nested iframe trees
@@ -498,7 +498,7 @@ Execute JavaScript with privileged `chrome.debugger` access.
 - **No framework dependencies** - Pure Chrome DevTools Protocol access
 - **Earlier intervention** - Execute before page navigation
 - **Privileged context** - Full `chrome.debugger` API access
-- **Reduced detection surface** - No Playwright/Puppeteer artifacts
+- **Isolated automation** - Framework artifacts do not appear in page context
 
 **Usage Example:**
 ```bash

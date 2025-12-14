@@ -1,17 +1,17 @@
 # 🔬 BotBrowser Script Automation Examples
 
-Framework‑less automation using BotBrowser’s native `--bot-script` feature.
+Privacy-first, framework-less automation using BotBrowser’s native `--bot-script` feature.
 
-These examples assume an authorized research environment. Review the project [Legal Disclaimer](../../DISCLAIMER.md) and [Responsible Use Guidelines](../../RESPONSIBLE_USE.md) before adapting them to your own lab.
+These examples assume an authorized privacy research environment. Review the project [Legal Disclaimer](../../DISCLAIMER.md) and [Responsible Use Guidelines](../../RESPONSIBLE_USE.md) before adapting them to your own lab.
 
 ## What Is `--bot-script`?
 
-`--bot-script` executes JavaScript in a privileged, non‑extension context where the `chrome.debugger` API is available. This provides:
+`--bot-script` executes JavaScript in a privileged, non-extension context where the `chrome.debugger` API is available. This provides:
 
-- **No framework dependencies** - Pure Chrome DevTools Protocol access
-- **Earlier intervention** - Execute before page navigation
-- **Privileged context** - Full `chrome.debugger` API access
-- **Reduced detection surface** - No Playwright/Puppeteer artifacts
+- **No framework dependencies**: pure Chrome DevTools Protocol access for privacy research
+- **Earlier intervention**: execute before page navigation to establish privacy protections
+- **Privileged context**: full `chrome.debugger` API access
+- **Isolated automation**: framework artifacts do not appear in page context, maintaining fingerprint consistency
 
 ## Usage
 

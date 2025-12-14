@@ -23,7 +23,7 @@ This document explains BotBrowser’s CLI configuration system. These flags exte
 ## 🛠️ Core BotBrowser Flags
 
 ### `--bot-profile`
-The foundation of BotBrowser’s compatibility features.
+The foundation of BotBrowser’s privacy features.
 
 Specifies the path to the BotBrowser profile file (.enc).
 
@@ -32,7 +32,7 @@ Specifies the path to the BotBrowser profile file (.enc).
 ```
 
 **Notes:**
-- The profile determines the fingerprint, OS emulation, and compatibility features
+- The profile determines the fingerprint, OS emulation, and privacy controls
 - Use profiles from the [profiles directory](profiles/) or contact support for custom profiles
 - This is the core difference from stock Chromium
 
@@ -83,9 +83,9 @@ This skips per‑page IP lookups and speeds up navigation.
 
 
 ⚠️ Important:
-- Browser‑level proxy: use `--proxy-server` for consistent geo‑detection across contexts
-- Per‑context proxy (ENT Tier1): set different proxies via `createBrowserContext({ proxy })`; BotBrowser auto‑derives geo info in both cases
-- Avoid: framework‑specific options like `page.authenticate()` that bypass BotBrowser’s geo‑detection
+- Browser-level proxy: use `--proxy-server` for consistent geo-detection across contexts
+- Per-context proxy (ENT Tier1): set different proxies via `createBrowserContext({ proxy })`; BotBrowser auto-derives geo info in both cases
+- Avoid: framework-specific options like `page.authenticate()` that disable BotBrowser's geo-detection, which may leak location information
 
 ---
 
@@ -155,7 +155,7 @@ Execute a JavaScript file right after BotBrowser starts in a privileged, non-ext
 - No framework dependencies: pure Chrome DevTools Protocol access
 - Earlier intervention: runs before navigation
 - Privileged context: full `chrome.debugger` API access
-- Reduced detection surface: no Playwright/Puppeteer artifacts
+- Isolated automation: framework artifacts do not appear in page context
 
 Documentation: Chrome `chrome.debugger` API - <https://developer.chrome.com/docs/extensions/reference/api/debugger/>
 

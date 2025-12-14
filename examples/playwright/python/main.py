@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-⚠️ ACADEMIC RESEARCH USE ONLY
-For authorized testing environments that comply with all applicable laws.
+⚠️ PRIVACY RESEARCH USE ONLY
+Run exclusively in authorized privacy research labs that comply with all applicable laws.
 See: https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md
 """
 
@@ -41,7 +41,7 @@ async def main():
         )
         page = await browser.new_page()
 
-        # Remove Playwright's bindings to avoid detection.
+        # Remove Playwright's bindings to maintain consistent fingerprint
         await page.add_init_script("""
             delete window.__playwright__binding__;
             delete window.__pwInitScripts;
