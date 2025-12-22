@@ -8,7 +8,7 @@ Canvas 2D/WebGL fingerprint forensics for BotBrowser. Capture every API call as 
 
 BotCanvas is a comprehensive canvas recording system that captures all Canvas 2D and WebGL API calls with complete parameter serialization. The recorded JSONL format enables:
 
-- **Forensic analysis** – understand exactly how fingerprinting libraries build their hashes with the included HTML viewer
+- **Forensic analysis** – understand how tracking systems build fingerprints so you can defend against collection
 - **Deterministic testing** – validate cross-platform consistency with identical API sequences
 - **Hash reconstruction** – upcoming replay feature in BotBrowser will restore canvas operations from recordings to reproduce identical hashes
 

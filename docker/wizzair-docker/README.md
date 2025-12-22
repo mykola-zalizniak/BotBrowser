@@ -4,13 +4,13 @@ For Academic and Authorized Testing Environments. See the project [Legal Disclai
 
 ## Project Overview
 
-This repository contains a Docker setup for WizzAir website compatibility testing using BotBrowser and Playwright, which runs a Python script (`main.py`) inside a Docker container that:
+This repository contains a Docker setup for validating fingerprint protection on WizzAir using BotBrowser and Playwright, which runs a Python script (`main.py`) inside a Docker container that:
 
 1. Launches BotBrowser in headless mode: **no XDISPLAY or GPU required**: while simulating a full desktop environment.
 2. Performs compatibility validation on WizzAir's interface over a date range.
 3. Analyzes API responses for compatibility assessment.
 4. Saves analysis data to `flight_data/` and screenshots to `screenshots/` for academic review.
-5. The target site is protected by **Kasada**, and this workflow documents how BotBrowser maintains a stable privacy posture across those fingerprinting controls using authorized profiles.
+5. The target site is protected by **Kasada**, and this workflow demonstrates how BotBrowser prevents fingerprint collection in real-world tracking scenarios.
 
 ---
 

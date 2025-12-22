@@ -4,7 +4,7 @@ For Academic and Security Analysis Purposes.
 
 > 🚧 These are selected examples from BotBrowser’s internals for academic study and security analysis. The full core remains proprietary for compatibility testing.
 
-BotBrowser includes proprietary enhancements built on top of Chromium, developed in‑house for academic study and compatibility testing.
+BotBrowser includes proprietary enhancements built on top of Chromium, developed in‑house for fingerprint protection and privacy research.
 
 Only the GUI ([BotBrowserConsole](https://github.com/botswin/BotBrowser/tree/main/console)) is open source.
 The patches here are select examples published to illustrate techniques for academic and security analysis without exposing the full engine.

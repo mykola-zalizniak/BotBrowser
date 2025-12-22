@@ -17,7 +17,7 @@
 - **Chromium Core → 143.0.7499.147**: Updated the engine to 143.0.7499.147 to stay aligned with the latest Chrome Stable. This keeps Web Platform behavior, DevTools schemas, and version keyed heuristics in lockstep with upstream.
 
 ### New
-- **Local DNS solver (ENT Tier1)**: Added a local DNS resolver that can be enabled with `--bot-local-dns`. This improves privacy and resolution speed, avoids common DNS poisoning scenarios, and bypasses DNS limitations imposed by some proxy providers.
+- **Local DNS solver (ENT Tier1)**: Added a local DNS resolver that can be enabled with `--bot-local-dns`. This improves privacy and resolution speed, avoids common DNS poisoning scenarios, and manages DNS resolution for proxy compatibility.
 - **Custom public IP service**: Added `--bot-ip-service` so you can point BotBrowser at your own IP lookup endpoint when you want full control over how the public egress IP is detected. Multiple endpoints can be provided as a comma-separated list, and BotBrowser will race them and use the fastest successful response.
 
 ### Improvements
@@ -41,7 +41,7 @@
 
 ### Fixes
 - **Pixelscan WebGL noise**: Refined WebGL canvas noise so <http://pixelscan.net> no longer flags the fraud heuristics triggered by earlier, coarse noise injection; multi-pass renders now inherit the same noise field as the base frame.
-- **Client Hints DPR parity**: `sec-ch-dpr` now matches `window.devicePixelRatio`, eliminating mismatches between Client Hints metadata and JS-observable values, which removes a quick heuristic some anti-bot flows used to detect spoofed DPIs.
+- **Client Hints DPR parity**: `sec-ch-dpr` now matches `window.devicePixelRatio`, eliminating mismatches between Client Hints metadata and JS-observable values, ensuring consistency across detection systems.
 
 
 ## [2025-12-03]
@@ -96,7 +96,7 @@
 ### New
 - **Brand full‑version override**: `--bot-config-brand-full-version` sets the brand’s full version independently of the UA full version. Helpful where a vendor’s cadence diverges from Chromium and sites cross‑check UA‑CH with brand metadata.
 
-Example (Edge spoofing):
+Example (Edge browser emulation):
 ```bash
 --bot-config-browser-brand=edge \  # PRO feature
 --bot-config-ua-full-version=142.0.7444.135 \  # PRO feature
@@ -119,7 +119,7 @@ Example (Edge spoofing):
 
 ## [2025-11-10]
 ### Major
-- **Chromium 142.0.7444.135 parity**: Synced core to the latest Chrome 142 stable build for up‑to‑date security patches, modern Web APIs, and version parity that reduces “version skew” signals used by anti‑bot systems.
+- **Chromium 142.0.7444.135 parity**: Synced core to the latest Chrome 142 stable build for up‑to‑date security patches, modern Web APIs, and version parity that keeps Web Platform behavior consistent with upstream.
 
 ### New
 - **Locked user data directory protection**: On startup, if the provided `--user-data-dir` is already held by a running Chromium/BotBrowser process, BotBrowser now **shows a clear message and exits** instead of silently attaching to the old process. This prevents cross‑session contamination (cookies, storage, profile state) and hard‑to‑trace side‑effects.
@@ -130,7 +130,7 @@ Example (Edge spoofing):
 - **Touch events in OOPIF**: Improved routing of emulated touch gestures for **Out‑Of‑Process IFrames (OOPIF)**, ensuring CDP commands like `Input.synthesizeTapGesture` work reliably inside OOPIF trees. Mobile flows embedded in cross‑origin iframes now respond as expected.
 
 ### Fixes
-- **Ubuntu Bluetooth spoof leakage**: Fixed a Linux/Ubuntu‑specific issue where forged Bluetooth properties could leak inconsistent state. Spoofed Bluetooth exposure is now unified so websites can’t infer environment details from mismatched availability/signaling.
+- **Ubuntu Bluetooth emulation leakage**: Fixed a Linux/Ubuntu‑specific issue where emulated Bluetooth properties could leak inconsistent state. Bluetooth emulation exposure is now unified so websites can't infer environment details from mismatched availability/signaling.
 - **Media types (expand) default**: Resolved an issue where `--bot-config-media-types=expand` (and the default behavior) could be ignored in some scenarios. With this fix, local decoders are correctly surfaced so users can **select resolutions** on major video sites.
 - **WebRTC SDP negotiation**: Corrected edge cases where SDP **audio codec selection or direction attributes** failed to negotiate. More robust media negotiation prevents call/setup loops and reduces fingerprinting surface from abnormal SDP.
 
@@ -259,7 +259,7 @@ Example (Edge spoofing):
   - Hardened preload path and timing so this stock component extension reliably appears; improves **Chrome‑authentic** signals that some scanners expect.
 
 - **WebGL/WebGL2 parameter reads**
-  - Reworked parameter access to avoid **application‑settable states** and cross‑driver quirks; prevents false values and closes detection patterns reported by https://fv.pro/
+  - Reworked parameter access to avoid **application‑settable states** and cross‑driver quirks; prevents false values and improves compatibility across platforms reported by https://fv.pro/
 
 - **Media types default → `expand`**
   - `--bot-config-media-types` now defaults to **`expand`** (previously `profile`) so BotBrowser leverages **local decoders** by default → more accurate `canPlayType`/MSE decisions.
@@ -399,7 +399,7 @@ Example (Edge spoofing):
 ## [2025-09-06]
 ### Major
 - **Chromium Core Upgrade → 140**
-  Upgraded engine to Chromium **140** to maintain Chrome‑level parity and stealth consistency across APIs and anti‑bot surfaces.
+  Upgraded engine to Chromium **140** to maintain Chrome‑level parity and fingerprint consistency across APIs and fingerprinting surfaces.
 
 ### Improved
 - **Slimmer Profiles (≈1.3 MB → ≈100 KB)**

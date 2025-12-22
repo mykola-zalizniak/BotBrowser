@@ -2,7 +2,7 @@
 
 For Academic and Authorized Testing Environments.
 
-This document explains BotBrowser’s CLI configuration system. These flags extend Chromium and provide comprehensive, runtime control over fingerprints without modifying profile files. For terms of use, see the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
+This document explains BotBrowser's CLI configuration system. These flags extend Chromium and provide runtime control over fingerprints to prevent tracking system collection without modifying profile files. For terms of use, see the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
 
 > Smart auto‑configuration: BotBrowser derives timezone, locale, and languages from your IP/proxy. Override only when you need a specific setup.
 

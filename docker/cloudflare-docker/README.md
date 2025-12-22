@@ -4,7 +4,7 @@ For Academic and Authorized Testing Environments. See the project [Legal Disclai
 
 ## Project Overview
 
-This repository contains the Docker setup for Cloudflare compatibility testing using BotBrowser and Playwright, which runs a Python script (`main.py`) inside a Docker container that:
+This repository contains the Docker setup for validating fingerprint protection with Cloudflare using BotBrowser and Playwright, which runs a Python script (`main.py`) inside a Docker container that:
 
 1. Launches BotBrowser in headless mode: **no XDISPLAY or GPU required**: while simulating a full desktop environment.
 2. Performs compatibility validation on Cloudflare's demo interface.

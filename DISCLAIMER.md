@@ -54,7 +54,7 @@ The following uses are strictly prohibited:
 - Circumventing security controls on production systems
 - Data harvesting or privacy violations
 - Automated abuse of web services
-- Bypassing automated detection measures for malicious purposes
+- Circumventing fraud prevention systems or security controls
 - Any use that violates local, state, federal, or international laws
 
 ## PROHIBITED USES - SPECIFIC EXAMPLES
@@ -70,9 +70,9 @@ The following uses are strictly prohibited:
 - **PROHIBITED:** Automated account creation against ToS
 
 **Ticketing & Event Systems:**
-- **PROHIBITED:** Automated ticket purchasing, queue bypassing, or inventory hoarding
+- **PROHIBITED:** Automated ticket purchasing or queue bypassing that reduce fair access
 - **PROHIBITED:** Testing production ticketing flows without written authorization from the event operator
-- **PROHIBITED:** Using BotBrowser to conduct or facilitate ticket scalping activities
+- **PROHIBITED:** Using BotBrowser for ticket scalping that harms consumers
 
 **Data Harvesting:**
 - **PROHIBITED:** Scraping personal information

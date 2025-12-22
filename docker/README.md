@@ -2,7 +2,7 @@
 
 For Academic and Authorized Testing Environments. Refer to the project [Legal Disclaimer](../DISCLAIMER.md) and [Responsible Use Guidelines](../RESPONSIBLE_USE.md) when deploying containers.
 
-This guide explains how to deploy BotBrowser using Docker and Docker Compose in authorized research setups.
+This guide explains how to deploy BotBrowser using Docker and Docker Compose for authorized fingerprint protection validation.
 
 ---
 

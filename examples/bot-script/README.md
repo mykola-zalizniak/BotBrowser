@@ -8,7 +8,7 @@ These examples assume an authorized privacy research environment. Review the pro
 
 `--bot-script` executes JavaScript in a privileged, non-extension context where the `chrome.debugger` API is available. This provides:
 
-- **No framework dependencies**: pure Chrome DevTools Protocol access for privacy research
+- **No framework dependencies**: pure Chrome DevTools Protocol access for fingerprint protection research
 - **Earlier intervention**: execute before page navigation to establish privacy protections
 - **Privileged context**: full `chrome.debugger` API access
 - **Isolated automation**: framework artifacts do not appear in page context, maintaining fingerprint consistency

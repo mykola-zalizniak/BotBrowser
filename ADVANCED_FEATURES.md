@@ -1,8 +1,8 @@
 # BotBrowser Advanced Features
 
-Comprehensive technical controls for fingerprint consistency and privacy-focused research automation.
+Comprehensive technical controls for fingerprint consistency that prevent tracking systems from collecting user identification data.
 
-Use this document when you need detailed technical reference behind the [README](README.md): implementation strategies, fingerprint consistency controls, and privacy protection mechanisms that don't fit on the main page. Each section links back to the relevant quick-start guide (CLI flags, README, validation data) so you can jump between overview and implementation details quickly. For overall usage terms, refer to the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
+Use this document for detailed technical reference behind the [README](README.md): implementation strategies for preventing fingerprint collection, consistency controls, and privacy protection mechanisms not on the main page. Each section links back to the relevant quick-start guide (CLI flags, README, validation data) so you can jump between overview and implementation details quickly. For overall usage terms, refer to the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
 
 ## 📘 Overview
 
@@ -154,7 +154,7 @@ chromium-browser --no-sandbox --bot-profile="/abs/profile.enc" \
 ## 🔒 Privacy Protection & Fingerprint Randomization
 
 ### Multi Layer Fingerprint Noise
-Deterministic noise generation prevents fingerprint reproducibility. Configure all settings through CLI without modifying encrypted profiles.
+Deterministic noise generation prevents fingerprint collection and reproducibility. Configure all settings through CLI without modifying encrypted profiles.
 
 - **Canvas**: `--bot-config-noise-canvas=true`
 - **WebGL image**: `--bot-config-noise-webgl-image=true`
@@ -189,7 +189,7 @@ Consistent behavior across modes with comprehensive simulation.
 - Hardware-accelerated video decoding simulation
 
 **Incognito‑Mode Enhancements:**
-- Eliminates incognito-specific detection vectors
+- Maintains fingerprint consistency in incognito mode
 - Consistent fingerprint between normal and incognito modes
 - Maintains privacy features while ensuring consistency
 - For CLI launch guidance, see README “Quick Start” and [`INSTALLATION.md`](INSTALLATION.md#headless)
@@ -523,7 +523,7 @@ chrome.exe --no-sandbox --bot-profile="C:\\absolute\\path\\to\\profile.enc" --bo
 Enhanced compatibility with popular automation frameworks.
 
 **CDP‑Leak Protection:**
-- Blocks automation detection via Chrome DevTools Protocol artifacts
+- Prevents CDP artifacts from appearing in page context
 - Maintains authentic browser behavior under automation
 - Eliminates framework-specific fingerprint signatures
 
@@ -542,7 +542,7 @@ BotBrowser’s capabilities support multiple research applications in authorized
 **Browser Compatibility Studies:**
 - Cross-platform rendering consistency analysis
 - Fingerprint stability across different environments
-- Automation detection mechanism research
+- Fingerprint consistency research
 
 **Security Research:**
 - Web application security testing

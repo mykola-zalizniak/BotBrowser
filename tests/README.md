@@ -1,7 +1,7 @@
 
 # 🔬 BotBrowser Fingerprint Consistency Research Suite
 
-Automated validation framework for fingerprint consistency and cross-platform privacy analysis.
+Automated validation framework for preventing fingerprint collection and cross-platform tracking prevention.
 
 Demonstrates controlled fingerprint consistency validation using [Playwright](https://playwright.dev/docs/writing-tests) for academic and privacy research purposes. Operate these scripts in accordance with the project [Legal Disclaimer](../DISCLAIMER.md) and [Responsible Use Guidelines](../RESPONSIBLE_USE.md). If you observe any misuse, contact [botbrowser@bk.ru](mailto:botbrowser@bk.ru) so we can investigate and support affected services.
 
@@ -14,7 +14,7 @@ All tests utilize **controlled network environments** with appropriate proxy con
 ## Usage Context
 
 These materials target university labs, privacy research groups, and other approved testing programs. Typical scenarios include:
-- Fingerprint consistency studies examining multiple detection systems and their fingerprinting behavior
+- Fingerprint consistency studies to prevent tracking systems from collecting identification data
 - Academic coursework or workshops supervised by faculty covering privacy and browser APIs
 - Privacy benchmarking in dedicated lab environments
 - Authorized security research with written approval

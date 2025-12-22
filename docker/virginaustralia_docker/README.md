@@ -10,7 +10,7 @@ This setup runs a Node.js `puppeteer-core` script inside Docker that:
 2. Iterates JFK → BOS dates across **Jan–Jun 2026**.
 3. Waits on `https://book.virginiaustralia.com/api/graphql` (operation `bookingAirSearch`) and writes JSON to `flight_data/` as `mm-dd-yyyy.json`.
 4. Picks a random profile from `profiles/` per launch; `PROXY_SERVER` supports `{SID}` placeholder per launch.
-5. The target site is protected by **Imperva**, and the workflow verifies that Windows privacy profiles continue to collect authorized telemetry consistently.
+5. The target site is protected by **Imperva**, and the workflow demonstrates that BotBrowser prevents fingerprint collection in complex tracking scenarios.
 
 ---
 

@@ -6,7 +6,7 @@ In BotBrowser, everything starts with a profile. Research consistency and compat
 
 ## What Are Profiles?
 
-Profiles are encrypted files that define the complete environment a browser instance should emulate. They include:
+Profiles are encrypted files that define the environment a browser emulates, maintaining fingerprints that prevent cross-device user identification. They include:
 
 - **Browser fingerprint** information (user agent, WebGL, screen size)
 - **System-level settings** (proxy, timezone, language, window size)
@@ -15,9 +15,9 @@ Profiles are encrypted files that define the complete environment a browser inst
 
 ### Cross‑Platform Compatibility
 
-**BotBrowser capability:** Profile compatibility across host systems (Windows, macOS, Android, Ubuntu) for comparative analysis.
+**BotBrowser capability:** Profile compatibility across host systems (Windows, macOS, Android, Ubuntu) prevents fingerprint collection identifying device switches.
 
-By using profiles, BotBrowser launches controlled sessions that simulate consistent device behavior across different operating systems for academic research and compatibility testing.
+By using profiles, BotBrowser launches controlled sessions that simulate consistent device behavior across operating systems, preventing cross-platform user identification.
 
 **💡 Profile = controlled research‑environment configuration**
 

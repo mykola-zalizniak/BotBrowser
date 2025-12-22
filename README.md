@@ -3,7 +3,7 @@
 <h4 align="center">Advanced Privacy Browser Core with Unified Fingerprint Defense 🚀</h4>
 
 <p align="center">
-  Identical privacy posture on any OS • Cross-platform compatibility • Fingerprint consistency validated across 31+ detection scenarios
+  Identical privacy posture on any OS • Cross-platform compatibility • Fingerprint consistency validated across 31+ fingerprinting scenarios
 </p>
 
 <p align="center">
@@ -31,7 +31,7 @@
 ---
 ## 📖 What Is BotBrowser?
 
-BotBrowser is a privacy first browser core that keeps fingerprint signals uniform across every platform so hostile trackers cannot build per-machine dossiers. Run the same profile on Windows, macOS, or Linux and the fingerprint posture stays identical each time.
+BotBrowser is a privacy first browser core that keeps fingerprint signals uniform across every platform, preventing tracking systems from collecting and correlating fingerprints to identify users across devices. Run the same profile on Windows, macOS, or Linux and the fingerprint posture stays identical each time.
 
 All engineering focuses on automation-assisted privacy research, cross-platform tracking-resistance validation, and maintaining consistent environments for authorized defensive benchmarking. Review the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md) before using the software.
 
@@ -39,7 +39,7 @@ All engineering focuses on automation-assisted privacy research, cross-platform 
 
 ## 🏆 Why BotBrowser
 
-> **What makes BotBrowser different:** Cross-platform privacy browser core with unified fingerprint technology that stops fingerprint drift everywhere.
+> **What makes BotBrowser different:** Cross-platform privacy browser core with unified fingerprint technology that prevents fingerprint collection and device linkage.
 
 <table cellspacing="0" cellpadding="8">
   <tr>
@@ -192,7 +192,7 @@ Prefer a GUI launcher? See [console/README.md](console) for BotBrowserConsole us
 
 ### Research Methodology
 
-Our fingerprint consistency research examines how standardized browser fingerprints protect users from cross-platform tracking and identification. By maintaining identical fingerprints across operating systems, we demonstrate how privacy protection through consistency prevents the tracking methods that malicious observers rely on.
+Our fingerprint consistency research examines how standardized browser fingerprints prevent tracking systems from collecting fingerprint data to identify users across platforms. By maintaining identical fingerprints across operating systems, we demonstrate how privacy protection through consistency prevents the tracking methods that malicious observers rely on.
 
 > ⚠️ Research validation uses authorized test environments. See [DISCLAIMER](DISCLAIMER.md).
 

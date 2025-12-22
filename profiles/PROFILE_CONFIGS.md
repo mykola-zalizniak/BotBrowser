@@ -2,7 +2,7 @@
 
 For Academic and Authorized Testing Environments.
 
-This guide explains BotBrowser’s fingerprint‑customization system for controlled testing. Configure synthetic profiles and use dynamic CLI overrides for authorized compatibility testing.
+This guide explains BotBrowser's fingerprint‑customization system that prevents tracking system fingerprint collection. Configure synthetic profiles and use dynamic CLI overrides for authorized privacy testing.
 
 ⚠️ **Usage Policy:** This configuration system is designed for academic study, security analysis, and authorized testing only. Use in compliance with institutional policies and applicable laws.
 
@@ -10,7 +10,7 @@ This guide explains BotBrowser’s fingerprint‑customization system for contro
 
 > **Smart Auto‑Configuration:** BotBrowser automatically configures timezone, locale, and languages based on proxy IP. Override only when your scenario requires it.
 
-> **Data Privacy:** Profiles use synthetic/aggregated configurations for academic compliance. BotBrowser does not collect or distribute personal or user‑identifying data. Use CLI overrides to keep profiles intact while customizing behavior.
+> **Data Privacy:** Profiles use synthetic/aggregated configurations to prevent tracking. BotBrowser does not enable fingerprint collection or tracking system data linkage. Use CLI overrides to keep profiles intact while customizing behavior.
 
 ## Table of Contents
 
@@ -88,7 +88,7 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 | `uaFullVersion` (PRO feature)   | Overrides the full browser version returned by `navigator.userAgentData.fullVersion`; must match the Chromium major version (e.g. for major version 138, the full version must start with “138.”). | `""`        |
 | `colorScheme`                   | Preferred color scheme: light or dark.                                            | `light`   |
 | `disableDeviceScaleFactorOnGUI` | If `true`, ignore device scale factor for GUI elements (disable DPI-based UI scaling).    | `false`     |
-| `disableConsoleMessage` (PRO)        | Suppresses console message forwarding into page contexts and automation logs to avoid Console.enable/Runtime.enable stack getter detections. | `true`     |
+| `disableConsoleMessage` (PRO)        | Suppresses console message forwarding into page contexts and automation logs to prevent CDP log noise from leaking. | `true`     |
 | `timezone`                      | `auto` = IP-based; `real` = system timezone; any other string = custom timezone name. | `auto`    |
 | `location`                      | `auto` = IP-based; `real` = system (GPS); object = custom coordinates (`lat`, `lon`). | `auto`    |
 | `browserBrand` (PRO feature)    | override for `navigator.userAgentData.brands` and related UA fields. Supports chromium, chrome, edge, brave, opera. | `chrome`    |
