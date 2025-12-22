@@ -1,4 +1,4 @@
-# ✈️ Virginia Australia Capture with Docker
+# ✈️ Virgin Australia Capture with Docker
 
 For Academic and Authorized Testing Environments. See the project [Legal Disclaimer](../../DISCLAIMER.md) and [Responsible Use Guidelines](../../RESPONSIBLE_USE.md) for usage boundaries.
 
@@ -87,7 +87,7 @@ Environment variables (see `docker-compose.yml`):
 - `BOT_PROFILES_DIR` (optional): directory holding profile files; one is chosen at random per browser launch.
 - `PROXY_SERVER` (optional): template supporting `{SID}` for per-launch proxy values.
 
-Adjust URLs or timeouts inside `main.js` if the Virginia Australia flow changes.
+Adjust URLs or timeouts inside `main.js` if the Virgin Australia flow changes.
 
 ---
 

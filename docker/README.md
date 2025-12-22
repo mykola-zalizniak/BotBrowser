@@ -145,7 +145,7 @@ For other issues, see the main README or open a GitHub issue.
 | ----------------- | ---------------------------------- |
 | **[Cloudflare](cloudflare-docker)** | Reverse proxy test (Cloudflare) with Docker |
 | **[Wizzair](wizzair-docker)** | Airline website compatibility demo with Docker |
-| **[Virginia Australia](virginaustralia_docker)** | JFK→BOS GraphQL capture demo (profiles, per-launch proxy) |
+| **[Virgin Australia](virginaustralia_docker)** | JFK→BOS GraphQL capture demo (profiles, per-launch proxy) |
 
 ---
 

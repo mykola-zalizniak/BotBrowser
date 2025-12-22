@@ -1,7 +1,7 @@
 {
   "name": "virginaustralia-docker",
   "version": "1.0.0",
-  "description": "BotBrowser + puppeteer-core capture for Virginia Australia booking page",
+  "description": "BotBrowser + puppeteer-core capture for Virgin Australia booking page",
   "type": "module",
   "main": "main.js",
   "scripts": {
