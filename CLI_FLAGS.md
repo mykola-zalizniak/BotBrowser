@@ -4,9 +4,9 @@ For Academic and Authorized Testing Environments.
 
 This document explains BotBrowser's CLI configuration system. These flags extend Chromium and provide runtime control over fingerprints to prevent tracking system collection without modifying profile files. For terms of use, see the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
 
-> Smart auto‑configuration: BotBrowser derives timezone, locale, and languages from your IP/proxy. Override only when you need a specific setup.
+> Smart auto-configuration: BotBrowser derives timezone, locale, and languages from your IP/proxy. Override only when you need a specific setup.
 
-> Dynamic configuration: CLI overrides (`--bot-config-*` + behavior toggles) enable runtime fingerprint control, which is ideal for CI/CD and multi‑instance scenarios.
+> Dynamic configuration: CLI overrides (`--bot-config-*` + behavior toggles) enable runtime fingerprint control, which is ideal for CI/CD and multi-instance scenarios.
 
 > License tiers: Some flags show tier hints in parentheses (PRO, ENT Tier1/Tier2/Tier3); those options are subscription-gated.
 
@@ -91,7 +91,7 @@ ENT Tier3 adds built-in SOCKS5 UDP ASSOCIATE support with no extra flag required
 ### `--proxy-ip`
 Specify the proxy’s public IP to optimize performance.
 
-This skips per‑page IP lookups and speeds up navigation.
+This skips per-page IP lookups and speeds up navigation.
 
 ```bash
 --proxy-ip="203.0.113.1"
@@ -100,11 +100,11 @@ This skips per‑page IP lookups and speeds up navigation.
 **Benefits:**
 - Eliminates IP detection overhead on each page load
 - Faster browsing when using proxies
-- Combine with `--bot-config-timezone` for consistent region emulation
+- Combine with `--bot-config-timezone` for protected region emulation
 
 
 ⚠️ Important:
-- Browser-level proxy: use `--proxy-server` for consistent geo-detection across contexts
+- Browser-level proxy: use `--proxy-server` for protected geo-detection across contexts
 - Per-context proxy (ENT Tier1): set different proxies via `createBrowserContext({ proxy })`; BotBrowser auto-derives geo info in both cases
 - Avoid: framework-specific options like `page.authenticate()` that disable BotBrowser's geo-detection, which may leak location information
 
@@ -117,7 +117,7 @@ Enable the local DNS solver. This keeps DNS resolution local instead of relying 
 
 Practical notes:
 - Helps when a proxy provider blocks or rewrites DNS lookups
-- Useful when you want to avoid provider-side DNS policies and keep resolution behavior consistent across runs
+- Useful when you want to avoid provider-side DNS policies and keep resolution behavior protected across runs
 
 ### `--bot-ip-service`
 Customize the public IP service used to discover your egress IP (and derive geo settings when auto-detection is enabled).
@@ -170,7 +170,7 @@ Accepts cookie data as either inline JSON or from a file.
 The file should contain a JSON array of cookie objects with name, value, and domain fields.
 
 ### `--bot-bookmarks`
-Pre‑populate bookmarks for session consistency.
+Pre-populate bookmarks for session preservation.
 
 Accepts a JSON string containing bookmark data for startup.
 
@@ -196,7 +196,7 @@ Records all Canvas 2D API calls to a JSONL file for forensic analysis and future
 Learn more: [CanvasLab Documentation](tools/canvaslab/)
 
 ### `--bot-script`
-Framework‑less approach with a privileged JavaScript context.
+Framework-less approach with a privileged JavaScript context.
 
 Execute a JavaScript file right after BotBrowser starts in a privileged, non-extension context where `chrome.debugger` is available.
 
@@ -219,7 +219,7 @@ Examples: [Bot Script](examples/bot-script)
 <a id="profile-configuration-override-flags"></a>
 ## Profile Configuration Override Flags
 
-High‑priority configuration overrides: these CLI flags supersede profile settings.
+High-priority configuration overrides: these CLI flags supersede profile settings.
 
 BotBrowser supports command-line flags that override profile configuration values with the highest priority. These flags start with `--bot-config-` and directly map to profile `configs` properties.
 
@@ -259,7 +259,7 @@ Flags that directly map to profile `configs` and override them at runtime.
 - `--bot-config-media-types=expand`: Media types: expand (default), profile, real
 - `--bot-config-webrtc=profile`: WebRTC: profile (use profile), real (native), disabled (off)
 
-> **Note: UA/Engine Congruence:** Keep `--bot-config-ua-full-version` aligned with your Chromium major version, and use `--bot-config-brand-full-version` when a vendor’s cadence (Edge, Opera, Brave) diverges so UA-CH metadata stays internally consistent.
+> **Note: UA/Engine Congruence:** Keep `--bot-config-ua-full-version` aligned with your Chromium major version, and use `--bot-config-brand-full-version` when a vendor's cadence (Edge, Opera, Brave) diverges so UA-CH metadata stays internally protected.
 
 ### Behavior & Stealth Toggles
 
@@ -305,7 +305,7 @@ Behavior & privacy toggles apply at launch and override profile data entirely.
 <a id="mirror-distributed-privacy-consistency"></a>
 ## Mirror: Distributed Privacy Consistency (ENT Tier3)
 
-Verify that your privacy protection works consistently across platforms and networks. Run a controller instance and multiple clients to ensure all instances maintain identical privacy defenses, protecting you from tracking across Windows, macOS, Linux, and remote deployment environments.
+Verify that your privacy protection works effectively across platforms and networks. Run a controller instance and multiple clients to ensure all instances maintain identical privacy defenses, protecting you from tracking across Windows, macOS, Linux, and remote deployment environments.
 
 **Key flags:**
 - `--bot-mirror-controller-endpoint=host:port` - Launch as controller (captures your actions)

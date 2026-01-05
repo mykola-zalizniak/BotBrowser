@@ -9,16 +9,16 @@ BotBrowserConsole is the desktop companion to **[BotBrowser](https://github.com/
 ### Profile Management
 - Create browser profiles for different accounts and use cases
 - Choose from a library of fingerprint configuration files
-- Clone existing profiles for faster setup and consistency
+- Clone existing profiles for faster setup and protection
 - Import/export profiles for seamless team collaboration
 
 ### Network & Privacy
 - Per-profile proxies for secure, privacy-respecting testing
-- Optional fingerprint noise to evaluate cross-platform consistency
+- Optional fingerprint noise to evaluate cross-platform protection
 
 ### Advanced Operations
 - Launch multiple isolated browsers with complete data separation
-- Optionally pre‑warm sessions for controlled experiments
+- Optionally pre-warm sessions for controlled experiments
 - Organize profiles and settings into groups
 
 ### Developer Features

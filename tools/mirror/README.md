@@ -1,16 +1,16 @@
 # Mirror: Distributed Privacy Consistency (ENT Tier3)
 
-Ensure your privacy defenses work consistently across platforms and networks. A controller instance captures your clicks, keyboard input, and scroll events and broadcasts them to clients on other machines or platforms so you can verify that all instances maintain identical privacy protection against tracking.
+Ensure your privacy defenses work effectively across platforms and networks. A controller instance captures your clicks, keyboard input, and scroll events and broadcasts them to clients on other machines or platforms so you can verify that all instances maintain identical privacy protection against tracking.
 
 ## What Is Mirror?
 
-Mirror enables distributed privacy consistency verification: assure that browser profiles maintain identical privacy protection across Windows, macOS, Linux, and remote deployment environments. By running a controller (your primary instance) and clients (on different machines/platforms), you can watch all instances respond identically to your actions, verifying that privacy protections remain consistent across geographies and configurations.
+Mirror enables distributed privacy consistency verification: assure that browser profiles maintain identical privacy protection across Windows, macOS, Linux, and remote deployment environments. By running a controller (your primary instance) and clients (on different machines/platforms), you can watch all instances respond identically to your actions, verifying that privacy protections remain protected across geographies and configurations.
 
 Use Mirror for:
 - **Cross-platform privacy assurance**: Verify Windows and macOS profiles maintain identical privacy protection on the same website
-- **Multi-geography privacy verification**: Assure privacy protection consistency across geographically distributed deployment nodes
-- **Profile consistency assurance**: Ensure multiple privacy profiles maintain consistent behavior across versions
-- **Distributed privacy validation**: Verify privacy protection consistency across multiple machines and OS environments simultaneously
+- **Multi-geography privacy verification**: Assure privacy protection across geographically distributed deployment nodes
+- **Profile protection assurance**: Ensure multiple privacy profiles maintain protected behavior across versions
+- **Distributed privacy validation**: Verify privacy protection across multiple machines and OS environments simultaneously
 - **Privacy research**: Record synchronized behavior across platforms to study protection mechanisms and verify privacy defenses
 
 ## Architecture
@@ -55,7 +55,7 @@ Now navigate the controller instance. Clicks, typing, and scrolling automaticall
 
 ### Distributed Privacy Verification: Cross-Network & Cross-Platform
 
-For verifying privacy consistency across different machines or geographic locations:
+For verifying privacy protection across different machines or geographic locations:
 
 **Machine 1 (e.g., macOS, primary controller):**
 ```bash
@@ -79,7 +79,7 @@ chromium --bot-profile="/path/to/windows/profile.enc" \
   --user-data-dir="$(mktemp -d)"
 ```
 
-Actions on the macOS controller instantly synchronize across all connected clients, allowing you to assure privacy protection consistency across multiple platforms and geographies in real time.
+Actions on the macOS controller instantly synchronize across all connected clients, allowing you to assure privacy protection across multiple platforms and geographies in real time.
 
 ### Programmatic Activation (CDP)
 

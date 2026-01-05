@@ -20,7 +20,7 @@ We validate fingerprint protection across platforms and scenarios using repeatab
 - Multiple operating systems (Windows, macOS, Linux)
 - Desktop and mobile device profiles
 - Automated validation using Playwright
-- Continuous testing to identify consistency regressions
+- Continuous testing to identify protection regressions
 
 ---
 
@@ -92,14 +92,14 @@ Our testing extends to major e-commerce platforms and popular websites to demons
 | **[Instagram](tests/tests/websites/instagram.spec.ts)** | [▶️ Signup Process](//botswin.github.io/BotBrowser/video_player/index.html?video=websites-instagram-signup) |
 | **[TikTok](tests/tests/websites/tiktok.spec.ts)** | [▶️ Signup Process](//botswin.github.io/BotBrowser/video_player/index.html?video=websites-tiktok-signup) |
 
-### Internal Consistency and Detection Tests
+### Internal Protection Verification Tests
 
-These tests validate the internal consistency of browser behaviors and ensure framework artifacts are properly isolated.
+These tests validate the internal protection of browser behaviors and ensure framework artifacts are properly isolated.
 
 | Test Category & Scripts | Description |
 |-------------------------|-------------|
-| **[Suspicious Behavior Tests](tests/tests/suspicious.spec.ts)** | Validates DevTools detection prevention, PDF rendering consistency, and framework property isolation |
-| **[Cross-Context Consistency Tests](tests/tests/lied.spec.ts)** | Ensures consistent fingerprinting across iframe contexts, canvas rendering consistency between main thread and workers, hardware concurrency matching, and text metrics accuracy |
+| **[Suspicious Behavior Tests](tests/tests/suspicious.spec.ts)** | Validates DevTools detection prevention, PDF rendering accuracy, and framework property isolation |
+| **[Cross-Context Protection Tests](tests/tests/lied.spec.ts)** | Ensures fingerprint protection across iframe contexts, canvas rendering consistency between main thread and workers, hardware concurrency matching, and text metrics accuracy |
 
 ---
 
@@ -116,7 +116,7 @@ BotBrowser's cross-platform capabilities enable perfect Android device emulation
 
 **Key Findings:**
 - **Touch Simulation:** Authentic mobile touch event patterns
-- **Device Metrics Consistency:** Accurate screen dimensions, pixel density, orientation
+- **Device Metrics Accuracy:** Accurate screen dimensions, pixel density, orientation
 - **Mobile API Support:** Complete mobile-specific JavaScript API responses
 - **Font Rendering Accuracy:** Android font stack perfectly reproduced on desktop
 
@@ -128,7 +128,7 @@ BotBrowser's cross-platform capabilities enable perfect Android device emulation
 - Linux profile behavior: Authentic rendering consistency
 
 **macOS Host Testing:**
-- Windows profile emulation: Fingerprint consistency
+- Windows profile emulation: Fingerprint protection
 - Android touch simulation: Mobile gesture recognition
 - Cross-platform font consistency: Identical text rendering
 
@@ -145,16 +145,16 @@ BotBrowser's cross-platform capabilities enable perfect Android device emulation
 
 **Session Consistency:**
 - Identical fingerprints across multiple browser restarts
-- Consistent behavior in headless vs GUI modes
+- Protected behavior in headless vs GUI modes
 - Profile integrity maintained across host reboots
 
 **Cross-Worker Consistency:**
 - Web Worker fingerprint matching main thread
-- Service Worker consistent behavior patterns
-- Shared Worker cross-tab consistency
+- Service Worker protected behavior patterns
+- Shared Worker cross-tab protection
 
 **Noise Algorithm Validation:**
-- Per-session consistency with cross-session variation
+- Per-session protection with cross-session variation
 - Realistic randomization patterns
 - No distinctive noise algorithm signatures
 
@@ -217,7 +217,7 @@ BotBrowser's cross-platform capabilities enable perfect Android device emulation
 **Browser Compatibility Research:**
 ```
 Institution: University Research Lab
-Study: "Cross-Platform Browser Fingerprint Consistency"
+Study: "Cross-Platform Browser Fingerprint Protection"
 Duration: 6 months
 Findings: 99.2% fingerprint stability across platforms
 ```
@@ -234,7 +234,7 @@ Results: Identified 12 unique tracking vectors
 ```
 Research: "Browser Fingerprinting Performance Impact"
 Methodology: Comparative analysis vs native browsers
-Conclusion: <3% performance overhead for fingerprint consistency
+Conclusion: <3% performance overhead for fingerprint protection
 ```
 
 ### Ethical Research Framework
@@ -301,9 +301,9 @@ Corporate Network
 
 **Test Categories:**
 ```
-Fingerprint Consistency Tests (500+ test cases)
+Fingerprint Protection Tests (500+ test cases)
 ├── Canvas tracking validation
-├── WebGL consistency checks
+├── WebGL protection checks
 ├── Font rendering verification
 ├── Audio context testing
 ├── Performance timing analysis
@@ -321,12 +321,12 @@ Detection System Tests (200+ scenarios)
 
 ## Statistical Analysis
 
-### Consistency Metrics
+### Protection Metrics
 
-**Cross-Platform Consistency:**
-- Session-to-session: Highly consistent
+**Cross-Platform Protection:**
+- Session-to-session: Highly protective
 - Cross-platform behavior: Unified across OS
-- Long-term stability: Maintains consistency over time
+- Long-term stability: Maintains protection over time
 - Behavioral analysis resistance: 97.8%
 
 **Performance Metrics:**
@@ -343,7 +343,7 @@ Detection System Tests (200+ scenarios)
 - Platform combinations: 45+
 
 **Confidence Intervals:**
-- Consistency measurements: 95% CI
+- Protection measurements: 95% CI
 - Performance benchmarks: 99% CI
 - Detection resistance: 90% CI
 
@@ -359,7 +359,7 @@ Detection System Tests (200+ scenarios)
 - Behavioral biometric analysis
 - Network-level tracking
 
-**Cross-Platform Consistency:**
+**Cross-Platform Protection:**
 - Mobile browser emulation accuracy
 - Browser update impact analysis
 - Regional fingerprint variations
@@ -402,7 +402,7 @@ Detection System Tests (200+ scenarios)
 
 **Ethical Use Policy:** All users must obtain proper institutional approval and follow ethical research guidelines when conducting studies involving web services or user data.
 
-**Research Ethics:** This research contributes to web compatibility standards and fingerprint consistency analysis through controlled environment testing using publicly accessible interfaces only.
+**Research Ethics:** This research contributes to web compatibility standards and fingerprint protection validation through controlled environment testing using publicly accessible interfaces only.
 
 **GitHub Policy Compliance:** This repository is intended for academic research and is not designed for production use against third-party services without explicit authorization.
 

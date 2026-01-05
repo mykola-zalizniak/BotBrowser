@@ -2,11 +2,11 @@
 
 For Academic and Authorized Testing Environments.
 
-This guide explains BotBrowser's fingerprint‑customization system that prevents tracking system fingerprint collection. Configure synthetic profiles and use dynamic CLI overrides for authorized privacy testing.
+This guide explains BotBrowser's fingerprint-customization system that prevents tracking system fingerprint collection. Configure synthetic profiles and use dynamic CLI overrides for authorized privacy testing.
 
 ⚠️ **Usage Policy:** This configuration system is designed for academic study, security analysis, and authorized testing only. Use in compliance with institutional policies and applicable laws.
 
-> **CLI‑First Configuration:** Use [`--bot-config-*` flags](../CLI_FLAGS.md#profile-configuration-override-flags) for runtime fingerprint control without editing encrypted profiles. These carry the highest priority.
+> **CLI-First Configuration:** Use [`--bot-config-*` flags](../CLI_FLAGS.md#profile-configuration-override-flags) for runtime fingerprint control without editing encrypted profiles. These carry the highest priority.
 
 > **Smart Configuration:** BotBrowser intelligently derives timezone, locale, and languages from proxy IP. Override only when your scenario requires it.
 
@@ -56,15 +56,15 @@ chromium-browser \
 
 ## ⚠️ Important: Profile Data Integrity
 
-Profile data uses synthetic/aggregated configurations. Unless you are certain about the impact, avoid overriding fingerprint properties because defaults provide the most consistent behavior for academic testing.
+Profile data uses synthetic/aggregated configurations. Unless you are certain about the impact, avoid overriding fingerprint properties because defaults provide the most protected behavior for academic testing.
 
 ## How to Apply Configuration
 
 All configurations are embedded in the `configs` field inside your profile JSON structure.
 
-### File‑Based Configuration Only
+### File-Based Configuration Only
 
-> Important: BotBrowser only accepts profile input as a file. Shell piping (e.g., `--bot-profile=<(echo '{"x": 1}')`) is not supported due to CLI argument length and file‑descriptor limits.
+> Important: BotBrowser only accepts profile input as a file. Shell piping (e.g., `--bot-profile=<(echo '{"x": 1}')`) is not supported due to CLI argument length and file-descriptor limits.
 
 **Best Practice:**
 
@@ -313,7 +313,7 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 
 ### Fingerprint Protection
 - **Screen coordination:** Always adjust **window size** and **screen size** together to avoid suspicious fingerprint gaps
-- **Geographic alignment:** Match `timezone` and `location` to your proxy's region to avoid fingerprint inconsistencies
+- **Geographic alignment:** Match `timezone` and `location` to your proxy's region to avoid fingerprint vulnerabilities
 - **Display accuracy:** Set a realistic **devicePixelRatio** based on the system being emulated:
   - `2` for macOS Retina displays
   - `1` for standard monitors
@@ -321,7 +321,7 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 
 ### Connection Security
 - **Proxy authentication:** Always define proxy credentials if using authenticated proxies to avoid connection leaks
-- **Protocol consistency:** Ensure proxy protocol matches your network requirements
+- **Protocol parity:** Ensure proxy protocol matches your network requirements
 
 ### File Management
 - **Dynamic generation:** If you're generating a profile in code, **save it as a temporary file** (e.g., `/tmp/myprofile.json`) and pass the file path via `--bot-profile`

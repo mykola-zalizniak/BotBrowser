@@ -10,7 +10,7 @@ CanvasLab records every Canvas and WebGL API call so you can see exactly what tr
 
 - **See what trackers do** – watch every Canvas API call they make and understand their techniques
 - **Test your defenses** – verify that BotBrowser's protections actually stop the tracking attempts
-- **Check consistency** – make sure privacy works the same across Windows, macOS, and Linux
+- **Check protection** – make sure privacy defenses work the same across Windows, macOS, and Linux
 - **Understand the threat** – know exactly what you're protecting users from
 
 ---
@@ -130,7 +130,7 @@ Close BotBrowser. Your recording is saved to `/tmp/canvaslab.jsonl`. You can now
 | **Privacy Defense Development** | See how trackers try to fingerprint users through Canvas and build stronger protections against it |
 | **Tracking Analysis** | Document exactly what Canvas API calls tracking code makes so you know what to defend against |
 | **Source Code Attribution** | Find which tracking libraries are calling which Canvas APIs by looking at source locations |
-| **Privacy Consistency Validation** | Make sure BotBrowser's defenses work the same way on all platforms—Windows, macOS, Linux |
+| **Privacy Protection Validation** | Make sure BotBrowser's defenses work the same way on all platforms—Windows, macOS, Linux |
 | **Privacy Testing** | Verify that privacy protections keep working after BotBrowser updates |
 | **Privacy Research** | Study real-world tracking techniques with complete records and source information for academic work |
 

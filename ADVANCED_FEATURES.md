@@ -1,18 +1,18 @@
 # BotBrowser Advanced Features
 
-Comprehensive technical controls for fingerprint consistency that prevent tracking systems from collecting user identification data.
+Comprehensive technical controls for fingerprint protection that prevent tracking systems from collecting user identification data.
 
-Use this document for detailed technical reference behind the [README](README.md): implementation strategies for preventing fingerprint collection, consistency controls, and privacy protection mechanisms not on the main page. Each section links back to the relevant quick-start guide (CLI flags, README, validation data) so you can jump between overview and implementation details quickly. For overall usage terms, refer to the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
+Use this document for detailed technical reference behind the [README](README.md): implementation strategies for preventing fingerprint collection, protection controls, and privacy protection mechanisms not on the main page. Each section links back to the relevant quick-start guide (CLI flags, README, validation data) so you can jump between overview and implementation details quickly. For overall usage terms, refer to the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
 
 ## Overview
 
-BotBrowser provides multi-layer controls to maintain consistent fingerprints across all platforms. These mechanisms support research into fingerprint based tracking prevention, cross-platform privacy protection, and reproducible privacy consistency validation.
+BotBrowser provides multi-layer controls to maintain protected fingerprints across all platforms. These mechanisms support research into fingerprint based tracking prevention, cross-platform privacy protection, and reproducible privacy protection validation.
 
 ---
 
 ## Capabilities Index
 
-[navigator.webdriver removal](#chrome-behavior-emulation), [main‑world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#graphics-rendering-engine), [WebGL/WebGPU param control](#graphics-rendering-engine), [Skia anti‑alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices consistency](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#configuration-and-control), [per‑context proxy geo (ENT Tier1 feature)](#enhanced-proxy-system), [DNS‑through‑proxy](#enhanced-proxy-system), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS fingerprint (JA3/JARM)](#network-fingerprint-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency)
+[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#graphics-rendering-engine), [WebGL/WebGPU param control](#graphics-rendering-engine), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#configuration-and-control), [per-context proxy geo (ENT Tier1 feature)](#enhanced-proxy-system), [DNS-through-proxy](#enhanced-proxy-system), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS fingerprint (JA3/JARM)](#network-fingerprint-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency)
 
 <a id="configuration-and-control"></a>
 ## Configuration & Control
@@ -64,7 +64,7 @@ chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" \
 
 <a id="enhanced-proxy-system"></a>
 ### Enhanced Proxy System
-Rebuilt for stability, per‑context support (ENT Tier1 feature), and DNS‑leak protection.
+Rebuilt for stability, per-context support (ENT Tier1 feature), and DNS-leak protection.
 
 **Embedded Credentials:**
 ```bash
@@ -83,7 +83,7 @@ Structured proxy usernames: Some providers encode routing hints in the username.
 ```
 
 
-**Per‑Context Proxy Support (ENT Tier1 feature):**
+**Per-Context Proxy Support (ENT Tier1 feature):**
 ```javascript
 // Playwright example with different proxies per context
 const browser = await chromium.launch({
@@ -102,7 +102,7 @@ const context2 = await browser.newContext({
 });
 ```
 
-Automatic geo‑detection (ENT Tier1 feature): Each context derives timezone, locale, and languages from its proxy IP, so no manual setup is needed.
+Automatic geo-detection (ENT Tier1 feature): Each context derives timezone, locale, and languages from its proxy IP, so no manual setup is needed.
 
 Performance tip: If all contexts share the same proxy IP, set `--proxy-ip` to skip repeated lookups.
 
@@ -113,12 +113,12 @@ Performance tip: If all contexts share the same proxy IP, set `--proxy-ip` to sk
 ```
 
 **DNS & IP Discovery**
-- **DNS‑leak protection:** SOCKS5 proxies prevent local DNS resolution, and all domain lookups go through the proxy tunnel.
+- **DNS-leak protection:** SOCKS5 proxies prevent local DNS resolution, and all domain lookups go through the proxy tunnel.
 - **UDP over SOCKS5 (ENT Tier3 feature):** Automatically attempts UDP associate to tunnel QUIC/STUN where supported; ICE presets can often be skipped when UDP is available.
-- **Local DNS solver (ENT Tier1 feature):** Enable `--bot-local-dns` when you want faster resolution, want to avoid DNS poisoning, or your proxy provider restricts DNS behavior. This keeps DNS resolution local while the rest of the proxy and geo pipeline remains consistent.
+- **Local DNS solver (ENT Tier1 feature):** Enable `--bot-local-dns` when you want faster resolution, want to avoid DNS poisoning, or your proxy provider restricts DNS behavior. This keeps DNS resolution local while the rest of the proxy and geo pipeline remains protected.
 - **Custom public IP service:** Use `--bot-ip-service` to point BotBrowser at your preferred IP lookup endpoint when you need deterministic egress discovery or an in-house IP service. You can provide multiple endpoints separated by commas, and BotBrowser will race them and pick the fastest successful response.
 
-**Important:** Always use BotBrowser's proxy options over framework-specific settings to ensure geo-detection remains accurate and consistent.
+**Important:** Always use BotBrowser's proxy options over framework-specific settings to ensure geo-detection remains accurate and protected.
 
 ```bash
 # Example: true full-proxy QUIC/STUN (Chromium-level UDP associate, no ProxyChains hacks)
@@ -130,9 +130,9 @@ chromium-browser --bot-profile="/abs/profile.enc" \
 <a id="network-fingerprint-control"></a>
 ## Network Fingerprint Control
 
-**Scope:** Network‑layer traits that tracking systems often score.
+**Scope:** Network-layer traits that tracking systems often score.
 
-- **HTTP Headers & Protocol:** Chrome‑like request headers; authentic HTTP/2 and HTTP/3 behavior (see Chrome Behavior Emulation).
+- **HTTP Headers & Protocol:** Chrome-like request headers; authentic HTTP/2 and HTTP/3 behavior (see Chrome Behavior Emulation).
 - **DNS Routing:** SOCKS5 avoids local DNS resolution; all lookups go through the proxy tunnel (see Enhanced Proxy System).
 - **UDP over SOCKS5 (ENT Tier3 feature):** Automatic UDP associate when supported to tunnel QUIC and STUN; ICE presets often unnecessary if UDP is available.
 - **WebRTC:** SDP/ICE manipulation and candidate filtering to prevent local IP disclosure (see WebRTC Leak Protection).
@@ -140,12 +140,12 @@ chromium-browser --bot-profile="/abs/profile.enc" \
 
 **Stack differentiators:**
 - Per-context proxies with proxy-based geo detection (timezone/locale/language) across contexts and sessions
-- DNS-through-proxy plus credentialed proxy URLs keep browser-level geo signals consistent
+- DNS-through-proxy plus credentialed proxy URLs keep browser-level geo signals protected
 - UDP-over-SOCKS5 tunnel (ENT Tier3 feature) for QUIC/STUN so ICE presets are only needed when UDP is unavailable
 - Optional ICE control via `--bot-webrtc-ice` (PRO feature) when the proxy lacks UDP support
 - Chromium-level implementation that avoids external Go/ProxyChains hijacking; tunneling lives inside the network stack
 
-> Note: Most fingerprint browsers disable QUIC or avoid UDP entirely. BotBrowser implements UDP-over-SOCKS5 directly inside Chromium’s network stack (no external proxy-chain hijacking) so QUIC/STUN stay proxied and consistent with TCP traffic.
+> Note: Most fingerprint browsers disable QUIC or avoid UDP entirely. BotBrowser implements UDP-over-SOCKS5 directly inside Chromium's network stack (no external proxy-chain hijacking) so QUIC/STUN stay proxied and consistent with TCP traffic.
 
 ---
 
@@ -159,19 +159,19 @@ Deterministic noise generation prevents fingerprint collection and reproducibili
 - **WebGPU**: Deterministic noise variance applied to WebGPU canvases by default so GPU-only analysis inherits the same reproducible noise characteristics without extra configuration
 - **AudioContext**: `--bot-config-noise-audio-context`
 - **ClientRects/TextRects**: `--bot-config-noise-client-rects`, `--bot-config-noise-text-rects`
-- **Deterministic noise seeds (ENT Tier2 feature)**: `--bot-noise-seed=1.05` (1.0 to 1.2 range) enables reproducible yet distinct noise fields for Canvas 2D, WebGL, WebGPU imagery, text metrics with HarfBuzz layout, ClientRects, and audio hashes so each seed configuration produces consistent fingerprints for research purposes.
+- **Deterministic noise seeds (ENT Tier2 feature)**: `--bot-noise-seed=1.05` (1.0 to 1.2 range) enables reproducible yet distinct noise fields for Canvas 2D, WebGL, WebGPU imagery, text metrics with HarfBuzz layout, ClientRects, and audio hashes so each seed configuration produces protected fingerprints for research purposes.
 
-Consistency Model:
-- Stable noise algorithms maintain session consistency while varying across different sessions
+Protection Model:
+- Stable noise algorithms maintain Session Consistency while varying across different sessions
 - GPU tuning preserves authentic WebGL and WebGPU behavior (1.0 and 2.0 contexts)
-- Audio noise calibration (Chromium 141+) provides inaudible resistance to analysis while maintaining cross-worker fingerprint consistency
-- Text metrics and ClientRects noise sustains realistic font measurements with cross-worker consistency
+- Audio noise calibration (Chromium 141+) provides inaudible resistance to analysis while maintaining Cross-Worker Consistency
+- Text metrics and ClientRects noise sustains realistic font measurements with Cross-Worker Consistency
 
 <a id="active-window-emulation"></a>
 ### Active Window Emulation
-Maintains consistent window state to prevent focus-based tracking even when the host window is unfocused.
+Maintains protected window state to prevent focus-based tracking even when the host window is unfocused.
 
-- `--bot-always-active` (PRO feature) defaults to `true`, maintaining consistent `blur` and `visibilitychange` event patterns and keeping `document.hidden=false` for reliable API behavior
+- `--bot-always-active` (PRO feature) defaults to `true`, maintaining protected `blur` and `visibilitychange` event patterns and keeping `document.hidden=false` for reliable API behavior
 - Configurable per-window to allow legitimate focus-change observation when required by applications
 - Protects against window focus based tracking heuristics that monitor caret blinking, FocusManager events, or inactive viewport throttling
 - README quick link: see [Workflows → Active Window](README.md#advanced-capabilities)
@@ -186,27 +186,27 @@ Consistent behavior across modes with comprehensive simulation.
 - WebGL and WebGPU rendering consistency
 - Hardware-accelerated video decoding simulation
 
-**Incognito‑Mode Enhancements:**
-- Maintains fingerprint consistency in incognito mode
+**Incognito-Mode Enhancements:**
+- Maintains fingerprint protection in incognito mode
 - Consistent fingerprint between normal and incognito modes
-- Maintains privacy features while ensuring consistency
+- Maintains privacy features while ensuring protection
 - For CLI launch guidance, see README “Quick Start” and [`INSTALLATION.md`](INSTALLATION.md#headless)
 
 <a id="webrtc-leak-protection"></a>
 ### WebRTC Leak Protection
-Complete WebRTC fingerprint consistency and network privacy protection.
+Complete WebRTC fingerprint protection and network privacy protection.
 
 **SDP Control:**
 - IPv4 and IPv6 Session Description Protocol (SDP) standardization across platforms
-- ICE candidate filtering and consistency management
+- ICE candidate filtering and protection management
 - STUN and TURN server response standardization
 
 **Real Time Communication Privacy:**
-- MediaStream API consistency across execution contexts
+- MediaStream API protection across execution contexts
 - RTCPeerConnection behavior standardization
 - Network topology protection through controlled signal patterns
 - ICE server presets and custom lists via `--bot-webrtc-ice` (PRO feature) to standardize STUN and TURN endpoints observed by page JavaScript
-- Combined with UDP-over-SOCKS5 (ENT Tier3 feature) you achieve Chromium-level QUIC and STUN tunneling for complete network consistency; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) for implementation examples.
+- Combined with UDP-over-SOCKS5 (ENT Tier3 feature) you achieve Chromium-level QUIC and STUN tunneling for complete network protection; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) for implementation examples.
 
 <a id="chrome-behavior-emulation"></a>
 ### Chrome Behavior Emulation
@@ -233,29 +233,29 @@ Compact overview; expand for full details.
 <details>
 <summary><strong>Full details: Device & Platform Emulation</strong></summary>
 
-### Cross‑Platform Font Engine
+### Cross-Platform Font Engine
 Advanced font rendering with consistent results across hosts.
 
-**Built‑In Font Libraries:**
+**Built-In Font Libraries:**
 - Windows fonts (Segoe UI, Arial, Times New Roman, etc.)
 - macOS fonts (San Francisco, Helvetica, Times, etc.)
 - Android fonts (Roboto, Noto, etc.)
 - Complete emoji sets for all platforms
 
-**Accurate Font‑Fallback Chains:**
+**Accurate Font-Fallback Chains:**
 - Accurate CJK (Chinese, Japanese, Korean) font fallback
 - Rare symbol and Unicode character support
-- Cross-worker font consistency
+- Cross-Worker Consistency
 - HarfBuzz text shaping integration
 
-**Text‑Rendering Features:**
+**Text-Rendering Features:**
 - Skia anti-aliasing integration
 - Multi-language support (CJK/RTL/emoji)
 - Platform-specific font metrics
 - Consistent text measurement across workers
 - DOM text renders exclusively from the embedded Windows/macOS/Linux/Android font bundles so layouts never fall through to host fonts on the underlying machine
 
-> **Implementation Detail:** Low‑level rendering paths in Skia (2D/Canvas) and HarfBuzz (text shaping) are tuned where needed to align metrics and glyph shaping across OS targets. We also apply targeted WebGL/WebGPU parameter controls to keep visual output stable across contexts.
+> **Implementation Detail:** Low-level rendering paths in Skia (2D/Canvas) and HarfBuzz (text shaping) are tuned where needed to align metrics and glyph shaping across OS targets. We also apply targeted WebGL/WebGPU parameter controls to keep visual output stable across contexts.
 
 ### Cross Platform Consistency
 Maintains fingerprint and behavior consistency across different host systems.
@@ -280,7 +280,7 @@ Maintains fingerprint and behavior consistency across different host systems.
 ### Hardware Fingerprint Control
 Comprehensive hardware emulation and fingerprint management.
 
-**CPU‑Architecture Emulation:**
+**CPU-Architecture Emulation:**
 - x86/x64/ARM architecture simulation
 - Authentic CPU core count and timing
 - Realistic performance characteristics
@@ -293,7 +293,7 @@ Comprehensive hardware emulation and fingerprint management.
 - Multi-monitor configuration simulation
 - Refresh rate and orientation control
 
-**Device‑Behavior Simulation:**
+**Device-Behavior Simulation:**
 - Authentic device memory reporting
 - Battery status and charging simulation
 - Network connection type emulation
@@ -310,9 +310,9 @@ Compact overview; expand for full details.
 <summary><strong>Full details: Deep System Integration</strong></summary>
 
 ### Precise FPS Simulation
-Advanced frame‑rate and performance emulation.
+Advanced frame-rate and performance emulation.
 
-**Refresh‑Rate Control: (ENT Tier2 feature)**
+**Refresh-Rate Control: (ENT Tier2 feature)**
 - requestAnimationFrame delay matching target FPS
 - Emulate target refresh rates (60Hz, 120Hz, 144Hz, etc.)
 - Simulate high-FPS macOS behavior on Ubuntu hosts
@@ -324,15 +324,15 @@ Advanced frame‑rate and performance emulation.
 - Runtime timing scaling via `--bot-time-scale` to compress `performance.now()` deltas for low-load simulation (e.g., `--bot-time-scale=0.92` for high-load emulation)
 
 ### Performance Fingerprint Controls
-Fine‑grained tuning for authentic device simulation.
+Fine-grained tuning for authentic device simulation.
 
-**Memory‑Allocation Timing:**
+**Memory-Allocation Timing:**
 - Realistic memory allocation patterns
 - Garbage collection timing simulation
 - Heap size and growth patterns
 - Memory pressure response simulation
 
-**Database‑Access Latency:**
+**Database-Access Latency:**
 - IndexedDB access timing control
 - WebSQL performance characteristics (where supported)
 - localStorage and sessionStorage timing
@@ -346,7 +346,7 @@ Fine‑grained tuning for authentic device simulation.
 - Deterministic noise seeds via `--bot-noise-seed` (ENT Tier2 feature) to stabilize noise distributions across sessions (`--bot-noise-seed=1.07`)
 
 ### Extended Media Types & WebCodecs APIs
-Comprehensive media‑format support and codec emulation.
+Comprehensive media-format support and codec emulation.
 
 **Broader MediaTypes Coverage:**
 - Extended MIME type support beyond browser defaults
@@ -367,16 +367,16 @@ Comprehensive media‑format support and codec emulation.
 - Smooth playback prediction accuracy
 - HDR and wide gamut support detection
 
-### GPU Driver Micro‑Benchmarks
-Sophisticated GPU‑behavior emulation with vendor‑specific patterns.
+### GPU Driver Micro-Benchmarks
+Sophisticated GPU-behavior emulation with vendor-specific patterns.
 
-**Precision‑Timing Emulation:**
+**Precision-Timing Emulation:**
 - GPU command execution timing
 - Shader compilation performance
 - Texture upload/download speeds
 - Buffer allocation and transfer rates
 
-**Vendor‑Specific Behavior:**
+**Vendor-Specific Behavior:**
 - NVIDIA, AMD, Intel driver behavior patterns
 - OpenGL extension availability simulation
 - Vulkan capability reporting
@@ -389,9 +389,9 @@ Sophisticated GPU‑behavior emulation with vendor‑specific patterns.
 - Power management responses
 
 ### Dynamic Blink Features
-Runtime OS‑based feature loading for authentic behavior.
+Runtime OS-based feature loading for authentic behavior.
 
-**OS‑Specific Features:**
+**OS-Specific Features:**
 - Windows-specific Blink features
 - macOS-exclusive capabilities
 - Android mobile features
@@ -461,14 +461,14 @@ Advanced graphics controls and rendering consistency.
 
 | Component | Capabilities |
 |-----------|-------------|
-| **Canvas** | 2D context noise, consistent image data, cross-worker consistency |
+| **Canvas** | 2D context noise, consistent image data, Cross-Worker Consistency |
 | **WebGL** | Precision GPU micro-benchmarks, driver-specific behavior, extension simulation |
 | **WebGPU** | Modern GPU API support, compute shader capabilities, buffer management |
 | **Text Rendering** | HarfBuzz text shaping, cross-platform fonts, emoji rendering consistency |
 | **Performance** | Precise FPS simulation, texture hash fidelity, render timing control |
 
 ### Network & Media Subsystems
-Complete network behavior and media‑processing capabilities.
+Complete network behavior and media-processing capabilities.
 
 | Component | Capabilities |
 |-----------|-------------|
@@ -479,7 +479,7 @@ Complete network behavior and media‑processing capabilities.
 | **Codecs** | Extended media types, WebCodecs APIs, hardware acceleration simulation |
 
 ### Performance Characteristics
-Fine‑grained performance fingerprint control and timing simulation.
+Fine-grained performance fingerprint control and timing simulation.
 
 | Component | Capabilities |
 |-----------|-------------|
@@ -493,7 +493,7 @@ Fine‑grained performance fingerprint control and timing simulation.
 ## Integration with Automation Frameworks
 </details>
 
-### Framework‑Less Automation (`--bot-script`)
+### Framework-Less Automation (`--bot-script`)
 Execute JavaScript with privileged `chrome.debugger` access.
 
 **Key Advantages:**
@@ -507,7 +507,7 @@ Execute JavaScript with privileged `chrome.debugger` access.
 chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" --bot-script="script.js"
 ```
 
-**Available APIs in Bot‑Script Context:**
+**Available APIs in Bot-Script Context:**
 - `chrome.debugger` - Full Chrome DevTools Protocol access
 - `chrome.runtime` - Runtime APIs and event handling
 - Standard browser APIs (console, setTimeout, etc.)
@@ -518,7 +518,7 @@ chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" --bot-script="scr
 ### Playwright/Puppeteer Integration
 Privacy-preserving integration with popular frameworks.
 
-**CDP‑Leak Protection:**
+**CDP-Leak Protection:**
 - Prevents CDP artifacts from appearing in page context
 - Maintains authentic browser behavior in all contexts
 - Eliminates framework-specific fingerprint signatures
@@ -580,7 +580,7 @@ BotBrowser implements advanced features across multiple layers:
 - Runtime configuration override capabilities
 - Cross-platform compatibility matrix
 
-**Noise‑Generation Algorithms:**
+**Noise-Generation Algorithms:**
 - Cryptographically secure randomization
 - Deterministic per-session consistency
 - Realistic variation patterns

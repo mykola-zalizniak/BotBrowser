@@ -11,7 +11,7 @@ These examples assume an authorized privacy research environment. Review the pro
 - **No framework dependencies**: pure Chrome DevTools Protocol access for fingerprint protection research
 - **Earlier intervention**: execute before page navigation to establish privacy protections
 - **Privileged context**: full `chrome.debugger` API access
-- **Isolated execution**: framework artifacts do not appear in page context, maintaining fingerprint consistency
+- **Isolated execution**: framework artifacts do not appear in page context, maintaining fingerprint protection
 
 ## Usage
 
@@ -51,7 +51,7 @@ Because scripts run in a privileged context, you have access to:
 3. Resource cleanup: detach from the debugger when done
 4. Timing control: use appropriate delays between actions
 
-## Behavior Recipes (Human‑Like Interaction)
+## Behavior Recipes (Human-Like Interaction)
 
 **Mouse movement (CDP)**
 ```js

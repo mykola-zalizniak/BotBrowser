@@ -1,8 +1,8 @@
 # BotBrowser Profiles
 
-Academic Framework for Browser‑Environment Simulation.
+Academic Framework for Browser-Environment Simulation.
 
-In BotBrowser, everything starts with a profile. Research consistency and compatibility depend on proper profile configuration. Profiles are provided to authorized researchers, so review the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md) for access policies.
+In BotBrowser, everything starts with a profile. Research success and privacy protection depend on proper profile configuration. Profiles are provided to authorized researchers, so review the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md) for access policies.
 
 ## What Are Profiles?
 
@@ -13,20 +13,20 @@ Profiles are encrypted files that define the environment a browser emulates, mai
 - **Hardware emulation** (device memory, CPU architecture, screen properties)
 - **Platform simulation** (Android behavior, OS-specific features)
 
-### Cross‑Platform Compatibility
+### Cross-Platform Compatibility
 
 **BotBrowser capability:** Profile compatibility across host systems (Windows, macOS, Android, Ubuntu) prevents fingerprint collection identifying device switches.
 
-By using profiles, BotBrowser launches controlled sessions that simulate consistent device behavior across operating systems, preventing cross-platform user identification.
+By using profiles, BotBrowser launches controlled sessions that simulate protected device behavior across operating systems, preventing cross-platform user identification.
 
-**💡 Profile = controlled research‑environment configuration**
+**💡 Profile = controlled research-environment configuration**
 
 ## Understanding BotBrowser Profiles
 
 ### What BotBrowser Profiles Actually Are
 **Device Models**: think of them as specific hardware configurations.
 
-**Real‑World Analogy**
+**Real-World Analogy**
 - Profile = "MacBook Pro M4 Max" (the device type)
 - You can simulate User A in USA using this "M4 Max" profile
 - You can simulate User B in Europe using the same "M4 Max" profile
@@ -35,7 +35,7 @@ By using profiles, BotBrowser launches controlled sessions that simulate consist
 ### How Profiles Work
 - **Profile defines the device fingerprint** (hardware, browser capabilities)
 - **Environment settings differentiate users** (proxy, timezone, language, cookies)
-- **Each session can have unique characteristics** while maintaining device consistency
+- **Each session can have unique characteristics** while maintaining device protection
 
 **Example:** Using a “MacBook Pro M3” profile:
 - User A: US proxy + English + EST timezone
@@ -119,19 +119,19 @@ await page.addInitScript(() => {
 await page.goto("https://abrahamjuliot.github.io/creepjs/");
 ```
 
-⚠️ Important: When using frameworks (Puppeteer/Playwright), use the `--proxy-server` flag instead of framework‑specific proxy options (like `page.authenticate()` or a `proxy` parameter in `launch()`). This ensures BotBrowser can derive accurate timezone/locale from the proxy IP.
+⚠️ Important: When using frameworks (Puppeteer/Playwright), use the `--proxy-server` flag instead of framework-specific proxy options (like `page.authenticate()` or a `proxy` parameter in `launch()`). This ensures BotBrowser can derive accurate timezone/locale from the proxy IP.
 
 
 ---
 
 ## Configuration Approaches
 
-### Profile‑Based Configuration
+### Profile-Based Configuration
 - **Purpose**: Stores authentic user fingerprints and base settings
 - **When to use**: For core browser identity and fingerprint data
 - **Limitation**: Encrypted files are difficult to modify
 
-### CLI‑Based Configuration
+### CLI-Based Configuration
 - **Purpose**: Runtime overrides without modifying profile files
 - **When to use**: For session-specific settings like proxy, title, cookies
 - **Advantage**: Preserves profile integrity while enabling flexibility
@@ -165,13 +165,13 @@ chromium \
 ### Unique Capabilities
 
 - [x] **Provides compatibility in incognito-mode environments**
-- [x] **CDP artifact minimization**: native CDP fingerprint consistency
+- [x] **CDP artifact minimization**: native CDP fingerprint protection
 - [x] **Custom page history**: enhance browsing pattern realism
 - [x] **Keep pages active** even when they lose focus
 - [x] **Set proxy with embedded credentials directly via profile**
 - [x] **Set language and timezone** based on proxy or manually
 - [x] **WebRTC configuration control**
-- [x] **Canvas / WebGL noise augmentation** for consistency
+- [x] **Canvas / WebGL noise augmentation** for protection
 - [x] **DOM text renders from embedded fonts** so cross-OS simulations never fall through to host font files
 - [x] **Audio tracking variation**
 - [x] **Control scroll bar width**

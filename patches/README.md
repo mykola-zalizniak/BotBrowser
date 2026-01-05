@@ -4,7 +4,7 @@ For Academic and Security Analysis Purposes.
 
 > These are selected examples from BotBrowser's internals for academic study and security analysis. The full core remains proprietary for compatibility testing.
 
-BotBrowser includes proprietary enhancements built on top of Chromium, developed in‑house for fingerprint protection and privacy research.
+BotBrowser includes proprietary enhancements built on top of Chromium, developed in-house for fingerprint protection and privacy research.
 
 Only the GUI ([BotBrowserConsole](https://github.com/botswin/BotBrowser/tree/main/console)) is open source.
 The patches here are select examples published to illustrate techniques for academic and security analysis without exposing the full engine.
@@ -16,13 +16,13 @@ The patches here are select examples published to illustrate techniques for acad
 ## What's Inside
 
 - **Proprietary Foundation**
-  BotBrowser’s engine is built in‑house, with no forks or external project references.
+  BotBrowser’s engine is built in-house, with no forks or external project references.
 
 - **Selective Academic Disclosure**
   Only select patches are published for educational purposes. The rest remain proprietary to maintain compatibility testing integrity.
 
 - **Comprehensive Compatibility Coverage**
-  These patches address fingerprint consistency across multiple surfaces, informed by:
+  These patches address fingerprint protection across multiple surfaces, informed by:
   1. Security analysis of browser compatibility mechanisms
   2. V8-level study of tracking data collection and validation
   3. Compatibility testing experience in controlled environments
