@@ -110,9 +110,9 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 > **Better Approach:** Use CLI flags for proxy configuration:
 > ```bash
 > # Embedded credentials (recommended)
-> --proxy-server="http://username:password@proxy.example.com:8080"
+> --proxy-server=http://username:password@proxy.example.com:8080
 > # SOCKS5H for tunnel-based hostname resolution
-> --proxy-server="socks5h://username:password@proxy.example.com:1080"
+> --proxy-server=socks5h://username:password@proxy.example.com:1080
 > ```
 >
 > **For complete CLI flags documentation**, see [CLI Flags Reference](../CLI_FLAGS.md#profile-configuration-override-flags)

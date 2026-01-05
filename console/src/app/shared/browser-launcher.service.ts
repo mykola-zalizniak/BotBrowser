@@ -168,7 +168,7 @@ export class BrowserLauncherService {
         ];
 
         if (browserProfile.proxyServer) {
-            args.push(`--proxy-server="${browserProfile.proxyServer}"`);
+            args.push(`--proxy-server=${browserProfile.proxyServer}`);
         }
 
         if (browserProfile.basicInfo.profileName) {

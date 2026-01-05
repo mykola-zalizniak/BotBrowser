@@ -92,8 +92,8 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 const browser = await chromium.launch({
   headless: true,
   executablePath: BOTBROWSER_EXEC_PATH,
-  args: [`--bot-profile=${BOT_PROFILE_PATH}`],
-  '--proxy-server="socks5://usr:pwd@127.0.0.1:8989"',  // or: "http://usr:pwd@127.0.0.1:8989"
+  args: [`--bot-profile=${BOT_PROFILE_PATH}`,
+  '--proxy-server=socks5://usr:pwd@127.0.0.1:8989']  // or: http://usr:pwd@127.0.0.1:8989
 });
 const page = await browser.newPage();
 await page.addInitScript(() => { delete window.__playwright__binding__; delete window.__pwInitScripts; });
@@ -187,7 +187,7 @@ Prefer a GUI launcher? See [console/README.md](console) for BotBrowserConsole us
 
 ---
 
-## Mirror: Distributed Privacy Consistency
+## Mirror: Distributed Privacy Consistency (ENT Tier3)
 
 Ensure your privacy protection works effectively across platforms and networks. Run a controller instance and multiple client instances to verify that all instances maintain identical privacy defenses, protecting you from tracking across Windows, macOS, Linux, and remote environments.
 

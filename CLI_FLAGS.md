@@ -63,13 +63,13 @@ BotBrowser extends the standard `--proxy-server` flag to accept embedded credent
 
 ```bash
 # HTTP/HTTPS proxy with credentials
---proxy-server="http://username:password@proxy.example.com:8080"
---proxy-server="https://username:password@proxy.example.com:8080"
+--proxy-server=http://username:password@proxy.example.com:8080
+--proxy-server=https://username:password@proxy.example.com:8080
 
 # SOCKS5 proxy with credentials
---proxy-server="socks5://username:password@proxy.example.com:1080"
+--proxy-server=socks5://username:password@proxy.example.com:1080
 # SOCKS5H proxy with credentials (hostname resolution stays within tunnel)
---proxy-server="socks5h://username:password@proxy.example.com:1080"
+--proxy-server=socks5h://username:password@proxy.example.com:1080
 ```
 
 **Supported Protocols:** HTTP, HTTPS, SOCKS5, SOCKS5H
@@ -77,7 +77,7 @@ BotBrowser extends the standard `--proxy-server` flag to accept embedded credent
 **Proxy auth usernames:** Structured proxy usernames can include additional separators such as `,` and `｜` (full-width vertical bar). This is useful for providers that encode routing hints inside the username, for example:
 
 ```bash
---proxy-server="socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080"
+--proxy-server=socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080
 ```
 
 ### UDP over SOCKS5 (ENT Tier3)
@@ -85,7 +85,7 @@ ENT Tier3 adds built-in SOCKS5 UDP ASSOCIATE support with no extra flag required
 
 ```bash
 # UDP (QUIC/STUN) auto-tunneled when the SOCKS5 proxy supports UDP associate
---proxy-server="socks5://username:password@proxy.example.com:1080"
+--proxy-server=socks5://username:password@proxy.example.com:1080
 ```
 
 ### `--proxy-ip`
@@ -324,7 +324,7 @@ Verify that your privacy protection works effectively across platforms and netwo
 chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
   --bot-title="My Session" \
-  --proxy-server="http://myuser:mypass@proxy.example.com:8080" \
+  --proxy-server=http://myuser:mypass@proxy.example.com:8080 \
   --remote-debugging-port=9222
 ```
 

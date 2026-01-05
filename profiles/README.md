@@ -104,7 +104,7 @@ const browser = await chromium.launch({
     // ⚠️ PROXY CONFIGURATION:
     // Use --proxy-server flag instead of framework-specific proxy options
     // This ensures BotBrowser can retrieve geo information for accurate timezone/locale
-    '--proxy-server="socks5://usr:pwd@127.0.0.1:8989"',
+    '--proxy-server=socks5://usr:pwd@127.0.0.1:8989',
   ],
 });
 
@@ -142,7 +142,7 @@ await page.goto("https://abrahamjuliot.github.io/creepjs/");
 # Override session-specific settings via CLI
 chromium \
   --bot-profile="/absolute/path/to/profile.enc" \
-  --proxy-server="session_specific_proxy" \
+  --proxy-server=session_specific_proxy \
   --bot-title="current_session_id"
 ```
 

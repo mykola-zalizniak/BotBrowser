@@ -4,6 +4,8 @@ Comprehensive technical controls for fingerprint protection that prevent trackin
 
 Use this document for detailed technical reference behind the [README](README.md): implementation strategies for preventing fingerprint collection, protection controls, and privacy protection mechanisms not on the main page. Each section links back to the relevant quick-start guide (CLI flags, README, validation data) so you can jump between overview and implementation details quickly. For overall usage terms, refer to the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
 
+> License tiers: Some flags show tier hints in parentheses (PRO, ENT Tier1/Tier2/Tier3); those options are subscription-gated.
+
 ## Overview
 
 BotBrowser provides multi-layer controls to maintain protected fingerprints across all platforms. These mechanisms support research into fingerprint based tracking prevention, cross-platform privacy protection, and reproducible privacy protection validation.
@@ -12,7 +14,7 @@ BotBrowser provides multi-layer controls to maintain protected fingerprints acro
 
 ## Capabilities Index
 
-[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#graphics-rendering-engine), [WebGL/WebGPU param control](#graphics-rendering-engine), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#configuration-and-control), [per-context proxy geo (ENT Tier1 feature)](#enhanced-proxy-system), [DNS-through-proxy](#enhanced-proxy-system), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS fingerprint (JA3/JARM)](#network-fingerprint-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency)
+[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#graphics-rendering-engine), [WebGL/WebGPU param control](#graphics-rendering-engine), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#configuration-and-control), [per-context proxy (ENT Tier1) geo](#enhanced-proxy-system), [DNS-through-proxy](#enhanced-proxy-system), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS fingerprint (JA3/JARM)](#network-fingerprint-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency)
 
 <a id="configuration-and-control"></a>
 ## Configuration & Control
@@ -25,11 +27,11 @@ BotBrowser provides multi-layer controls to maintain protected fingerprints acro
 - **Dynamic Configuration:** Ideal for scripts and CI/CD
 - **Session Isolation:** Clean separation across instances
 
-**Examples (brand identity/UA overrides are PRO-tier features):**
+**Examples:**
 ```bash
 # Override browser brand and WebGL settings
 chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" \
-           --bot-config-browser-brand="edge"   # PRO feature
+           --bot-config-browser-brand="edge"   # (PRO)
 
 # Auto-detect location and language from proxy IP
 chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" \
@@ -52,7 +54,7 @@ Comprehensive tools for session control and identification.
 - `--bot-bookmarks` - JSON string containing bookmark data for startup
 - Maintains session state across restarts
 - Adds authenticity to browser fingerprint
-- `--bot-inject-random-history` (PRO feature) - optional history augmentation for session authenticity
+- `--bot-inject-random-history` (PRO) - optional history augmentation for session authenticity
 
 **Example:**
 ```bash
@@ -64,26 +66,26 @@ chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" \
 
 <a id="enhanced-proxy-system"></a>
 ### Enhanced Proxy System
-Rebuilt for stability, per-context support (ENT Tier1 feature), and DNS-leak protection.
+Rebuilt for stability, per-context support (ENT Tier1), and DNS-leak protection.
 
 **Embedded Credentials:**
 ```bash
 # HTTP/HTTPS proxy with credentials
---proxy-server="http://username:password@proxy.example.com:8080"
---proxy-server="https://username:password@proxy.example.com:8080"
+--proxy-server=http://username:password@proxy.example.com:8080
+--proxy-server=https://username:password@proxy.example.com:8080
 
 # SOCKS5 proxy with credentials
---proxy-server="socks5://username:password@proxy.example.com:1080"
+--proxy-server=socks5://username:password@proxy.example.com:1080
 ```
 
 Structured proxy usernames: Some providers encode routing hints in the username. BotBrowser supports separators like `,` and `｜` inside the username so formats like the following remain parseable:
 
 ```bash
---proxy-server="socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080"
+--proxy-server=socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080
 ```
 
 
-**Per-Context Proxy Support (ENT Tier1 feature):**
+**Per-Context Proxy Support (ENT Tier1):**
 ```javascript
 // Playwright example with different proxies per context
 const browser = await chromium.launch({
@@ -102,20 +104,20 @@ const context2 = await browser.newContext({
 });
 ```
 
-Automatic geo-detection (ENT Tier1 feature): Each context derives timezone, locale, and languages from its proxy IP, so no manual setup is needed.
+Automatic geo-detection: Each context (ENT Tier1) derives timezone, locale, and languages from its proxy IP, so no manual setup is needed.
 
 Performance tip: If all contexts share the same proxy IP, set `--proxy-ip` to skip repeated lookups.
 
 **Performance Optimization:**
 ```bash
 # Skip IP lookups for faster page loads
---proxy-server="http://user:pass@proxy.com:8080" --proxy-ip="203.0.113.1"
+--proxy-server=http://user:pass@proxy.com:8080 --proxy-ip=203.0.113.1
 ```
 
 **DNS & IP Discovery**
 - **DNS-leak protection:** SOCKS5 proxies prevent local DNS resolution, and all domain lookups go through the proxy tunnel.
-- **UDP over SOCKS5 (ENT Tier3 feature):** Automatically attempts UDP associate to tunnel QUIC/STUN where supported; ICE presets can often be skipped when UDP is available.
-- **Local DNS solver (ENT Tier1 feature):** Enable `--bot-local-dns` when you want faster resolution, want to avoid DNS poisoning, or your proxy provider restricts DNS behavior. This keeps DNS resolution local while the rest of the proxy and geo pipeline remains protected.
+- **UDP over SOCKS5 (ENT Tier3):** Automatically attempts UDP associate to tunnel QUIC/STUN where supported; ICE presets can often be skipped when UDP is available.
+- **Local DNS solver (ENT Tier1):** Enable `--bot-local-dns` when you want faster resolution, want to avoid DNS poisoning, or your proxy provider restricts DNS behavior. This keeps DNS resolution local while the rest of the proxy and geo pipeline remains protected.
 - **Custom public IP service:** Use `--bot-ip-service` to point BotBrowser at your preferred IP lookup endpoint when you need deterministic egress discovery or an in-house IP service. You can provide multiple endpoints separated by commas, and BotBrowser will race them and pick the fastest successful response.
 
 **Important:** Always use BotBrowser's proxy options over framework-specific settings to ensure geo-detection remains accurate and protected.
@@ -123,8 +125,8 @@ Performance tip: If all contexts share the same proxy IP, set `--proxy-ip` to sk
 ```bash
 # Example: true full-proxy QUIC/STUN (Chromium-level UDP associate, no ProxyChains hacks)
 chromium-browser --bot-profile="/abs/profile.enc" \
-  --proxy-server="socks5://user:pass@proxy.example.com:1080" \
-  --bot-webrtc-ice=google  # PRO feature
+  --proxy-server=socks5://user:pass@proxy.example.com:1080 \
+  --bot-webrtc-ice=google  # PRO
 ```
 
 <a id="network-fingerprint-control"></a>
@@ -134,15 +136,15 @@ chromium-browser --bot-profile="/abs/profile.enc" \
 
 - **HTTP Headers & Protocol:** Chrome-like request headers; authentic HTTP/2 and HTTP/3 behavior (see Chrome Behavior Emulation).
 - **DNS Routing:** SOCKS5 avoids local DNS resolution; all lookups go through the proxy tunnel (see Enhanced Proxy System).
-- **UDP over SOCKS5 (ENT Tier3 feature):** Automatic UDP associate when supported to tunnel QUIC and STUN; ICE presets often unnecessary if UDP is available.
+- **UDP over SOCKS5 (ENT Tier3):** Automatic UDP associate when supported to tunnel QUIC and STUN; ICE presets often unnecessary if UDP is available.
 - **WebRTC:** SDP/ICE manipulation and candidate filtering to prevent local IP disclosure (see WebRTC Leak Protection).
 - **TLS Fingerprints (JA3/JARM/ALPN):** Status: Roadmap: evaluation in progress; goals include cipher/extension ordering and ALPN tuning.
 
 **Stack differentiators:**
 - Per-context proxies with proxy-based geo detection (timezone/locale/language) across contexts and sessions
 - DNS-through-proxy plus credentialed proxy URLs keep browser-level geo signals protected
-- UDP-over-SOCKS5 tunnel (ENT Tier3 feature) for QUIC/STUN so ICE presets are only needed when UDP is unavailable
-- Optional ICE control via `--bot-webrtc-ice` (PRO feature) when the proxy lacks UDP support
+- UDP-over-SOCKS5 tunnel (ENT Tier3) for QUIC/STUN so ICE presets are only needed when UDP is unavailable
+- Optional ICE control via `--bot-webrtc-ice` (PRO) when the proxy lacks UDP support
 - Chromium-level implementation that avoids external Go/ProxyChains hijacking; tunneling lives inside the network stack
 
 > Note: Most fingerprint browsers disable QUIC or avoid UDP entirely. BotBrowser implements UDP-over-SOCKS5 directly inside Chromium's network stack (no external proxy-chain hijacking) so QUIC/STUN stay proxied and consistent with TCP traffic.
@@ -159,7 +161,7 @@ Deterministic noise generation prevents fingerprint collection and reproducibili
 - **WebGPU**: Deterministic noise variance applied to WebGPU canvases by default so GPU-only analysis inherits the same reproducible noise characteristics without extra configuration
 - **AudioContext**: `--bot-config-noise-audio-context`
 - **ClientRects/TextRects**: `--bot-config-noise-client-rects`, `--bot-config-noise-text-rects`
-- **Deterministic noise seeds (ENT Tier2 feature)**: `--bot-noise-seed=1.05` (1.0 to 1.2 range) enables reproducible yet distinct noise fields for Canvas 2D, WebGL, WebGPU imagery, text metrics with HarfBuzz layout, ClientRects, and audio hashes so each seed configuration produces protected fingerprints for research purposes.
+- **Deterministic noise seeds (ENT Tier2)**: `--bot-noise-seed=1.05` (1.0 to 1.2 range) enables reproducible yet distinct noise fields for Canvas 2D, WebGL, WebGPU imagery, text metrics with HarfBuzz layout, ClientRects, and audio hashes so each seed configuration produces protected fingerprints for research purposes.
 
 Protection Model:
 - Stable noise algorithms maintain Session Consistency while varying across different sessions
@@ -171,7 +173,7 @@ Protection Model:
 ### Active Window Emulation
 Maintains protected window state to prevent focus-based tracking even when the host window is unfocused.
 
-- `--bot-always-active` (PRO feature) defaults to `true`, maintaining protected `blur` and `visibilitychange` event patterns and keeping `document.hidden=false` for reliable API behavior
+- `--bot-always-active` (PRO) defaults to `true`, maintaining protected `blur` and `visibilitychange` event patterns and keeping `document.hidden=false` for reliable API behavior
 - Configurable per-window to allow legitimate focus-change observation when required by applications
 - Protects against window focus based tracking heuristics that monitor caret blinking, FocusManager events, or inactive viewport throttling
 - README quick link: see [Workflows → Active Window](README.md#advanced-capabilities)
@@ -205,8 +207,8 @@ Complete WebRTC fingerprint protection and network privacy protection.
 - MediaStream API protection across execution contexts
 - RTCPeerConnection behavior standardization
 - Network topology protection through controlled signal patterns
-- ICE server presets and custom lists via `--bot-webrtc-ice` (PRO feature) to standardize STUN and TURN endpoints observed by page JavaScript
-- Combined with UDP-over-SOCKS5 (ENT Tier3 feature) you achieve Chromium-level QUIC and STUN tunneling for complete network protection; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) for implementation examples.
+- ICE server presets and custom lists via `--bot-webrtc-ice` (PRO) to standardize STUN and TURN endpoints observed by page JavaScript
+- Combined with UDP-over-SOCKS5 (ENT Tier3) you achieve Chromium-level QUIC and STUN tunneling for complete network protection; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) for implementation examples.
 
 <a id="chrome-behavior-emulation"></a>
 ### Chrome Behavior Emulation
@@ -222,8 +224,8 @@ Consistent Chrome compatible behaviors and standardized API responses.
 - Consistent behavior with standard services integration
 - Standardized JavaScript API responses matching Chrome specifications
 
-**Widevine CDM Integration (ENT Tier2 feature):**
-> Note: BotBrowser does not distribute proprietary modules (e.g., Widevine). End users must obtain playback components via official channels, and this integration is available only in ENT Tier2 feature.
+**Widevine CDM Integration (ENT Tier2):**
+> Note: BotBrowser does not distribute proprietary modules (e.g., Widevine). End users must obtain playback components via official channels.
 
 ---
 
@@ -312,13 +314,13 @@ Compact overview; expand for full details.
 ### Precise FPS Simulation
 Advanced frame-rate and performance emulation.
 
-**Refresh-Rate Control: (ENT Tier2 feature)**
+**Refresh-Rate Control: (ENT Tier2)**
 - requestAnimationFrame delay matching target FPS
 - Emulate target refresh rates (60Hz, 120Hz, 144Hz, etc.)
 - Simulate high-FPS macOS behavior on Ubuntu hosts
 - Authentic vsync and frame timing patterns
 
-**Performance Timing: (ENT Tier1 feature)**
+**Performance Timing: (ENT Tier1)**
 - Realistic frame drops and performance variations
 - GPU rendering timing simulation
 - Runtime timing scaling via `--bot-time-scale` to compress `performance.now()` deltas for low-load simulation (e.g., `--bot-time-scale=0.92` for high-load emulation)
@@ -343,7 +345,7 @@ Fine-grained tuning for authentic device simulation.
 - WebAssembly performance simulation
 - Crypto API timing characteristics
 - Web Worker performance patterns
-- Deterministic noise seeds via `--bot-noise-seed` (ENT Tier2 feature) to stabilize noise distributions across sessions (`--bot-noise-seed=1.07`)
+- Deterministic noise seeds via `--bot-noise-seed` (ENT Tier2) to stabilize noise distributions across sessions (`--bot-noise-seed=1.07`)
 
 ### Extended Media Types & WebCodecs APIs
 Comprehensive media-format support and codec emulation.
@@ -362,7 +364,7 @@ Comprehensive media-format support and codec emulation.
 - Encoding capability emulation
 
 **Media Capabilities:**
-- Realistic mediaCapabilities.decodingInfo() responses (ENT Tier2 feature for DRM probing parity)
+- Realistic mediaCapabilities.decodingInfo() responses (ENT Tier2)
 - Power efficiency reporting simulation
 - Smooth playback prediction accuracy
 - HDR and wide gamut support detection
@@ -612,7 +614,7 @@ For technical questions about advanced features, implementation details, or cust
 ---
 
 <a id="mirror-distributed-privacy-consistency"></a>
-## Mirror: Distributed Privacy Consistency (ENT Tier3 feature)
+## Mirror: Distributed Privacy Consistency (ENT Tier3)
 
 Ensure your privacy defenses work consistently across platforms and networks. Run a controller instance and multiple clients to verify that all instances maintain identical privacy protection against tracking, protecting you across Windows, macOS, Linux, and remote deployment environments.
 
