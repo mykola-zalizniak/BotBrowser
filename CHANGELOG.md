@@ -3,6 +3,11 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [botbrowser@bk.ru](mailto:botbrowser@bk.ru).
 
 
+## [2026-01-08]
+### Major
+- **Chromium Core → 143.0.7499.194**: Updated the engine to 143.0.7499.194 to stay aligned with the latest Chrome release. This maintains Web Platform parity, rendering consistency, and security patches with upstream.
+
+
 ## [2026-01-05]
 ### Major
 - **Mirror: Distributed Privacy Consistency (ENT Tier3)**: Verify privacy protection works reliably across platforms and networks. Run a controller instance and multiple clients to ensure identical privacy defenses against tracking across Windows, macOS, Linux, and remote environments. Controller captures input events (mouse, keyboard, scroll) and broadcasts them to clients in real time via TCP, enabling synchronous privacy validation across geographies and platforms.
