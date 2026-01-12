@@ -184,9 +184,9 @@ chromium \
 
 ### Tiered capabilities (subscription-gated):
 
-- **PRO** — Browser brand/UA overrides (`browserBrand`, `uaFullVersion`, `brandFullVersion`), WebRTC ICE presets, augmented history, always-active tabs.
-- **ENT Tier1** — Runtime timing scaler (`--bot-time-scale`) for compressing `performance.now()` intervals.
-- **ENT Tier2** — Deterministic noise seed (`--bot-noise-seed`) to stabilize Canvas/WebGL/Audio noise across sessions.
+- **PRO** — Augmented history (`injectRandomHistory`), always-active tabs (`alwaysActive`).
+- **ENT Tier1** — Runtime timing scaler (`--bot-time-scale`), WebRTC ICE presets (`webrtcICE`), console message suppression (`disableConsoleMessage`), geo overrides (`locale`, `timezone`, `languages`, `location`), proxy IP (`--proxy-ip`), cookies (`--bot-cookies`).
+- **ENT Tier2** — Browser brand/UA overrides (`browserBrand`, `uaFullVersion`, `brandFullVersion`), deterministic noise seed (`--bot-noise-seed`).
 - **ENT Tier3** — UDP-over-SOCKS5 tunneling for QUIC/STUN when the proxy supports UDP associate.
 - See [CLI_FLAGS](CLI_FLAGS.md) and [PROFILE_CONFIGS](PROFILE_CONFIGS.md) for full flag coverage and usage examples.
 

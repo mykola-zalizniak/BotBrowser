@@ -116,7 +116,7 @@ Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/
 > **Professional-grade privacy technology** built on multi-layer fingerprint protection, network-stack control, and hardening.
 
 - **Multi Layer Noise**: Canvas, WebGL, WebGPU, text, and AudioContext surfaces share deterministic, cross-worker noise with low-level Skia and HarfBuzz tuning so observers cannot correlate runs
-- **Execution Environment Isolation**: Clean execution contexts prevent framework artifacts from exposing privacy leaks, framework-less `--bot-script`, and console suppression PRO toggles maintain protected fingerprints across all execution modes
+- **Execution Environment Isolation**: Clean execution contexts prevent framework artifacts from exposing privacy leaks, framework-less `--bot-script`, and console suppression (ENT Tier1) maintain protected fingerprints across all execution modes
 - **Configurable Stack**: 30+ CLI overrides, per-context proxies (ENT Tier1) with auto geo, and session tooling (cookies, bookmarks, title, history) make privacy scripting flexible
 - **Typography Fidelity**: DOM text renders from embedded Windows, macOS, and Android font packs so host fonts never leak during cross-OS simulation
 - **Client Hints Lockstep**: DPR, device-memory, and UA-CH headers match JavaScript-visible values to keep header data in sync with runtime fingerprints

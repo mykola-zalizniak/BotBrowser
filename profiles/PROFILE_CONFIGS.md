@@ -84,20 +84,20 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 | ------------------------------- | ----------------------------------------------------------------------------------------- | ----------- |
 | `languages`                     | HTTP `Accept-Language` header values and `navigator.languages`. `auto` = IP-based       | `auto`    |
 | `locale`                        | Browser locale (e.g., en-US, fr-FR, de-DE). `auto` = derived from proxy IP and language settings | `auto`    |
-| `uaFullVersion` (PRO feature)   | Overrides the full browser version returned by `navigator.userAgentData.fullVersion`; must match the Chromium major version (e.g. for major version 138, the full version must start with “138.”). | `""`        |
+| `uaFullVersion` (ENT Tier2)   | Overrides the full browser version returned by `navigator.userAgentData.fullVersion`; must match the Chromium major version (e.g. for major version 138, the full version must start with "138."). | `""`        |
 | `colorScheme`                   | Preferred color scheme: light or dark.                                            | `light`   |
 | `disableDeviceScaleFactorOnGUI` | If `true`, ignore device scale factor for GUI elements (disable DPI-based UI scaling).    | `false`     |
-| `disableConsoleMessage` (PRO)        | Suppresses console message forwarding into page contexts and CDP logs to prevent CDP log noise from leaking. | `true`     |
+| `disableConsoleMessage` (ENT Tier1)        | Suppresses console message forwarding into page contexts and CDP logs to prevent CDP log noise from leaking. | `true`     |
 | `timezone`                      | `auto` = IP-based; `real` = system timezone; any other string = custom timezone name. | `auto`    |
 | `location`                      | `auto` = IP-based; `real` = system (GPS); object = custom coordinates (`lat`, `lon`). | `auto`    |
-| `browserBrand` (PRO feature)    | override for `navigator.userAgentData.brands` and related UA fields. Supports chromium, chrome, edge, brave, opera. | `chrome`    |
-| `brandFullVersion` (PRO feature)| Optional brand-specific full version string for UA-CH tuples (Edge/Opera cadences). | `""`    |
+| `browserBrand` (ENT Tier2)    | override for `navigator.userAgentData.brands` and related UA fields. Supports chromium, chrome, edge, brave, opera. | `chrome`    |
+| `brandFullVersion` (ENT Tier2)| Optional brand-specific full version string for UA-CH tuples (Edge/Opera cadences). | `""`    |
 | `injectRandomHistory` (PRO feature) | Optionally adds synthetic navigation history for fingerprint protection in browser state testing. | `false`    |
 | `disableDebugger`               | Prevents unintended interruptions from JavaScript debugger statements during fingerprint protection workflows. | `true`     |
 | `keyboard`                      | Choose keyboard fingerprint source: `profile` (emulated from profile) or `real` (use system keyboard). | `profile` |
 | `mediaTypes`                    | Media types behavior: `expand` (prefer local decoders), `profile` (profile-defined list), `real` (native system). | `expand` |
 | `alwaysActive` (PRO feature)    | Keep windows/tabs in an active state to suppress `blur`/`visibilitychange` events and `document.hidden=true`. | `true` |
-| `webrtcICE` (PRO feature)       | ICE server preset (`google`) or custom list via `custom:stun:host:port,turn:host:port`. | `google` |
+| `webrtcICE` (ENT Tier1)       | ICE server preset (`google`) or custom list via `custom:stun:host:port,turn:host:port`. | `google` |
 | `mobileForceTouch`              | Force touch events on/off when simulating mobile devices (`true`, `false`).          | `false`    |
 
 ### Proxy Settings
