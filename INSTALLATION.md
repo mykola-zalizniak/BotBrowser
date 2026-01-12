@@ -23,9 +23,18 @@ Get the installer for your OS from the [Releases](https://github.com/botswin/Bot
 | **Antivirus blocking execution** | Add BotBrowser directory to antivirus exclusions |
 
 #### Windows Command-Line Example
+
+**CMD:**
 ```cmd
-chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" --user-data-dir="%TEMP%\\botprofile_%RANDOM%"
+chrome.exe --bot-profile="C:\absolute\path\to\profile.enc" --user-data-dir="%TEMP%\botprofile_%RANDOM%"
 ```
+
+**PowerShell:**
+```powershell
+.\chrome.exe --bot-profile="C:\absolute\path\to\profile.enc" --user-data-dir="$env:TEMP\botprofile_$(Get-Random)"
+```
+
+> **Note:** CMD uses `%VAR%` syntax while PowerShell uses `$env:VAR`. The `%RANDOM%` variable only works in CMD; use `$(Get-Random)` in PowerShell.
 
 ### 3. macOS Installation
 
