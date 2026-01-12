@@ -46,8 +46,8 @@ BotBrowser uses a three-tier priority system for configuration:
 # Use CLI flags to override profile settings dynamically (timezone/locale auto-detected)
 chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
-  --bot-config-browser-brand="edge" \  # PRO feature
-  --bot-config-brand-full-version="142.0.3595.65"  # PRO feature
+  --bot-config-browser-brand="edge" \  # ENT Tier2 feature
+  --bot-config-brand-full-version="142.0.3595.65"  # ENT Tier2 feature
 ```
 
 > **Complete CLI flags reference:** [CLI Flags Reference](../CLI_FLAGS.md#profile-configuration-override-flags)

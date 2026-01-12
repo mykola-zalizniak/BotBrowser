@@ -88,8 +88,8 @@ ENT Tier3 adds built-in SOCKS5 UDP ASSOCIATE support with no extra flag required
 --proxy-server=socks5://username:password@proxy.example.com:1080
 ```
 
-### `--proxy-ip`
-Specify the proxy’s public IP to optimize performance.
+### `--proxy-ip` (ENT Tier1)
+Specify the proxy's public IP to optimize performance.
 
 This skips per-page IP lookups and speeds up navigation.
 
@@ -152,7 +152,7 @@ Sets custom browser window title and taskbar/dock icon label.
 - Displays as a label next to the Refresh button
 - Useful for managing multiple instances
 
-### `--bot-cookies`
+### `--bot-cookies` (ENT Tier1)
 Session restoration and cookie management.
 
 Accepts cookie data as either inline JSON or from a file.
@@ -230,13 +230,13 @@ BotBrowser supports command-line flags that override profile configuration value
 Flags that directly map to profile `configs` and override them at runtime.
 
 **Identity & Locale**
-- `--bot-config-browser-brand=chrome` (PRO): Browser brand: chrome, chromium, edge, brave, opera
-- `--bot-config-brand-full-version=142.0.3595.65` (PRO): Brand-specific full version (Edge/Opera cadence) for UA-CH congruence
-- `--bot-config-ua-full-version=142.0.7444.60` (PRO): User agent version: full version string matching Chromium major
-- `--bot-config-languages=auto`: Languages: "lang1,lang2" (comma-separated) or "auto" (IP-based)
-- `--bot-config-locale=auto`: Browser locale: e.g. en-US, fr-FR, de-DE, or "auto" (derived from IP/language)
-- `--bot-config-timezone=auto`: Timezone: auto (IP-based), real (system), or timezone name
-- `--bot-config-location=40.7128,-74.0060`: Location: "lat,lon" (coordinates) or "auto" (IP-based)
+- `--bot-config-browser-brand=chrome` (ENT Tier2): Browser brand: chrome, chromium, edge, brave, opera
+- `--bot-config-brand-full-version=142.0.3595.65` (ENT Tier2): Brand-specific full version (Edge/Opera cadence) for UA-CH congruence
+- `--bot-config-ua-full-version=142.0.7444.60` (ENT Tier2): User agent version: full version string matching Chromium major
+- `--bot-config-languages=auto` (ENT Tier1): Languages: "lang1,lang2" (comma-separated) or "auto" (IP-based)
+- `--bot-config-locale=auto` (ENT Tier1): Browser locale: e.g. en-US, fr-FR, de-DE, or "auto" (derived from IP/language)
+- `--bot-config-timezone=auto` (ENT Tier1): Timezone: auto (IP-based), real (system), or timezone name
+- `--bot-config-location=40.7128,-74.0060` (ENT Tier1): Location: "lat,lon" (coordinates) or "auto" (IP-based)
 
 **Display & Input**
 - `--bot-config-window=profile`: Window dimensions: profile (use profile), real (system window)
@@ -267,10 +267,10 @@ Runtime toggles that don’t rely on profile `configs` but still override behavi
 
 - `--bot-disable-debugger`: Ignore JavaScript `debugger` statements to avoid pauses
 - `--bot-mobile-force-touch`: Force touch events on/off for mobile device simulation
-- `--bot-disable-console-message` (PRO): Suppress console.* output from CDP logs (default true); prevents framework hooks from enabling `Console.enable`/`Runtime.enable`, which blocks fingerprint signals.
+- `--bot-disable-console-message` (ENT Tier1): Suppress console.* output from CDP logs (default true); prevents framework hooks from enabling `Console.enable`/`Runtime.enable`, which blocks fingerprint signals.
 - `--bot-inject-random-history` (PRO): Add synthetic browsing history for session authenticity
 - `--bot-always-active` (PRO): Keep windows/tabs active even when unfocused
-- `--bot-webrtc-ice=google` (PRO): Override STUN/TURN endpoints observed by JavaScript/WebRTC to control ICE signaling; accepts presets (`google`) or `custom:stun:...,turn:...`
+- `--bot-webrtc-ice=google` (ENT Tier1): Override STUN/TURN endpoints observed by JavaScript/WebRTC to control ICE signaling; accepts presets (`google`) or `custom:stun:...,turn:...`
 - `--bot-time-scale` (ENT Tier1): Float < 1.0; scales down `performance.now()` intervals to emulate lower load and reduce timing skew signals (typical range 0.80–0.99)
 - `--bot-noise-seed` (ENT Tier2): Float seed (1.0–1.2) for the deterministic noise RNG; each seed augments privacy variance across Canvas 2D/WebGL/WebGPU images, text metrics, HarfBuzz layout, ClientRect measurements, and offline audio hashes so you can treat a seed as a reproducible fingerprint ID per tenant while keeping runs stable.
 
@@ -333,14 +333,14 @@ chromium-browser \
 # Override only what you need (timezone/locale auto-detected)
 chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
-  --bot-config-browser-brand="edge" \  # PRO feature
+  --bot-config-browser-brand="edge" \  # ENT Tier2 feature
   --bot-title="Custom Session"
 
 # Active window + custom ICE servers
 chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
   --bot-always-active \  # PRO feature
-  --bot-webrtc-ice="custom:stun:stun.l.google.com:19302,turn:turn.example.com"   # PRO feature
+  --bot-webrtc-ice="custom:stun:stun.l.google.com:19302,turn:turn.example.com"   # ENT Tier1 feature
 ```
 
 ### Multi-instance setup
@@ -348,7 +348,7 @@ chromium-browser \
 # Instance 1 - Chrome brand with profile window settings
 chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
-  --bot-config-browser-brand="chrome" \  # PRO feature
+  --bot-config-browser-brand="chrome" \  # ENT Tier2 feature
   --bot-config-window="profile" \
   --bot-cookies='[{"name":"sessionid","value":"abc123","domain":".example.com"}]' \
   --bot-bookmarks='[{"title":"Work Site","url":"https://work.com","type":"url"}]' \
@@ -357,7 +357,7 @@ chromium-browser \
 # Instance 2 - Edge brand with real window settings
 chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
-  --bot-config-browser-brand="edge" \  # PRO feature
+  --bot-config-browser-brand="edge" \  # ENT Tier2 feature
   --bot-config-window="real" \
   --user-data-dir="/tmp/instance2" &
 ```

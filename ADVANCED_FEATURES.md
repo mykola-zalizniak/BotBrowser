@@ -31,7 +31,7 @@ BotBrowser provides multi-layer controls to maintain protected fingerprints acro
 ```bash
 # Override browser brand and WebGL settings
 chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" \
-           --bot-config-browser-brand="edge"   # (PRO)
+           --bot-config-browser-brand="edge"   # (ENT Tier2)
 
 # Auto-detect location and language from proxy IP
 chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" \
@@ -126,7 +126,7 @@ Performance tip: If all contexts share the same proxy IP, set `--proxy-ip` to sk
 # Example: true full-proxy QUIC/STUN (Chromium-level UDP associate, no ProxyChains hacks)
 chromium-browser --bot-profile="/abs/profile.enc" \
   --proxy-server=socks5://user:pass@proxy.example.com:1080 \
-  --bot-webrtc-ice=google  # PRO
+  --bot-webrtc-ice=google  # ENT Tier1
 ```
 
 <a id="network-fingerprint-control"></a>
@@ -144,7 +144,7 @@ chromium-browser --bot-profile="/abs/profile.enc" \
 - Per-context proxies with proxy-based geo detection (timezone/locale/language) across contexts and sessions
 - DNS-through-proxy plus credentialed proxy URLs keep browser-level geo signals protected
 - UDP-over-SOCKS5 tunnel (ENT Tier3) for QUIC/STUN so ICE presets are only needed when UDP is unavailable
-- Optional ICE control via `--bot-webrtc-ice` (PRO) when the proxy lacks UDP support
+- Optional ICE control via `--bot-webrtc-ice` (ENT Tier1) when the proxy lacks UDP support
 - Chromium-level implementation that avoids external Go/ProxyChains hijacking; tunneling lives inside the network stack
 
 > Note: Most fingerprint browsers disable QUIC or avoid UDP entirely. BotBrowser implements UDP-over-SOCKS5 directly inside Chromium's network stack (no external proxy-chain hijacking) so QUIC/STUN stay proxied and consistent with TCP traffic.
@@ -207,7 +207,7 @@ Complete WebRTC fingerprint protection and network privacy protection.
 - MediaStream API protection across execution contexts
 - RTCPeerConnection behavior standardization
 - Network topology protection through controlled signal patterns
-- ICE server presets and custom lists via `--bot-webrtc-ice` (PRO) to standardize STUN and TURN endpoints observed by page JavaScript
+- ICE server presets and custom lists via `--bot-webrtc-ice` (ENT Tier1) to standardize STUN and TURN endpoints observed by page JavaScript
 - Combined with UDP-over-SOCKS5 (ENT Tier3) you achieve Chromium-level QUIC and STUN tunneling for complete network protection; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) for implementation examples.
 
 <a id="chrome-behavior-emulation"></a>

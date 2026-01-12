@@ -136,9 +136,9 @@
 
 Example (Edge browser emulation):
 ```bash
---bot-config-browser-brand=edge \  # PRO feature
---bot-config-ua-full-version=142.0.7444.135 \  # PRO feature
---bot-config-brand-full-version=142.0.3595.65  # PRO feature
+--bot-config-browser-brand=edge \  # ENT Tier2 feature
+--bot-config-ua-full-version=142.0.7444.135 \  # ENT Tier2 feature
+--bot-config-brand-full-version=142.0.3595.65  # ENT Tier2 feature
 ```
 
 - **Opera brand**: `--bot-config-browser-brand=opera` is supported. UA, Client Hints, and brand cues are shaped to look like real Opera.
@@ -181,7 +181,7 @@ Example (Edge browser emulation):
   Synced with the latest Chrome 142 stable to keep rendering, networking, storage, and media behavior aligned with upstream, reduce version-based heuristics, and inherit current security/perf updates.
 
 ### New
-- **`--bot-disable-console-message` (PRO, default: true)**  
+- **`--bot-disable-console-message` (ENT Tier1, default: true)**
   Disables console message output to avoid CDP log noise leaking into the page context or logs in production environments and blocks Console.enable/Runtime.enable stack getter detections (e.g., redefining `Error.stack` before `console.log(err)`). Tracks: issue **#75**.
 - **`--bot-config-fonts=expand` mode**  
   When a profile lacks specific fonts, `expand` will load additional system fonts to increase match rate and authenticity.
@@ -276,11 +276,11 @@ Example (Edge browser emulation):
   - **Examples**:
     - Google preset:
 ```bash
-      --bot-webrtc-ice=google  # PRO feature
+      --bot-webrtc-ice=google  # ENT Tier1 feature
       ```
     - Custom list (comma-separated):
       ```bash
-      --bot-webrtc-ice=custom:stun:stun.l.google.com:19302,turn:turn.example.com  # PRO feature
+      --bot-webrtc-ice=custom:stun:stun.l.google.com:19302,turn:turn.example.com  # ENT Tier1 feature
 ```
   - **Why**: Some probes (e.g., https://ipbinding.online/) try to infer the real network by observing TURN traffic; controlling ICE servers reduces unintended leakage.
 
@@ -542,7 +542,7 @@ Example (Edge browser emulation):
 
 #### Available Configuration Override Flags
 ```bash
---bot-config-browser-brand="chrome" # PRO feature: Browser brand: chrome, chromium, edge, brave
+--bot-config-browser-brand="chrome" # ENT Tier2 feature: Browser brand: chrome, chromium, edge, brave
 --bot-config-color-scheme="light" # Color scheme: light, dark
 --bot-disable-debugger=true # Disable JavaScript debugger: true, false
 --bot-config-disable-device-scale-factor=true # Disable device scale factor: true, false
@@ -561,7 +561,7 @@ Example (Edge browser emulation):
 --bot-config-screen="profile" # Screen: profile (use profile), real (system screen)
 --bot-config-speech-voices="profile" # Speech voices: profile (synthetic), real (system)
 --bot-config-timezone="auto" # Timezone: auto (IP-based), real (system), or TZ name
---bot-config-ua-full-version="139.0.6778.85" # PRO feature: UA full version string matching Chromium major
+--bot-config-ua-full-version="139.0.6778.85" # ENT Tier2 feature: UA full version string matching Chromium major
 --bot-config-webgl="profile" # WebGL: profile, real, disabled
 --bot-config-webgpu="profile" # WebGPU: profile, real, disabled
 --bot-config-webrtc="profile" # WebRTC: profile, real, disabled
