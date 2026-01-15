@@ -87,7 +87,9 @@ The script will:
   --bot-profile="/absolute/path/to/profile.enc"
 ```
 
-### 4. Ubuntu Installation
+### 4. Ubuntu Installation (ENT Tier1)
+
+> **Note:** Ubuntu/Linux binaries require an ENT Plan Tier 1 or higher subscription.
 
 #### Standard Installation
 1. Install via `dpkg`:

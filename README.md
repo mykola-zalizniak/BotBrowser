@@ -58,9 +58,9 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 
 ### Cross-Platform Fingerprint Protection
 
-- Single profile, every host OS: identical UA, screen metrics, touch surfaces, fonts, and device APIs on Windows, macOS, Linux, and Android emulation so trackers see the same fingerprint everywhere.
+- Single profile, every host OS: identical UA, screen metrics, touch surfaces, fonts, and device APIs on Windows and macOS (Linux requires ENT Tier1; Android profiles require PRO) so trackers see the same fingerprint everywhere.
 - Built-in configuration handles touch simulation, device metrics, and locale/timezone detection from the proxy IP while still allowing CLI overrides when privacy experiments require them.
-- Quick demos: [▶️ CreepJS Android](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs-Android) • [▶️ Iphey](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-iphey-iphey-Android) • [▶️ Pixelscan](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-pixelscan-pixelscan-Android)
+- Quick demos: [▶️ CreepJS Android](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs-Android) (PRO) • [▶️ Iphey](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-iphey-iphey-Android) (PRO) • [▶️ Pixelscan](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-pixelscan-pixelscan-Android) (PRO)
 
 ---
 
@@ -118,10 +118,10 @@ Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/
 - **Multi Layer Noise**: Canvas, WebGL, WebGPU, text, and AudioContext surfaces share deterministic, cross-worker noise with low-level Skia and HarfBuzz tuning so observers cannot correlate runs
 - **Execution Environment Isolation**: Clean execution contexts prevent framework artifacts from exposing privacy leaks, framework-less `--bot-script`, and console suppression (ENT Tier1) maintain protected fingerprints across all execution modes
 - **Configurable Stack**: 30+ CLI overrides, per-context proxies (ENT Tier1) with auto geo, and session tooling (cookies, bookmarks, title, history) make privacy scripting flexible
-- **Typography Fidelity**: DOM text renders from embedded Windows, macOS, and Android font packs so host fonts never leak during cross-OS simulation
+- **Typography Fidelity**: DOM text renders from embedded Windows and macOS font packs (Android fonts require PRO) so host fonts never leak during cross-OS simulation
 - **Client Hints Lockstep**: DPR, device-memory, and UA-CH headers match JavaScript-visible values to keep header data in sync with runtime fingerprints
 - **Headless ↔ GUI Parity**: Identical GPU, WebGPU, and media signals across browser modes so privacy regression tests remain stable
-- **Performance Controls**: Precision FPS (ENT Tier2) and memory timings plus timing controls (ENT Tier1) and noise seeds (ENT Tier2) for reproducible privacy benchmarks
+- **Performance Controls**: Precision FPS (ENT Tier2), timing controls (ENT Tier2), and noise seeds (ENT Tier2) for reproducible privacy benchmarks
 - **Focus & Session Control**: Always-active tabs, configurable ICE presets, and expanded media reporting keep privacy sessions believable
 - **Network Enhancements**: per-context proxies (ENT Tier1) and optional local DNS solver (ENT Tier1), UDP-over-SOCKS5 (ENT Tier3), and SOCKS5H protocol support for tunnel-based resolution
 
@@ -228,7 +228,7 @@ Our fingerprint protection validation examines how standardized browser fingerpr
 
 ### Cross-Platform Protection Validation
 - **Windows Profile on macOS:** Fingerprint protection maintained so privacy defenses remain effective across platforms
-- **Android Emulation on Desktop:** Mobile API parity enables fingerprint testing for cross-device privacy research
+- **Android Emulation on Desktop (PRO):** Mobile API parity enables fingerprint testing for cross-device privacy research
 - **Headless vs GUI Mode:** Identical fingerprint behavior ensures privacy validation results remain effective across execution contexts
 
 📖 **[Complete Validation Results & Research Data →](VALIDATION.md)** - 31+ tracking analysis scenarios, 15+ tracking methodologies, statistical analysis
@@ -241,7 +241,7 @@ Our fingerprint protection validation examines how standardized browser fingerpr
 
 | Document | Description | Content Preview |
 |----------|-------------|-----------------|
-| **[Installation Guide](INSTALLATION.md)** | Platform-specific setup | Windows/macOS/Ubuntu guides, Docker deployment, troubleshooting |
+| **[Installation Guide](INSTALLATION.md)** | Platform-specific setup | Windows/macOS guides, Ubuntu (ENT Tier1), Docker deployment, troubleshooting |
 | **[Advanced Features](ADVANCED_FEATURES.md)** | Technical capabilities | 30+ CLI flags, privacy noise augmentation, GPU micro-benchmarks |
 | **[Validation Results](VALIDATION.md)** | Research data | 31+ tracking observatories, 50,000+ test sessions, statistical analysis |
 | **[CLI Flags Reference](CLI_FLAGS.md)** | Command-line options | `--bot-config-*` flags, proxy auth, session management |

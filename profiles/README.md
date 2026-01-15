@@ -15,7 +15,7 @@ Profiles are encrypted files that define the environment a browser emulates, mai
 
 ### Cross-Platform Compatibility
 
-**BotBrowser capability:** Profile compatibility across host systems (Windows, macOS, Android, Ubuntu) prevents fingerprint collection identifying device switches.
+**BotBrowser capability:** Profile compatibility across host systems (Windows, macOS; Android requires PRO; Ubuntu requires ENT Tier1) prevents fingerprint collection identifying device switches.
 
 By using profiles, BotBrowser launches controlled sessions that simulate protected device behavior across operating systems, preventing cross-platform user identification.
 
@@ -179,14 +179,14 @@ chromium \
 - [x] **Customizable remote-debugging-address** (bind to 0.0.0.0)
 - [x] **Full window/screen size control via profile**
 - [x] **Advanced matchMedia simulation** for CSS feature compatibility
-- [x] **Android behavior simulation** for mobile compatibility
+- [x] **Android behavior simulation** for mobile compatibility (PRO)
 - [x] **Precision GPU and WebGL parameter configuration**
 
 ### Tiered capabilities (subscription-gated):
 
-- **PRO** — Augmented history (`injectRandomHistory`), always-active tabs (`alwaysActive`).
-- **ENT Tier1** — Runtime timing scaler (`--bot-time-scale`), WebRTC ICE presets (`webrtcICE`), console message suppression (`disableConsoleMessage`), geo overrides (`locale`, `timezone`, `languages`, `location`), proxy IP (`--proxy-ip`), cookies (`--bot-cookies`).
-- **ENT Tier2** — Browser brand/UA overrides (`browserBrand`, `uaFullVersion`, `brandFullVersion`), deterministic noise seed (`--bot-noise-seed`).
+- **PRO** — Android profile support, augmented history (`injectRandomHistory`), always-active tabs (`alwaysActive`).
+- **ENT Tier1** — Ubuntu/Linux binary, WebRTC ICE presets (`webrtcICE`), console message suppression (`disableConsoleMessage`), geo overrides (`locale`, `timezone`, `languages`, `location`), proxy IP (`--proxy-ip`), cookies (`--bot-cookies`).
+- **ENT Tier2** — Browser brand/UA overrides (`browserBrand`, `uaFullVersion`, `brandFullVersion`), deterministic noise seed (`--bot-noise-seed`), runtime timing scaler (`--bot-time-scale`).
 - **ENT Tier3** — UDP-over-SOCKS5 tunneling for QUIC/STUN when the proxy supports UDP associate.
 - See [CLI_FLAGS](CLI_FLAGS.md) and [PROFILE_CONFIGS](PROFILE_CONFIGS.md) for full flag coverage and usage examples.
 
@@ -197,7 +197,7 @@ chromium \
 | Category | Covered Elements |
 |----------|------------------|
 | **Browser** | Version, userAgentData, userAgent |
-| **Operating System** | Windows, macOS, Ubuntu, Android simulation |
+| **Operating System** | Windows, macOS, Ubuntu (ENT Tier1), Android simulation (PRO) |
 | **Navigator** | Languages, plugins, permissions, battery, keyboard |
 | **Graphics** | WebGL, WebGL2, GPUAdapter, GPUDevice |
 | **Hardware** | Screen, CPU, system fonts, system colors |
@@ -208,7 +208,7 @@ chromium \
 
 - **Use Premium Profiles** for production traffic
 - **Configure realistic settings** (screen size, devicePixelRatio, proxy)
-- **Choose appropriate profiles** (Android for mobile operations)
+- **Choose appropriate profiles** (Android for mobile operations requires PRO)
 - **Keep profiles updated** with the latest Chrome versions
 - **Test thoroughly** before production deployment
 

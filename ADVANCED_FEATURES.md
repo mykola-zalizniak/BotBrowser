@@ -241,7 +241,7 @@ Advanced font rendering with consistent results across hosts.
 **Built-In Font Libraries:**
 - Windows fonts (Segoe UI, Arial, Times New Roman, etc.)
 - macOS fonts (San Francisco, Helvetica, Times, etc.)
-- Android fonts (Roboto, Noto, etc.)
+- Android fonts (Roboto, Noto, etc.) (PRO)
 - Complete emoji sets for all platforms
 
 **Accurate Font-Fallback Chains:**
@@ -255,7 +255,7 @@ Advanced font rendering with consistent results across hosts.
 - Multi-language support (CJK/RTL/emoji)
 - Platform-specific font metrics
 - Consistent text measurement across workers
-- DOM text renders exclusively from the embedded Windows/macOS/Linux/Android font bundles so layouts never fall through to host fonts on the underlying machine
+- DOM text renders exclusively from the embedded Windows/macOS font bundles (Linux requires ENT Tier1; Android requires PRO) so layouts never fall through to host fonts on the underlying machine
 
 > **Implementation Detail:** Low-level rendering paths in Skia (2D/Canvas) and HarfBuzz (text shaping) are tuned where needed to align metrics and glyph shaping across OS targets. We also apply targeted WebGL/WebGPU parameter controls to keep visual output stable across contexts.
 
@@ -263,11 +263,11 @@ Advanced font rendering with consistent results across hosts.
 Maintains fingerprint and behavior consistency across different host systems.
 
 **Platform Profile Portability:**
-- Windows profile produces identical fingerprints on macOS and Linux hosts
-- macOS profile maintains consistency across Windows and Linux hosts
-- Android profile operates identically when emulated on any desktop OS
+- Windows profile produces identical fingerprints on macOS hosts and Linux (ENT Tier1) hosts
+- macOS profile maintains consistency across Windows hosts and Linux (ENT Tier1) hosts
+- Android profile (PRO) operates identically when emulated on any desktop OS
 - Fingerprint behavior remains consistent regardless of underlying host operating system
-- Android DevTools interface maintains readability during emulation because the inspector normalizes page zoom and font scaling so UI elements match authentic device behavior
+- Android DevTools interface (PRO) maintains readability during emulation because the inspector normalizes page zoom and font scaling so UI elements match authentic device behavior
 
 **Behavioral Consistency:**
 - Eliminates host OS specific behavioral differences
@@ -317,10 +317,10 @@ Advanced frame-rate and performance emulation.
 **Refresh-Rate Control: (ENT Tier2)**
 - requestAnimationFrame delay matching target FPS
 - Emulate target refresh rates (60Hz, 120Hz, 144Hz, etc.)
-- Simulate high-FPS macOS behavior on Ubuntu hosts
+- Simulate high-FPS macOS behavior on Ubuntu hosts (Ubuntu requires ENT Tier1)
 - Authentic vsync and frame timing patterns
 
-**Performance Timing: (ENT Tier1)**
+**Performance Timing: (ENT Tier2)**
 - Realistic frame drops and performance variations
 - GPU rendering timing simulation
 - Runtime timing scaling via `--bot-time-scale` to compress `performance.now()` deltas for low-load simulation (e.g., `--bot-time-scale=0.92` for high-load emulation)
@@ -396,8 +396,8 @@ Runtime OS-based feature loading for authentic behavior.
 **OS-Specific Features:**
 - Windows-specific Blink features
 - macOS-exclusive capabilities
-- Android mobile features
-- Linux distribution variations
+- Android mobile features (PRO)
+- Linux distribution variations (ENT Tier1)
 
 **Feature Detection:**
 - Authentic feature availability reporting
@@ -421,7 +421,7 @@ Comprehensive browser and OS emulation.
 | Component | Capabilities |
 |-----------|-------------|
 | **User Agent** | Version control, userAgentData brands, full version override |
-| **Platform Detection** | Windows/macOS/Android emulation with authentic APIs |
+| **Platform Detection** | Windows/macOS/Android(PRO) with authentic APIs |
 | **Browser Features** | Debugger disabling, CDP leak blocking, Chrome-specific behavior |
 | **Font System** | Built-in cross-platform fonts, Blink features, authentic fallback chains |
 | **Client Hints** | DPR, device-memory, UA-CH, and other CH values stay aligned with JavaScript-visible metrics so headers and runtime data always match |
