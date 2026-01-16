@@ -398,7 +398,7 @@ Detection System Tests (200+ scenarios)
 
 ---
 
-## ⚠️ Research Ethics Statement
+## Research Ethics Statement
 
 **Ethical Use Policy:** All users must obtain proper institutional approval and follow ethical research guidelines when conducting studies involving web services or user data.
 

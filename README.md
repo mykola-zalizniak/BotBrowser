@@ -3,7 +3,7 @@
 <h4 align="center">Advanced Privacy Browser Core with Unified Fingerprint Defense 🚀</h4>
 
 <p align="center">
-  Identical privacy posture on any OS • Cross-platform compatibility • Fingerprint protection validated across 31+ tracking scenarios
+  Identical privacy posture on any OS • Cross-platform & WebView simulation • Fingerprint protection validated across 31+ tracking scenarios
 </p>
 
 <p align="center">
@@ -43,7 +43,7 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 
 <table cellspacing="0" cellpadding="8">
   <tr>
-    <td width="50%"><strong>High-fidelity Profile Simulation</strong> keeps synthetic and aggregated fingerprints ready for policy-compliant privacy experiments</td>
+    <td width="50%"><strong>High-fidelity Profile Simulation</strong> including Android WebView, keeps synthetic and aggregated fingerprints ready for policy-compliant privacy experiments</td>
     <td width="50%"><strong>Latest Chromium Base</strong> stays synced to the newest stable Chrome so trackers cannot key on stale engines</td>
   </tr>
   <tr>
@@ -58,9 +58,9 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 
 ### Cross-Platform Fingerprint Protection
 
-- Single profile, every host OS: identical UA, screen metrics, touch surfaces, fonts, and device APIs on Windows and macOS (Linux requires ENT Tier1; Android profiles require PRO) so trackers see the same fingerprint everywhere.
+- Single profile, every host OS: identical UA, screen metrics, touch surfaces, fonts, and device APIs on Windows, macOS, Linux (ENT Tier1), Android (PRO), and WebView (ENT Tier3) so trackers see the same fingerprint everywhere.
 - Built-in configuration handles touch simulation, device metrics, and locale/timezone detection from the proxy IP while still allowing CLI overrides when privacy experiments require them.
-- Quick demos: [▶️ CreepJS Android](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs-Android) (PRO) • [▶️ Iphey](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-iphey-iphey-Android) (PRO) • [▶️ Pixelscan](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-pixelscan-pixelscan-Android) (PRO)
+- Quick demos: [▶️ CreepJS Android](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs-Android) • [▶️ Iphey](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-iphey-iphey-Android) • [▶️ Pixelscan](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-pixelscan-pixelscan-Android)
 
 ---
 
@@ -72,7 +72,7 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 - [Latest release](https://github.com/botswin/BotBrowser/releases) for your OS
 - [Demo profile](profiles/) (any `.enc` file)
 
-**Step 2: Launch** (⚠️ use absolute paths)
+**Step 2: Launch** (use absolute paths)
 - **Windows example:**
   ```cmd
   chrome.exe --bot-profile="C:\absolute\path\to\profile.enc" --user-data-dir="%TEMP%\botprofile_%RANDOM%"
@@ -84,7 +84,7 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 - Timezone/locale/language auto-derive from your proxy/IP; override via CLI only when needed.
 
 
-📖 **[Complete Installation Guide →](INSTALLATION.md)**
+**[Complete Installation Guide →](INSTALLATION.md)**
 
 ### Minimal Playwright Example
 
@@ -117,11 +117,11 @@ Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/
 
 - **Multi Layer Noise**: Canvas, WebGL, WebGPU, text, and AudioContext surfaces share deterministic, cross-worker noise with low-level Skia and HarfBuzz tuning so observers cannot correlate runs
 - **Execution Environment Isolation**: Clean execution contexts prevent framework artifacts from exposing privacy leaks, framework-less `--bot-script`, and console suppression (ENT Tier1) maintain protected fingerprints across all execution modes
-- **Configurable Stack**: 30+ CLI overrides, per-context proxies (ENT Tier1) with auto geo, and session tooling (cookies, bookmarks, title, history) make privacy scripting flexible
+- **Configurable Stack**: 50+ CLI overrides, per-context proxies (ENT Tier1) with auto geo, and session tooling (cookies, bookmarks, title, history) make privacy scripting flexible
 - **Typography Fidelity**: DOM text renders from embedded Windows and macOS font packs (Android fonts require PRO) so host fonts never leak during cross-OS simulation
-- **Client Hints Lockstep**: DPR, device-memory, and UA-CH headers match JavaScript-visible values to keep header data in sync with runtime fingerprints
+- **Client Hints Lockstep**: DPR, device-memory, and UA-CH headers match JavaScript-visible values; custom User-Agent with full userAgentData control (ENT Tier3)
 - **Headless ↔ GUI Parity**: Identical GPU, WebGPU, and media signals across browser modes so privacy regression tests remain stable
-- **Performance Controls**: Precision FPS (ENT Tier2), timing controls (ENT Tier2), and noise seeds (ENT Tier2) for reproducible privacy benchmarks
+- **Performance Controls (ENT Tier2)**: Precision FPS, timing controls, and noise seeds for reproducible privacy benchmarks
 - **Focus & Session Control**: Always-active tabs, configurable ICE presets, and expanded media reporting keep privacy sessions believable
 - **Network Enhancements**: per-context proxies (ENT Tier1) and optional local DNS solver (ENT Tier1), UDP-over-SOCKS5 (ENT Tier3), and SOCKS5H protocol support for tunnel-based resolution
 
@@ -160,7 +160,7 @@ This reference maps privacy protection goals to BotBrowser implementation detail
 </details>
 
 
-📖 **[Complete Advanced Features Documentation →](ADVANCED_FEATURES.md)**
+**[Complete Advanced Features Documentation →](ADVANCED_FEATURES.md)**
 
 
 
@@ -168,13 +168,13 @@ This reference maps privacy protection goals to BotBrowser implementation detail
 
 ## Configuration & Profiles
 
-> 📢 BotBrowser combines synthetic and aggregated profiles with flexible configuration for authorized privacy research. Profile protection and CLI settings enable comparative analysis without leaking host traits.
+> BotBrowser combines synthetic and aggregated profiles with flexible configuration for authorized privacy research. Profile protection and CLI settings enable comparative analysis without leaking host traits.
 
 - **Profile Foundation:** Synthetic and aggregated profiles provide realistic fingerprint data for authorized privacy testing
 - **CLI Flexibility:** Override profile settings at runtime without modifying encrypted files
 - **Cross-Platform Compatibility:** A *macOS profile* works on Ubuntu; a *Windows profile* works on macOS; an *Android profile* can be fully emulated on any OS
 - **Smart Configuration:** Timezone, locale, and languages intelligently derived from IP/proxy
-- **CLI Flags:** See the [⚙️ CLI flags reference](CLI_FLAGS.md) - *Recommended for most users*
+- **CLI Flags:** See the [CLI Flags Reference](CLI_FLAGS.md) - *Recommended for most users*
 
 
 > ⚠️ Note: This project must only be used in environments you own or where you have explicit authorization. Use against third-party services without permission is strictly prohibited and undermines the privacy mission.
@@ -231,7 +231,7 @@ Our fingerprint protection validation examines how standardized browser fingerpr
 - **Android Emulation on Desktop (PRO):** Mobile API parity enables fingerprint testing for cross-device privacy research
 - **Headless vs GUI Mode:** Identical fingerprint behavior ensures privacy validation results remain effective across execution contexts
 
-📖 **[Complete Validation Results & Research Data →](VALIDATION.md)** - 31+ tracking analysis scenarios, 15+ tracking methodologies, statistical analysis
+**[Complete Validation Results & Research Data →](VALIDATION.md)** - 31+ tracking analysis scenarios, 15+ tracking methodologies, statistical analysis
 
 ---
 
@@ -242,9 +242,9 @@ Our fingerprint protection validation examines how standardized browser fingerpr
 | Document | Description | Content Preview |
 |----------|-------------|-----------------|
 | **[Installation Guide](INSTALLATION.md)** | Platform-specific setup | Windows/macOS guides, Ubuntu (ENT Tier1), Docker deployment, troubleshooting |
-| **[Advanced Features](ADVANCED_FEATURES.md)** | Technical capabilities | 30+ CLI flags, privacy noise augmentation, GPU micro-benchmarks |
+| **[Advanced Features](ADVANCED_FEATURES.md)** | Technical capabilities | 50+ CLI flags, privacy noise augmentation, GPU micro-benchmarks |
 | **[Validation Results](VALIDATION.md)** | Research data | 31+ tracking observatories, 50,000+ test sessions, statistical analysis |
-| **[CLI Flags Reference](CLI_FLAGS.md)** | Command-line options | `--bot-config-*` flags, proxy auth, session management |
+| **[CLI Flags Reference](CLI_FLAGS.md)** | Command-line options | `--bot-*` flags, proxy auth, session management |
 | **[Profile Configuration](profiles/PROFILE_CONFIGS.md)** | Profile customization | Fingerprint control, cross-platform compatibility |
 | **[Mirror](tools/mirror/)** | Distributed privacy consistency | Verify privacy protection across multiple browser instances simultaneously |
 | **[CanvasLab](tools/canvaslab/)** | Canvas forensics tool | Canvas 2D recording with JSONL viewer (deterministic replay under development) |
@@ -264,8 +264,8 @@ Our fingerprint protection validation examines how standardized browser fingerpr
 ### Support Channels
 
 <table>
-  <tr><td>📧 Email</td><td>Technical questions, source code access</td><td><a href="mailto:botbrowser@bk.ru">botbrowser@bk.ru</a></td></tr>
-  <tr><td>📱 Telegram</td><td>Community support, quick questions</td><td><a href="https://t.me/botbrowser_support">@botbrowser_support</a></td></tr>
+  <tr><td>Email</td><td>Technical questions, source code access</td><td><a href="mailto:botbrowser@bk.ru">botbrowser@bk.ru</a></td></tr>
+  <tr><td>Telegram</td><td>Community support, quick questions</td><td><a href="https://t.me/botbrowser_support">@botbrowser_support</a></td></tr>
 </table>
 
 ### Building from Source

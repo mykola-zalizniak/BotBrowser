@@ -3,6 +3,16 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [botbrowser@bk.ru](mailto:botbrowser@bk.ru).
 
 
+## [2026-01-16]
+### Major
+- **Chromium Core → 144.0.7559.76**: Updated the engine to the latest Chrome 144 stable (144.0.7559.76). This keeps Web Platform behavior, rendering consistency, and security patches aligned with upstream Chrome.
+
+- **Custom User-Agent and userAgentData (ENT Tier3)**: Full control over User-Agent string and `navigator.userAgentData` for building any browser identity, including Android WebView simulation. Configure platform, platformVersion, model, architecture, bitness, and mobile flag via `--user-agent` with placeholders (`{platform}`, `{model}`, etc.) that get replaced at runtime. BotBrowser auto-generates matching brands, fullVersionList with GREASE, and Sec-CH-UA-* headers. Values stay consistent across main thread, workers, and HTTP requests. See [CLI_FLAGS.md](CLI_FLAGS.md#custom-user-agent-with-webview-ent-tier3) for usage.
+
+### Improvements
+- **UDP over SOCKS5 stability (ENT Tier3)**: Improved UDP associate handling for QUIC and STUN traffic over SOCKS5 proxies. The implementation now handles complex network environments more gracefully, reducing connection timeouts, latency spikes, and stuttering during high-throughput or unstable network conditions.
+
+
 ## [2026-01-12]
 ### Major
 - **Chromium Core → 144.0.7559.59**: Updated the engine to Chrome 144 early release (144.0.7559.59) to stay ahead with the latest Chrome development. This maintains Web Platform parity, rendering consistency, and security patches with upstream.

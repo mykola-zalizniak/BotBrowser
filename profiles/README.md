@@ -19,7 +19,7 @@ Profiles are encrypted files that define the environment a browser emulates, mai
 
 By using profiles, BotBrowser launches controlled sessions that simulate protected device behavior across operating systems, preventing cross-platform user identification.
 
-**💡 Profile = controlled research-environment configuration**
+**Profile = controlled research-environment configuration**
 
 ## Understanding BotBrowser Profiles
 
@@ -44,7 +44,7 @@ By using profiles, BotBrowser launches controlled sessions that simulate protect
 
 All appear as different users on the same device type.
 
-## ⚠️ Profile Types
+## Profile Types
 
 ### Demo Profiles (Privacy Research Only)
 
@@ -84,12 +84,12 @@ Premium profiles are available to qualified academic institutions with proper et
 chromium --bot-profile="/absolute/path/to/profile.enc"
 ```
 
-**⚠️ Version Compatibility**
+**Version Compatibility**
 - BotBrowser binary version must match profile version
 - Example: BotBrowser v139 only supports v139 profiles
 - Use absolute paths if relative paths fail to load
 
-> 📖 **For all available CLI flags**, see [⚙️ CLI Flags Reference](../CLI_FLAGS.md)
+> **For all available CLI flags**, see [CLI Flags Reference](../CLI_FLAGS.md)
 
 ### Automation Framework Integration
 
@@ -152,9 +152,9 @@ chromium \
 - **Session Isolation:** Multiple instances with different settings
 - **Security:** Keep sensitive data (like proxy credentials) out of profile files
 
-📖 For complete CLI flags documentation, see [⚙️ CLI Flags Reference](../CLI_FLAGS.md)
+For complete CLI flags documentation, see [CLI Flags Reference](../CLI_FLAGS.md)
 
-👉 **See [`PROFILE_CONFIGS.md`](https://github.com/botswin/BotBrowser/blob/main/profiles/PROFILE_CONFIGS.md) for complete configuration options.**
+**See [`PROFILE_CONFIGS.md`](https://github.com/botswin/BotBrowser/blob/main/profiles/PROFILE_CONFIGS.md) for complete configuration options.**
 
 ---
 
@@ -187,7 +187,7 @@ chromium \
 - **PRO** — Android profile support, augmented history (`injectRandomHistory`), always-active tabs (`alwaysActive`).
 - **ENT Tier1** — Ubuntu/Linux binary, WebRTC ICE presets (`webrtcICE`), console message suppression (`disableConsoleMessage`), geo overrides (`locale`, `timezone`, `languages`, `location`), proxy IP (`--proxy-ip`), cookies (`--bot-cookies`).
 - **ENT Tier2** — Browser brand/UA overrides (`browserBrand`, `uaFullVersion`, `brandFullVersion`), deterministic noise seed (`--bot-noise-seed`), runtime timing scaler (`--bot-time-scale`).
-- **ENT Tier3** — UDP-over-SOCKS5 tunneling for QUIC/STUN when the proxy supports UDP associate.
+- **ENT Tier3** — UDP-over-SOCKS5 tunneling for QUIC/STUN, custom User-Agent with full userAgentData control (`platform`, `platformVersion`, `model`, `architecture`, `bitness`, `mobile`), WebView brand support, Mirror for distributed fingerprint validation.
 - See [CLI_FLAGS](CLI_FLAGS.md) and [PROFILE_CONFIGS](PROFILE_CONFIGS.md) for full flag coverage and usage examples.
 
 ---

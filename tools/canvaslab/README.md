@@ -32,18 +32,18 @@ CanvasLab records every Canvas and WebGL API call so you can see exactly what tr
 
 | Component | Status | Timeline |
 |-----------|--------|----------|
-| **Canvas 2D Recording** | ✅ **Shipped** | Production-ready with full API coverage |
-| **Canvas 2D Browser Replay** | 🚧 **In Development** | Target: 2026 Q1 |
-| **WebGL Recording** | 🚧 **In Development** | Target: 2026 Q1 |
-| **WebGL Browser Replay** | 🔜 **Planned** | Post-Q1 2026 |
+| **Canvas 2D Recording** | **Shipped** | Production-ready with full API coverage |
+| **Canvas 2D Browser Replay** | **In Development** | Target: 2026 Q1 |
+| **WebGL Recording** | **In Development** | Target: 2026 Q1 |
+| **WebGL Browser Replay** | **Planned** | Post-Q1 2026 |
 
 **What's shipped now:**
-- ✅ Canvas 2D recording with complete API coverage and call stack tracking
-- ✅ HTML-based event viewer for forensic analysis with source location mapping
+- Canvas 2D recording with complete API coverage and call stack tracking
+- HTML-based event viewer for forensic analysis with source location mapping
 
 **What's coming in Q1 2026:**
-- 🚧 Canvas 2D replay in BotBrowser (read JSONL and reconstruct canvas operations to restore hash)
-- 🚧 WebGL recording with shader and texture capture
+- Canvas 2D replay in BotBrowser (read JSONL and reconstruct canvas operations to restore hash)
+- WebGL recording with shader and texture capture
 
 ---
 
@@ -82,7 +82,7 @@ Close BotBrowser. Your recording is saved to `/tmp/canvaslab.jsonl`. You can now
 
 ### What Gets Recorded
 
-✅ **Complete parameter capture:**
+**Complete parameter capture:**
 - Primitive values (numbers, strings, booleans)
 - Complex objects serialized by content:
   - `ImageData` → base64 pixels + dimensions
@@ -91,17 +91,17 @@ Close BotBrowser. Your recording is saved to `/tmp/canvaslab.jsonl`. You can now
   - `CanvasGradient` → ID + color stops
   - Image sources → type + metadata
 
-✅ **Full return values:**
+**Full return values:**
 - Synchronous returns (`getImageData`, `measureText`)
 - Callback results (`toBlob`)
 - Promise resolutions (`OffscreenCanvas.convertToBlob`)
 
-✅ **Execution context:**
+**Execution context:**
 - Sequence numbers, timestamps, thread IDs
 - Canvas IDs for multi-canvas scenarios
 - Worker/offscreen canvas support
 
-✅ **Source code information:**
+**Source code information:**
 - Where every Canvas API call came from (URL, line, column)
 - What function names are involved
 - Which tracking libraries made which API calls

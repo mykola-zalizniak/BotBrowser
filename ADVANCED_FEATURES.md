@@ -14,7 +14,7 @@ BotBrowser provides multi-layer controls to maintain protected fingerprints acro
 
 ## Capabilities Index
 
-[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#graphics-rendering-engine), [WebGL/WebGPU param control](#graphics-rendering-engine), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#configuration-and-control), [per-context proxy (ENT Tier1) geo](#enhanced-proxy-system), [DNS-through-proxy](#enhanced-proxy-system), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS fingerprint (JA3/JARM)](#network-fingerprint-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency)
+[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#graphics-rendering-engine), [WebGL/WebGPU param control](#graphics-rendering-engine), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#configuration-and-control), [custom User-Agent (ENT Tier3)](#custom-user-agent), [per-context proxy (ENT Tier1) geo](#enhanced-proxy-system), [DNS-through-proxy](#enhanced-proxy-system), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS fingerprint (JA3/JARM)](#network-fingerprint-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency)
 
 <a id="configuration-and-control"></a>
 ## Configuration & Control
@@ -39,6 +39,35 @@ chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" \
            --bot-config-languages="auto" \
            --bot-config-locale="auto"
 ```
+
+<a id="custom-user-agent"></a>
+### Custom User-Agent (ENT Tier3)
+Full control over User-Agent string and userAgentData for building any browser identity.
+
+**Flags:**
+- `--bot-config-platform` (Windows, Android, macOS, Linux)
+- `--bot-config-platform-version` (OS version)
+- `--bot-config-model` (device model for mobile)
+- `--bot-config-architecture` (x86, arm, arm64)
+- `--bot-config-bitness` (32, 64)
+- `--bot-config-mobile` (true, false)
+- `--bot-config-browser-brand=webview` (WebView brand support)
+
+**Placeholders in `--user-agent`:**
+Use `{platform}`, `{platform-version}`, `{model}`, `{ua-full-version}`, `{ua-major-version}`, `{brand-full-version}`, `{architecture}`, `{bitness}` in your UA string. BotBrowser replaces them at runtime from flags or fingerprint config.
+
+**Example: Android WebView**
+```bash
+chrome.exe --bot-profile="/path/to/android-profile.enc" \
+  --user-agent="Mozilla/5.0 (Linux; Android {platform-version}; {model} Build/TP1A.220624.021; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/{ua-full-version} Mobile Safari/537.36" \
+  --bot-config-browser-brand=webview \
+  --bot-config-platform=Android \
+  --bot-config-platform-version=13 \
+  --bot-config-model=RMX3471 \
+  --bot-config-mobile=true
+```
+
+BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersionList with GREASE algorithm) and all Sec-CH-UA-* headers. Values stay consistent across main thread, workers, and HTTP requests.
 
 ### Session Management
 Comprehensive tools for session control and identification.
@@ -177,7 +206,7 @@ Maintains protected window state to prevent focus-based tracking even when the h
 - Configurable per-window to allow legitimate focus-change observation when required by applications
 - Protects against window focus based tracking heuristics that monitor caret blinking, FocusManager events, or inactive viewport throttling
 - README quick link: see [Workflows → Active Window](README.md#advanced-capabilities)
-- CLI reference: [`--bot-always-active`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags)
+- CLI reference: [`--bot-always-active`](CLI_FLAGS.md#profile-configuration-override-flags)
 
 <a id="headless-incognito-compatibility"></a>
 ### Headless & Incognito Compatibility
@@ -208,7 +237,7 @@ Complete WebRTC fingerprint protection and network privacy protection.
 - RTCPeerConnection behavior standardization
 - Network topology protection through controlled signal patterns
 - ICE server presets and custom lists via `--bot-webrtc-ice` (ENT Tier1) to standardize STUN and TURN endpoints observed by page JavaScript
-- Combined with UDP-over-SOCKS5 (ENT Tier3) you achieve Chromium-level QUIC and STUN tunneling for complete network protection; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#⚙️-profile-configuration-override-flags) for implementation examples.
+- Combined with UDP-over-SOCKS5 (ENT Tier3) you achieve Chromium-level QUIC and STUN tunneling for complete network protection; see [`Network Fingerprint Control`](ADVANCED_FEATURES.md#network-fingerprint-control) and [`CLI_FLAGS`](CLI_FLAGS.md#profile-configuration-override-flags) for implementation examples.
 
 <a id="chrome-behavior-emulation"></a>
 ### Chrome Behavior Emulation
@@ -420,11 +449,12 @@ Comprehensive browser and OS emulation.
 
 | Component | Capabilities |
 |-----------|-------------|
-| **User Agent** | Version control, userAgentData brands, full version override |
+| **User Agent** | Version control, userAgentData brands, full version override, custom UA with placeholders (ENT Tier3) |
 | **Platform Detection** | Windows/macOS/Android(PRO) with authentic APIs |
-| **Browser Features** | Debugger disabling, CDP leak blocking, Chrome-specific behavior |
+| **Browser Features** | Debugger disabling, CDP leak blocking, Chrome-specific behavior, WebView brand (ENT Tier3) |
 | **Font System** | Built-in cross-platform fonts, Blink features, authentic fallback chains |
 | **Client Hints** | DPR, device-memory, UA-CH, and other CH values stay aligned with JavaScript-visible metrics so headers and runtime data always match |
+| **userAgentData** | Full control over platform, platformVersion, model, architecture, bitness, mobile (ENT Tier3) |
 
 ### Location & Time Management
 Precise geolocation and temporal controls.
@@ -514,7 +544,7 @@ chrome.exe --bot-profile="C:\\absolute\\path\\to\\profile.enc" --bot-script="scr
 - `chrome.runtime` - Runtime APIs and event handling
 - Standard browser APIs (console, setTimeout, etc.)
 
-📖 **Documentation:** [Bot Script Examples](examples/bot-script)
+**Documentation:** [Bot Script Examples](examples/bot-script)
 
 <a id="playwright-puppeteer-integration"></a>
 ### Playwright/Puppeteer Integration

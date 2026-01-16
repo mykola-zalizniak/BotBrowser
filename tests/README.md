@@ -88,12 +88,12 @@ npx playwright show-report
 
 Before running any validation tests, ensure you meet ALL of these requirements:
 
-1. ✅ **Authorization:** You own the system OR have explicit written permission for testing
-2. ✅ **Test Environment:** Using authorized test or demo endpoints only, never production systems
-3. ✅ **Synthetic Data:** Only synthetic or invalid data, no real user information or valid credentials
-4. ✅ **Legal Compliance:** Full compliance with applicable laws (CFAA, GDPR, CCPA, etc.)
-5. ✅ **Terms of Service:** Not violating any website or service terms of use
-6. ✅ **Research Purpose:** Results used exclusively for privacy research or educational purposes
+1. **Authorization:** You own the system OR have explicit written permission for testing
+2. **Test Environment:** Using authorized test or demo endpoints only, never production systems
+3. **Synthetic Data:** Only synthetic or invalid data, no real user information or valid credentials
+4. **Legal Compliance:** Full compliance with applicable laws (CFAA, GDPR, CCPA, etc.)
+5. **Terms of Service:** Not violating any website or service terms of use
+6. **Research Purpose:** Results used exclusively for privacy research or educational purposes
 
 **If you cannot verify ALL boxes above, DO NOT proceed with testing.**
 
@@ -110,9 +110,9 @@ Validation tests involving financial institutions (e.g., `threatmetrix.spec.ts` 
 
 | Issue | Solution |
 |-------|----------|
-| 🛑 Network access restrictions | 🔄 Use authorized institutional network infrastructure |
-| ❌ Tests failing | ✅ Verify `.env` file paths and profile compatibility |
-| 🐛 Browser environment issues | 🔧 Check BotBrowser executable permissions and validation environment setup |
+| Network access restrictions | Use authorized institutional network infrastructure |
+| Tests failing | Verify `.env` file paths and profile compatibility |
+| Browser environment issues | Check BotBrowser executable permissions and validation environment setup |
 
 ## Academic Resources
 

@@ -6,7 +6,7 @@ This document explains BotBrowser's CLI configuration system. These flags extend
 
 > Smart auto-configuration: BotBrowser derives timezone, locale, and languages from your IP/proxy. Override only when you need a specific setup.
 
-> Dynamic configuration: CLI overrides (`--bot-config-*` + behavior toggles) enable runtime fingerprint control, which is ideal for CI/CD and multi-instance scenarios.
+> Dynamic configuration: `--bot-*` flags (config overrides + behavior toggles) enable runtime fingerprint control, which is ideal for CI/CD and multi-instance scenarios.
 
 > License tiers: Some flags show tier hints in parentheses (PRO, ENT Tier1/Tier2/Tier3); those options are subscription-gated.
 
@@ -230,13 +230,34 @@ BotBrowser supports command-line flags that override profile configuration value
 Flags that directly map to profile `configs` and override them at runtime.
 
 **Identity & Locale**
-- `--bot-config-browser-brand=chrome` (ENT Tier2): Browser brand: chrome, chromium, edge, brave, opera
+- `--bot-config-browser-brand=chrome` (ENT Tier2, webview requires ENT Tier3): Browser brand: chrome, chromium, edge, brave, opera, webview
 - `--bot-config-brand-full-version=142.0.3595.65` (ENT Tier2): Brand-specific full version (Edge/Opera cadence) for UA-CH congruence
 - `--bot-config-ua-full-version=142.0.7444.60` (ENT Tier2): User agent version: full version string matching Chromium major
 - `--bot-config-languages=auto` (ENT Tier1): Languages: "lang1,lang2" (comma-separated) or "auto" (IP-based)
 - `--bot-config-locale=auto` (ENT Tier1): Browser locale: e.g. en-US, fr-FR, de-DE, or "auto" (derived from IP/language)
 - `--bot-config-timezone=auto` (ENT Tier1): Timezone: auto (IP-based), real (system), or timezone name
 - `--bot-config-location=40.7128,-74.0060` (ENT Tier1): Location: "lat,lon" (coordinates) or "auto" (IP-based)
+
+**Custom User-Agent (ENT Tier3)**
+
+Build any browser identity with full userAgentData control. These flags work together with `--user-agent` to construct a complete, internally consistent browser identity.
+
+- `--bot-config-platform=Android`: Platform name: Windows, Android, macOS, Linux
+- `--bot-config-platform-version=13`: OS version string
+- `--bot-config-model=RMX3471`: Device model (primarily for mobile)
+- `--bot-config-architecture=arm`: CPU architecture: x86, arm, arm64
+- `--bot-config-bitness=64`: System bitness: 32, 64
+- `--bot-config-mobile=true`: Mobile device flag
+
+The `--user-agent` flag supports placeholders that get replaced at runtime:
+- `{platform}`, `{platform-version}`, `{model}` for device info
+- `{ua-full-version}`, `{ua-major-version}` for Chromium version
+- `{brand-full-version}` for brand-specific version (Edge, Opera)
+- `{architecture}`, `{bitness}` for CPU info
+
+BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersionList with proper GREASE) and all Sec-CH-UA-* headers. Values stay consistent across main thread, workers, and HTTP requests.
+
+> **Note: UA/Engine Congruence:** Keep `--bot-config-ua-full-version` aligned with your Chromium major version, and use `--bot-config-brand-full-version` when a vendor's cadence (Edge, Opera, Brave) diverges so UA-CH metadata stays internally protected.
 
 **Display & Input**
 - `--bot-config-window=profile`: Window dimensions: profile (use profile), real (system window)
@@ -258,8 +279,6 @@ Flags that directly map to profile `configs` and override them at runtime.
 - `--bot-config-media-devices=profile`: Media devices: profile (synthetic devices), real (system devices)
 - `--bot-config-media-types=expand`: Media types: expand (default), profile, real
 - `--bot-config-webrtc=profile`: WebRTC: profile (use profile), real (native), disabled (off)
-
-> **Note: UA/Engine Congruence:** Keep `--bot-config-ua-full-version` aligned with your Chromium major version, and use `--bot-config-brand-full-version` when a vendor's cadence (Edge, Opera, Brave) diverges so UA-CH metadata stays internally protected.
 
 ### Behavior & Protection Toggles
 
@@ -316,7 +335,6 @@ Verify that your privacy protection works effectively across platforms and netwo
 ---
 
 ## Usage Examples
-📌 Quick launch patterns and reference commands.
 
 ### Minimal launch with proxy
 ```bash
@@ -362,14 +380,31 @@ chromium-browser \
   --user-data-dir="/tmp/instance2" &
 ```
 
-### Performance timing & noise control (ENT)
+### Performance timing & noise control (ENT Tier2)
 ```bash
 # Stabilize performance timing and noise determinism under load
 chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
-  --bot-time-scale=0.92 \  # ENT Tier1 feature
+  --bot-time-scale=0.92 \  # ENT Tier2 feature
   --bot-noise-seed=1.07   # ENT Tier2 feature
 ```
+
+### Custom User-Agent with WebView (ENT Tier3)
+```bash
+# Android WebView simulation with placeholders
+chromium-browser \
+  --bot-profile="/absolute/path/to/android-profile.enc" \
+  --user-agent="Mozilla/5.0 (Linux; Android {platform-version}; {model} Build/TP1A.220624.021; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/{ua-full-version} Mobile Safari/537.36" \
+  --bot-config-browser-brand=webview \
+  --bot-config-platform=Android \
+  --bot-config-platform-version=13 \
+  --bot-config-model=RMX3471 \
+  --bot-config-mobile=true \
+  --bot-config-architecture=arm \
+  --bot-config-bitness=64
+```
+
+Placeholders like `{platform-version}` and `{model}` get replaced from flags or fingerprint config. BotBrowser generates matching userAgentData and Client Hints automatically.
 
 ---
 
@@ -384,7 +419,7 @@ chromium-browser \
 ---
 
 ## Tips & Best Practices
-💡 Practical pointers for stable runs.
+Practical pointers for stable runs.
 
 ### BotBrowser-Specific Considerations
 

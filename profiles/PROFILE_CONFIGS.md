@@ -1,4 +1,4 @@
-# 📖 BotBrowser Profile Configuration Guide
+# BotBrowser Profile Configuration Guide
 
 For Fingerprint Protection and Privacy Research.
 
@@ -54,7 +54,7 @@ chromium-browser \
 
 ---
 
-## ⚠️ Important: Profile Data Integrity
+## Important: Profile Data Integrity
 
 Profile data uses synthetic/aggregated configurations. Unless you are certain about the impact, avoid overriding fingerprint properties because defaults provide the most protected behavior.
 
@@ -90,7 +90,7 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 | `disableConsoleMessage` (ENT Tier1)        | Suppresses console message forwarding into page contexts and CDP logs to prevent CDP log noise from leaking. | `true`     |
 | `timezone`                      | `auto` = IP-based; `real` = system timezone; any other string = custom timezone name. | `auto`    |
 | `location`                      | `auto` = IP-based; `real` = system (GPS); object = custom coordinates (`lat`, `lon`). | `auto`    |
-| `browserBrand` (ENT Tier2)    | override for `navigator.userAgentData.brands` and related UA fields. Supports chromium, chrome, edge, brave, opera. | `chrome`    |
+| `browserBrand` (ENT Tier2, webview requires ENT Tier3)    | Override for `navigator.userAgentData.brands` and related UA fields. Supports chromium, chrome, edge, brave, opera, webview. | `chrome`    |
 | `brandFullVersion` (ENT Tier2)| Optional brand-specific full version string for UA-CH tuples (Edge/Opera cadences). | `""`    |
 | `injectRandomHistory` (PRO feature) | Optionally adds synthetic navigation history for fingerprint protection in browser state testing. | `false`    |
 | `disableDebugger`               | Prevents unintended interruptions from JavaScript debugger statements during fingerprint protection workflows. | `true`     |
@@ -99,6 +99,21 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 | `alwaysActive` (PRO feature)    | Keep windows/tabs in an active state to suppress `blur`/`visibilitychange` events and `document.hidden=true`. | `true` |
 | `webrtcICE` (ENT Tier1)       | ICE server preset (`google`) or custom list via `custom:stun:host:port,turn:host:port`. | `google` |
 | `mobileForceTouch`              | Force touch events on/off when simulating mobile devices (`true`, `false`).          | `false`    |
+
+### Custom User-Agent (ENT Tier3)
+
+Full control over User-Agent string and userAgentData for building any browser identity.
+
+| Field                           | Description                                                                               | Default     |
+| ------------------------------- | ----------------------------------------------------------------------------------------- | ----------- |
+| `platform`                      | Platform name for userAgentData: Windows, Android, macOS, Linux.                         | from profile |
+| `platformVersion`               | OS version string for userAgentData (e.g., 13, 10.0, 14.0).                              | from profile |
+| `model`                         | Device model for mobile userAgentData (e.g., RMX3471, SM-G991B).                         | from profile |
+| `architecture`                  | CPU architecture for userAgentData: x86, arm, arm64.                                     | from profile |
+| `bitness`                       | System bitness for userAgentData: 32, 64.                                                | from profile |
+| `mobile`                        | Mobile device flag for userAgentData: true, false.                                       | from profile |
+
+These fields work together with `--user-agent` CLI flag. BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersionList with GREASE) and all Sec-CH-UA-* headers. Values stay consistent across main thread, workers, and HTTP requests.
 
 ### Proxy Settings
 
@@ -155,7 +170,7 @@ All configurations are embedded in the `configs` field inside your profile JSON 
 
 | Field | Description | Default |
 | ----- | ----------- | ------- |
-| `timeScale` (ENT Tier1 feature) | Fractional scalar applied to `performance.now()` deltas to emulate lower CPU load and shorten observable intervals. Valid range `0 < value < 1`. | `1.0` |
+| `timeScale` (ENT Tier2 feature) | Fractional scalar applied to `performance.now()` deltas to emulate lower CPU load and shorten observable intervals. Valid range `0 < value < 1`. | `1.0` |
 | `noiseSeed` (ENT Tier2 feature) | Floating seed (1.0–1.2) that deterministically shapes the noise applied to Canvas 2D/WebGL/WebGPU images, text metrics, HarfBuzz layout, ClientRects, and offline audio hashes so you can assign reproducible yet distinct fingerprints per tenant. | `auto` |
 
 ---
@@ -242,7 +257,7 @@ All configurations are embedded in the `configs` field inside your profile JSON 
     // noiseTextRects: Introduce controlled variance to TextRects for fingerprint protection
     "noiseTextRects": true,
 
-    // browserBrand: override for `navigator.userAgentData.brands` and related UA fields. Supports "chromium", "chrome", "edge", "brave", "opera"
+    // browserBrand: override for `navigator.userAgentData.brands` and related UA fields. Supports "chromium", "chrome", "edge", "brave", "opera", "webview" (ENT Tier3)
     "browserBrand": "chrome",
 
     // brandFullVersion: optional brand-specific full version string for UA-CH tuples when the vendor’s cadence diverges
