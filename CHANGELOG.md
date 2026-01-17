@@ -74,7 +74,7 @@
 - **Custom public IP service**: Added `--bot-ip-service` so you can point BotBrowser at your own IP lookup endpoint when you want full control over how the public egress IP is detected. Multiple endpoints can be provided as a comma-separated list, and BotBrowser will race them and use the fastest successful response.
 
 ### Improvements
-- **Proxy auth parsing**: Proxy credentials now support additional separators in the username field, including `,` and `｜`. This makes structured usernames work reliably with common proxy provider formats, for example `socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080`.
+- **Proxy auth parsing**: Proxy credentials now support additional separators in the username field, including `,` and `|`. This makes structured usernames work reliably with common proxy provider formats, for example `socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080`.
 - **Extension sync (ENT Tier2)**: Updated extension `ghbmnnjooekpmoecnnnilnnbdlolhkhi` to version 1.98.1 to match the latest Chrome Stable packaging and behavior.
 
 ### Fixes

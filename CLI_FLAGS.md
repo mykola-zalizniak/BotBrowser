@@ -74,7 +74,7 @@ BotBrowser extends the standard `--proxy-server` flag to accept embedded credent
 
 **Supported Protocols:** HTTP, HTTPS, SOCKS5, SOCKS5H
 
-**Proxy auth usernames:** Structured proxy usernames can include additional separators such as `,` and `｜` (full-width vertical bar). This is useful for providers that encode routing hints inside the username, for example:
+**Proxy auth usernames:** Structured proxy usernames can include additional separators such as `,` and `|`. This is useful for providers that encode routing hints inside the username, for example:
 
 ```bash
 --proxy-server=socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080

@@ -107,7 +107,7 @@ Rebuilt for stability, per-context support (ENT Tier1), and DNS-leak protection.
 --proxy-server=socks5://username:password@proxy.example.com:1080
 ```
 
-Structured proxy usernames: Some providers encode routing hints in the username. BotBrowser supports separators like `,` and `｜` inside the username so formats like the following remain parseable:
+Structured proxy usernames: Some providers encode routing hints in the username. BotBrowser supports separators like `,` and `|` inside the username so formats like the following remain parseable:
 
 ```bash
 --proxy-server=socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080
