@@ -1,6 +1,6 @@
 # RESPONSIBLE USE GUIDELINES
 
-BotBrowser is a privacy protection platform designed for fingerprint protection validation. These guidelines clarify the expectations for anyone who accesses binaries, profiles, or source artifacts.
+BotBrowser is a privacy protection platform designed for fingerprint protection validation. Browser fingerprinting is recognized as a privacy threat by [W3C, major browser vendors, and EU regulators](FINGERPRINT_PRIVACY.md). These guidelines clarify the expectations for anyone who accesses binaries, profiles, or source artifacts.
 
 ## REQUIRED CONDITIONS
 

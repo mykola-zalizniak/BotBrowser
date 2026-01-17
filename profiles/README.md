@@ -2,7 +2,7 @@
 
 Academic Framework for Browser-Environment Simulation.
 
-In BotBrowser, everything starts with a profile. Research success and privacy protection depend on proper profile configuration. Profiles are provided to authorized researchers, so review the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md) for access policies.
+In BotBrowser, everything starts with a profile. Browser fingerprinting is recognized as a privacy threat by [W3C, major browser vendors, and EU regulators](../FINGERPRINT_PRIVACY.md), and profiles are the foundation of protection against such tracking. Profiles are provided to authorized researchers, so review the project [Legal Disclaimer](../DISCLAIMER.md) and [Responsible Use Guidelines](../RESPONSIBLE_USE.md) for access policies.
 
 ## What Are Profiles?
 

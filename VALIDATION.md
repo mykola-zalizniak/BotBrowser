@@ -400,6 +400,8 @@ Detection System Tests (200+ scenarios)
 
 ## Research Ethics Statement
 
+**Privacy Context:** Browser fingerprinting is recognized as a privacy threat by [W3C, major browser vendors, and EU regulators](FINGERPRINT_PRIVACY.md). This research validates protection against such tracking.
+
 **Ethical Use Policy:** All users must obtain proper institutional approval and follow ethical research guidelines when conducting studies involving web services or user data.
 
 **Research Ethics:** This research contributes to web compatibility standards and fingerprint protection validation through controlled environment testing using publicly accessible interfaces only.

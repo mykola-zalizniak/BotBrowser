@@ -1,7 +1,6 @@
-
 # BotBrowser Fingerprint Protection Testing Suite
 
-Automated validation framework for preventing fingerprint collection and cross-platform tracking prevention.
+Automated validation framework for preventing fingerprint collection and cross-platform tracking prevention. Browser fingerprinting is recognized as a privacy threat by [W3C, major browser vendors, and EU regulators](../FINGERPRINT_PRIVACY.md).
 
 Demonstrates controlled fingerprint protection validation using [Playwright](https://playwright.dev/docs/writing-tests) for academic and privacy research purposes. Operate these scripts in accordance with the project [Legal Disclaimer](../DISCLAIMER.md) and [Responsible Use Guidelines](../RESPONSIBLE_USE.md). If you observe any misuse, contact [botbrowser@bk.ru](mailto:botbrowser@bk.ru) so we can investigate and support affected services.
 
@@ -76,7 +75,7 @@ npx playwright show-report
 
 ## Research Methodology
 
-**Purpose:** Controlled fingerprint protection validation scripts for fingerprint protection and privacy research.
+**Purpose:** Controlled validation scripts for fingerprint protection and privacy research.
 
 **Framework:** All validation must be conducted within authorized environments that comply with institutional ethics guidelines, applicable laws, and protocols.
 

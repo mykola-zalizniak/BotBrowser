@@ -6,7 +6,7 @@
 
 ## TECHNOLOGY NOTICE
 
-BotBrowser is a **privacy protection technology** designed to prevent fingerprint based tracking and user identification across platforms. Like any browser technology, it can be used responsibly or irresponsibly depending on the user's intent and authorization.
+BotBrowser is a **privacy protection technology** designed to prevent fingerprint based tracking and user identification across platforms. Browser fingerprinting has been recognized as a privacy threat by [W3C, major browser vendors, and EU regulators](FINGERPRINT_PRIVACY.md). Like any browser technology, it can be used responsibly or irresponsibly depending on the user's intent and authorization.
 
 **Authorized Uses:** Privacy research, fingerprint protection testing, cross platform browser compatibility analysis
 **Prohibited Uses:** Unauthorized access, fraud, violation of terms of service
