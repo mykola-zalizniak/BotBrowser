@@ -1,37 +1,83 @@
 # Per-Context Fingerprint (ENT Tier3)
 
-Run multiple independent fingerprint identities in a single browser instance. No extra processes. No memory bloat. Millisecond switching.
+Run multiple independent fingerprint identities within a single browser instance. Shared GPU/Network/Browser processes. Reduced resource overhead.
 
 ## The Problem
 
-Traditional approaches require launching a separate browser process for each fingerprint profile. Running 100 profiles means 100 browser processes, each consuming 200-500 MB of RAM. This limits scale, slows down research, and wastes resources.
+Traditional approaches require launching a separate browser instance for each fingerprint profile. This architecture has significant overhead due to Chromium's multi-process design.
+
+**Chromium Process Architecture**
+
+Each browser instance spawns multiple processes:
+
+| Process | Function |
+|---------|----------|
+| Browser process | Main coordinator, UI, profile management |
+| GPU process | Graphics API calls, compositing, hardware acceleration |
+| Network process | HTTP/HTTPS requests, DNS resolution, WebSocket |
+| Utility processes | Audio, video decoding, extension services |
+| Renderer processes | Web page execution, JavaScript, DOM |
+
+Running 50 browser instances means 50 GPU processes, 50 Network processes, and 50+ Utility processes, in addition to the renderer processes.
+
+**Process Startup Cost**
+- Each browser instance requires full initialization: loading shared libraries, spawning GPU/Network/Utility processes, initializing the JavaScript engine, and establishing IPC channels
+- Disk I/O spikes occur as each instance reads profile data, cache structures, and font resources from storage
+- CPU-intensive work happens during V8 isolate creation, Blink initialization, and compositor setup
+
+**Per-Instance Resource Duplication**
+- GPU process: shader cache, command buffers, GPU memory allocation duplicated per instance
+- Network process: connection pools, DNS cache, certificate cache duplicated per instance
+- Each instance maintains its own JavaScript VM heap (typically 64-128 MB minimum)
+- Internal caches (HTTP cache, font cache) cannot be shared across instances
+
+**Scaling Limitations**
+- Running 50 profiles means 50 browser instances with 200+ total processes
+- CPU load scales with process count due to duplicated background tasks (garbage collection, network polling, GPU command processing)
+- OS scheduler overhead increases with process count
 
 ## The Solution
 
-Per-Context Fingerprint lets you assign a complete fingerprint bundle to each BrowserContext within a single browser instance. Each context operates with its own:
+Per-Context Fingerprint assigns a complete fingerprint bundle to each BrowserContext within a single browser instance. One browser process, one GPU process, one Network process, serving multiple fingerprint identities.
 
+**Shared Process, Isolated Fingerprint**
+
+BotBrowser modifies Chromium's shared processes to be fingerprint-aware:
+
+| Shared Process | Per-Context Isolation |
+|----------------|----------------------|
+| GPU process | Canvas/WebGL/WebGPU noise applied per-context |
+| Network process | Proxy routing, IP detection per-context |
+| Audio service | AudioContext noise seed per-context |
+| Browser process | Timezone, locale, screen metrics per-context |
+
+Each context operates with its own:
+
+- Profile file (via `--bot-profile`)
 - User-Agent and userAgentData
 - Device model and platform
 - Screen resolution and color depth
-- Timezone and locale
-- Languages
+- Timezone, locale, and languages
 - Canvas/WebGL/Audio noise seeds
-- All other fingerprint parameters
+- Proxy configuration and public IP
+- Most `--bot-*` CLI flags (see [Supported Flags](#supported-flags))
 
-Contexts are fully isolated. A page in Context A cannot detect or influence the fingerprint of Context B, even when running simultaneously in the same browser instance.
+Contexts are isolated within BotBrowser's fingerprint model. Pages in Context A cannot detect or influence the fingerprint of Context B. The shared GPU/Network/Utility processes route fingerprint-specific data to the correct context.
 
-All [CLI flags](CLI_FLAGS.md) can be applied per-context, including `--bot-profile` to load entirely different profile files per context. This means you get the same flexibility as launching separate browser instances, but without the overhead.
+## Why Per-Context Outperforms Multi-Instance
 
-## Why This Matters
+| Resource | Multi-Instance (50 profiles) | Per-Context (50 contexts) |
+|----------|------------------------------|---------------------------|
+| Browser processes | 50 | 1 |
+| GPU processes | 50 | 1 |
+| Network processes | 50 | 1 |
+| Utility processes | 50+ | Shared |
+| Renderer processes | 50+ | 50+ |
+| **Total process count** | **200+** | **~55** |
+| Browser startup I/O | 50x (shared libs, GPU init) | 1x |
+| Add new identity | 1-3s (launch browser) | Fast (create context) |
 
-| Metric | Traditional (100 profiles) | Per-Context (100 contexts) |
-|--------|---------------------------|---------------------------|
-| Processes | 100 | 1 |
-| Memory | 20-50 GB | 2-4 GB |
-| Startup time | Minutes | Milliseconds |
-| Context switching | Process spawn | Instant |
-
-For high-concurrency research scenarios, this changes what's possible.
+Renderer processes scale with page count in both approaches. The key savings come from sharing GPU, Network, Browser, and Utility processes across all contexts.
 
 ## Worker Inheritance
 
@@ -41,7 +87,7 @@ Workers created within a BrowserContext automatically inherit that context's fin
 - **Shared Workers**: Inherit parent context fingerprint
 - **Service Workers**: Inherit parent context fingerprint
 
-No additional configuration needed. The fingerprint stays consistent across main thread, workers, and all execution contexts.
+No additional configuration needed. Fingerprint consistency is maintained across main thread, workers, and all execution contexts.
 
 ## Quick Start
 
@@ -76,7 +122,7 @@ await client.send('BotBrowser.setBrowserContextFlags', {
   ]
 });
 
-// Navigate and use the context with its unique fingerprint
+// Navigate with the unique fingerprint
 await page.goto('https://example.com');
 ```
 
@@ -139,9 +185,12 @@ await Promise.all([
 
 ### Per-Context Proxy with Known IP
 
-When you know the proxy's public IP, use `--proxy-ip` to skip IP lookups and speed up navigation. Pass the proxy via context creation options, and set `--proxy-ip` via CDP:
+Pass the proxy via context creation options, and set `--proxy-ip` via CDP to skip IP lookups.
+
+> **Note**: Puppeteer uses `proxyServer`, Playwright uses `proxy: { server }`. See [examples/](examples/) for framework-specific syntax.
 
 ```javascript
+// Puppeteer example
 // Context 1: US proxy with known IP
 const ctx1 = await browser.createBrowserContext({
   proxyServer: 'socks5://user:pass@us-proxy.example.com:1080'
@@ -180,7 +229,7 @@ await Promise.all([
 
 ## Supported Flags
 
-All `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) are supported for per-context configuration:
+Most `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) work with per-context configuration. Browser-level exceptions are noted in [Important Notes](#important-notes).
 
 | Category | Example Flags |
 |----------|---------------|
@@ -193,7 +242,7 @@ All `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) are supported for per-cont
 | Proxy | `--proxy-ip` to skip IP lookups when proxy is known |
 | Config | `--bot-config-platform`, `--bot-config-timezone`, `--bot-config-noise-canvas`, etc. |
 
-See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete list of flags.
+See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
 
 ## Use Cases
 
@@ -203,22 +252,22 @@ See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete list of flags.
 - Study tracking mechanisms with controlled, isolated contexts
 
 **Cross-Platform Testing**
-- Test how your application appears to users on different platforms
-- Validate localization across multiple locales in parallel
+- Validate application behavior across different platform fingerprints
+- Test localization across multiple locales in parallel
 - Verify responsive behavior across device configurations
 
 **Resource-Efficient Automation**
 - Reduce infrastructure costs by consolidating browser instances
-- Scale research capacity without proportional memory increase
-- Enable scenarios previously limited by resource constraints
+- Scale research capacity on CPU-limited environments (VPS, containers)
+- Enable high-concurrency scenarios previously blocked by resource constraints
 
 ## Important Notes
 
-⚠️ Per-context proxy configuration requires the proxy to be set before navigation. The proxy cannot be changed after the first network request in a context.
+⚠️ Per-context proxy configuration must be set before navigation. The proxy cannot be changed after the first network request in a context.
 
 ⚠️ Some network-layer settings (`--bot-local-dns`, UDP proxy support) apply at the browser level and cannot be configured per-context.
 
-⚠️ You can either load a completely different profile per context (`--bot-profile`), or use `--bot-config-*` flags to override specific settings from the browser's base profile.
+⚠️ Each context can load a completely different profile (`--bot-profile`), or use `--bot-config-*` flags to override specific settings from the browser's base profile.
 
 ## Related Documentation
 
