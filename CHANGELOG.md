@@ -3,6 +3,34 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-01-27]
+### Major
+- **Chromium Core → 144.0.7559.97**: Updated the engine to the latest Chrome 144 stable (144.0.7559.97). This keeps Web Platform behavior, rendering consistency, and security patches aligned with upstream Chrome.
+
+### New
+- **Widevine Persistent License Support**: Added full support for Widevine persistent license capabilities. DRM capability queries now correctly reflect the target platform's Widevine implementation, preventing tracking via EME (Encrypted Media Extensions) capability fingerprinting.
+
+- **WebAuthn Client Capabilities**: Implemented support for `PublicKeyCredential.getClientCapabilities()` API with platform-specific capability profiles. Returns correct values for the emulated platform, preventing tracking via Touch ID, Bluetooth authenticator, and payment extension detection.
+
+- **Widevine Challenge Refinement**: Enhanced Widevine license request generation to align with target platform behavior. DRM request patterns now match real platform output, preventing tracking via license negotiation fingerprints.
+
+### Improvements
+- **Per-Context Proxy Support (ENT Tier3)**: Per-Context Fingerprint now supports `--proxy-server` configuration via `botbrowserFlags` parameter in `BotBrowser.setBrowserContextFlags` or `Target.createBrowserContext`, consistent with main process behavior. Previously only `proxyServer` in `createBrowserContext` was supported.
+
+- **Chrome Component Plugin Versioning**: Chrome component plugin (ID: `ghbmnnjooekpmoecnnnilnnbdlolhkhi`) now strictly matches the Chrome version number. Improves authenticity for systems that validate plugin metadata against browser version.
+
+- **Storage Quota Stability**: Improved robustness of storage quota APIs, reducing edge cases where quota values could drift from profile expectations. Quota limits and usage calculations now remain stable across complex storage operations.
+
+- **URL Protocol Detection Consistency**: Refined URL protocol parsing to correctly reflect OS-specific path handling conventions. Protocol validation now matches the emulated platform, closing a cross-platform detection vector.
+
+- **Cross-Platform Math Function Consistency**: Unified floating-point and mathematical operation behavior across Windows, macOS, and Linux by embedding standardized implementations. Eliminates platform-specific numerical computation differences from UCRT (Windows), Accelerate.framework (macOS), and glibc libm (Linux) that could expose the underlying host environment.
+
+### Fixes
+- **Per-Context Fingerprint WebRTC SDP Handling (ENT Tier3)**: Fixed an issue where WebRTC negotiation could fail when using Per-Context Fingerprint in certain network configurations. SDP handling now works correctly with per-context fingerprint isolation.
+
+- **Per-Context Fingerprint Linux Initialization (ENT Tier3)**: Resolved a rare edge case on Linux where per-context fingerprint initialization could fail due to zygote process restrictions in specific system configurations. Context fingerprints now apply reliably across all Linux distributions and containerized environments.
+
+
 ## [2026-01-19]
 ### Major
 - **Per-Context Fingerprint (ENT Tier3)**: Assign independent fingerprint bundles per BrowserContext without spawning new browser processes. Configure via CDP (`BotBrowser.setBrowserContextFlags` or `Target.createBrowserContext` with `botbrowserFlags`). All `--bot-*` flags are supported per-context, including `--bot-profile` to load entirely different profiles. Workers (Dedicated, Shared, Service) automatically inherit the parent context fingerprint. See [PER_CONTEXT_FINGERPRINT.md](PER_CONTEXT_FINGERPRINT.md) for usage.

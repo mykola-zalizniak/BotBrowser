@@ -509,6 +509,8 @@ Complete network behavior and media-processing capabilities.
 | **HTTP Headers** | Google-specific headers, Chrome behavior patterns, request timing |
 | **Media Devices** | AudioContext simulation, speech synthesis, device enumeration |
 | **Codecs** | Extended media types, WebCodecs APIs, hardware acceleration simulation |
+| **Widevine DRM** | Persistent license support, platform-appropriate license negotiation, EME capability fingerprinting prevention |
+| **WebAuthn** | Platform-specific client capabilities, Touch ID/Bluetooth/payment authenticator detection prevention |
 
 ### Performance Characteristics
 Fine-grained performance fingerprint control and timing simulation.

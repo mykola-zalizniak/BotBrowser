@@ -227,6 +227,48 @@ await Promise.all([
 ]);
 ```
 
+### Per-Context Proxy via botbrowserFlags
+
+Configure proxy and other settings together through `botbrowserFlags`:
+
+```javascript
+// Context 1: US proxy via botbrowserFlags
+const ctx1 = await browser.createBrowserContext();
+const page1 = await ctx1.newPage();
+const client1 = await page1.createCDPSession();
+await client1.send('BotBrowser.setBrowserContextFlags', {
+  browserContextId: ctx1._contextId,
+  botbrowserFlags: [
+    '--bot-profile=/path/to/profile.enc',
+    '--proxy-server=socks5://user:pass@us-proxy.example.com:1080',
+    '--proxy-ip=203.0.113.1',
+    '--bot-config-timezone=America/Chicago'
+  ]
+});
+
+// Context 2: UK proxy via botbrowserFlags
+const ctx2 = await browser.createBrowserContext();
+const page2 = await ctx2.newPage();
+const client2 = await page2.createCDPSession();
+await client2.send('BotBrowser.setBrowserContextFlags', {
+  browserContextId: ctx2._contextId,
+  botbrowserFlags: [
+    '--bot-profile=/path/to/profile.enc',
+    '--proxy-server=socks5://user:pass@uk-proxy.example.com:1080',
+    '--proxy-ip=198.51.100.1',
+    '--bot-config-timezone=Europe/London'
+  ]
+});
+
+// Both contexts run with different proxies and settings
+await Promise.all([
+  page1.goto('https://example.com'),
+  page2.goto('https://example.com')
+]);
+```
+
+You can now configure proxy directly in `botbrowserFlags` without using `createBrowserContext({ proxyServer })`. This provides unified configuration for proxy and other per-context settings in a single call.
+
 ## Supported Flags
 
 Most `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) work with per-context configuration. Browser-level exceptions are noted in [Important Notes](#important-notes).
@@ -234,12 +276,12 @@ Most `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) work with per-context con
 | Category | Example Flags |
 |----------|---------------|
 | Profile | `--bot-profile` (load a completely different profile per context) |
-| Noise Seed | `--bot-noise-seed` (ENT Tier2) for deterministic fingerprint variance |
-| Timing | `--bot-time-scale` (ENT Tier2) for performance timing control |
-| WebRTC | `--bot-webrtc-ice` (ENT Tier1) for ICE endpoint control |
-| Window | `--bot-always-active` (PRO) to maintain active window state |
-| Session | `--bot-inject-random-history` (PRO) for session authenticity |
-| Proxy | `--proxy-ip` to skip IP lookups when proxy is known |
+| Noise Seed | `--bot-noise-seed` for deterministic fingerprint variance |
+| Timing | `--bot-time-scale` for performance timing control |
+| WebRTC | `--bot-webrtc-ice` for ICE endpoint control |
+| Window | `--bot-always-active` to maintain active window state |
+| Session | `--bot-inject-random-history` for session authenticity |
+| Proxy | `--proxy-server` (configure proxy per-context via `botbrowserFlags`), `--proxy-ip` to skip IP lookups |
 | Config | `--bot-config-platform`, `--bot-config-timezone`, `--bot-config-noise-canvas`, etc. |
 
 See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
