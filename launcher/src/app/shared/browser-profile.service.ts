@@ -10,7 +10,9 @@ export const kProfileConfigFileName = 'profile-config.json';
 @Injectable({ providedIn: 'root' })
 export class BrowserProfileService {
     async getBasePath(): Promise<string> {
+        console.log('getBasePath: calling getAppDataPath...');
         const result = await getAppDataPath('browser-profiles');
+        console.log('getBasePath: result =', result);
         return result;
     }
 
@@ -28,9 +30,18 @@ export class BrowserProfileService {
     async getBrowserProfilePath(browserProfile: string | BrowserProfile) {
         const id = typeof browserProfile === 'string' ? browserProfile : browserProfile.id;
 
+        console.log('getBrowserProfilePath: getting base path...');
         const basePath = await this.getBasePath();
+        console.log('getBrowserProfilePath: base path =', basePath);
+
+        console.log('getBrowserProfilePath: joining path...');
         const browserProfilePath = await Neutralino.filesystem.getJoinedPath(basePath, id);
+        console.log('getBrowserProfilePath: browserProfilePath =', browserProfilePath);
+
+        console.log('getBrowserProfilePath: creating directory...');
         await createDirectoryIfNotExists(browserProfilePath);
+        console.log('getBrowserProfilePath: directory created/exists');
+
         return browserProfilePath;
     }
 
@@ -53,10 +64,16 @@ export class BrowserProfileService {
     }
 
     async saveBrowserProfile(browserProfile: BrowserProfile): Promise<void> {
+        console.log('saveBrowserProfile: getting base path...');
         const basePath = await this.getBrowserProfilePath(browserProfile);
-        const filename = await Neutralino.filesystem.getJoinedPath(basePath, kProfileConfigFileName);
-        await Neutralino.filesystem.writeFile(filename, JSON.stringify(browserProfile));
+        console.log('saveBrowserProfile: base path =', basePath);
 
+        console.log('saveBrowserProfile: joining path...');
+        const filename = await Neutralino.filesystem.getJoinedPath(basePath, kProfileConfigFileName);
+        console.log('saveBrowserProfile: filename =', filename);
+
+        console.log('saveBrowserProfile: writing file...');
+        await Neutralino.filesystem.writeFile(filename, JSON.stringify(browserProfile));
         console.log(`Browser profile saved: ${filename}`);
     }
 

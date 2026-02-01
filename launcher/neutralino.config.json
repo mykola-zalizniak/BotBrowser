@@ -2,7 +2,7 @@
     "applicationId": "js.neutralino.zero",
     "version": "1.0.0",
     "defaultMode": "window",
-    "documentRoot": "/dist/botbrowser-console/browser",
+    "documentRoot": "/dist/botbrowser-launcher/browser",
     "url": "/",
     "enableServer": true,
     "enableNativeAPI": true,
@@ -18,13 +18,13 @@
     ],
     "modes": {
         "window": {
-            "title": "BotBrowserConsole",
+            "title": "BotBrowser Launcher",
             "width": 1000,
             "height": 800,
             "minWidth": 400,
             "minHeight": 200,
             "center": true,
-            "icon": "/dist/botbrowser-console/browser/favicon.ico",
+            "icon": "/dist/botbrowser-launcher/browser/favicon.ico",
             "enableInspector": false,
             "borderless": false,
             "maximize": false,
@@ -36,8 +36,8 @@
         }
     },
     "cli": {
-        "binaryName": "BotBrowserConsole",
-        "resourcesPath": "/dist/botbrowser-console/browser",
+        "binaryName": "BotBrowserLauncher",
+        "resourcesPath": "/dist/botbrowser-launcher/browser",
         "extensionsPath": "/extensions/",
         "binaryVersion": "5.4.0",
         "clientVersion": "5.4.0"

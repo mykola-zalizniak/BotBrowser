@@ -4,11 +4,13 @@ import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Neutralino from '@neutralinojs/lib';
 import { AppName } from '../const';
+import { extractMajorVersion } from '../data/bot-profile';
 import { BrowserProfileStatus, getBrowserProfileStatusText, type BrowserProfile } from '../data/browser-profile';
 import { SimpleCDP } from '../simple-cdp';
 import { createDirectoryIfNotExists, sleep } from '../utils';
 import { AlertDialogComponent } from './alert-dialog.component';
 import { BrowserProfileService } from './browser-profile.service';
+import { KernelService } from './kernel.service';
 
 export interface RunningInfo {
     browserProfileId: string;
@@ -20,6 +22,7 @@ export interface RunningInfo {
 @Injectable({ providedIn: 'root' })
 export class BrowserLauncherService {
     readonly #browserProfileService = inject(BrowserProfileService);
+    readonly #kernelService = inject(KernelService);
     readonly #runningStatuses = new Map<string, RunningInfo>();
     readonly #dialog = inject(MatDialog);
 
@@ -134,24 +137,63 @@ export class BrowserLauncherService {
             browserProfile.id
         );
 
-        let execPath: string;
-        if (browserProfile.binaryPath) {
+        // Get executable path from kernel based on bot profile version
+        let execPath: string | undefined;
+
+        // Extract major version from bot profile
+        const userAgent = botProfileObject.userAgent || '';
+        const version = botProfileObject.version || '';
+        const majorVersion = extractMajorVersion(userAgent) || extractMajorVersion(version);
+
+        if (!majorVersion) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: { message: 'Could not determine browser version from bot profile. Please check the profile.' },
+            });
+            return;
+        }
+
+        console.log('Bot profile requires kernel major version:', majorVersion);
+
+        // Find matching kernel
+        await this.#kernelService.initialize();
+        const kernel = await this.#kernelService.getInstalledKernelByMajorVersion(majorVersion);
+
+        if (kernel) {
+            if (osType.includes('Darwin') && kernel.executablePath.endsWith('.app')) {
+                execPath = await this.#findMacOSExecutable(kernel.executablePath);
+            } else {
+                execPath = kernel.executablePath;
+            }
+        } else if (browserProfile.binaryPath) {
+            // Legacy support for binaryPath
             if (osType.includes('Darwin')) {
                 if (browserProfile.binaryPath.endsWith('.app')) {
-                    execPath = await Neutralino.filesystem.getJoinedPath(
-                        browserProfile.binaryPath,
-                        'Contents',
-                        'MacOS',
-                        'Chromium'
-                    );
+                    execPath = await this.#findMacOSExecutable(browserProfile.binaryPath);
                 } else {
                     execPath = browserProfile.binaryPath;
                 }
             } else {
                 execPath = browserProfile.binaryPath;
             }
-        } else {
-            execPath = await Neutralino.filesystem.getJoinedPath(NL_PATH, 'Chromium');
+        }
+
+        if (!execPath) {
+            // Auto-download the required kernel
+            try {
+                await this.#kernelService.downloadKernelByMajorVersion(majorVersion);
+                this.#dialog.open(AlertDialogComponent, {
+                    data: {
+                        message: `Kernel version ${majorVersion} is being downloaded. Please wait for the download to complete and try again.`,
+                    },
+                });
+            } catch (error) {
+                this.#dialog.open(AlertDialogComponent, {
+                    data: {
+                        message: `No kernel available for version ${majorVersion}. Error: ${error instanceof Error ? error.message : error}`,
+                    },
+                });
+            }
+            return;
         }
 
         console.log('Neutralino NL_PATH: ', NL_PATH);
@@ -173,15 +215,131 @@ export class BrowserLauncherService {
             '--disable-blink-features=AutomationControlled',
             `--user-data-dir="${userDataDirPath}"`,
             `--disk-cache-dir="${diskCacheDirPath}"`,
-            '--bot-local-dns',
-            '--bot-webrtc-ice=google',
-            '--bot-mobile-force-touch',
-            '--bot-always-active',
             `--bot-profile="${botProfilePath}"`,
         ];
 
+        // Add launch options from profile
+        const opts = browserProfile.launchOptions;
+
+        // Behavior toggles
+        if (opts?.behavior?.botLocalDns) args.push('--bot-local-dns');
+        if (opts?.behavior?.botDisableDebugger) args.push('--bot-disable-debugger');
+        if (opts?.behavior?.botMobileForceTouch) args.push('--bot-mobile-force-touch');
+        if (opts?.behavior?.botAlwaysActive) args.push('--bot-always-active');
+        if (opts?.behavior?.botInjectRandomHistory) args.push('--bot-inject-random-history');
+        if (opts?.behavior?.botDisableConsoleMessage) args.push('--bot-disable-console-message');
+
+        // Identity & Locale
+        if (opts?.identityLocale?.botConfigBrowserBrand) {
+            args.push(`--bot-config-browser-brand=${opts.identityLocale.botConfigBrowserBrand}`);
+        }
+        if (opts?.identityLocale?.botConfigBrandFullVersion) {
+            args.push(`--bot-config-brand-full-version=${opts.identityLocale.botConfigBrandFullVersion}`);
+        }
+        if (opts?.identityLocale?.botConfigUaFullVersion) {
+            args.push(`--bot-config-ua-full-version=${opts.identityLocale.botConfigUaFullVersion}`);
+        }
+        if (opts?.identityLocale?.botConfigLanguages) {
+            args.push(`--bot-config-languages=${opts.identityLocale.botConfigLanguages}`);
+        }
+        if (opts?.identityLocale?.botConfigLocale) {
+            args.push(`--bot-config-locale=${opts.identityLocale.botConfigLocale}`);
+        }
+        if (opts?.identityLocale?.botConfigTimezone) {
+            args.push(`--bot-config-timezone=${opts.identityLocale.botConfigTimezone}`);
+        }
+        if (opts?.identityLocale?.botConfigLocation) {
+            args.push(`--bot-config-location=${opts.identityLocale.botConfigLocation}`);
+        }
+
+        // Custom User-Agent
+        if (opts?.customUserAgent?.userAgent) {
+            args.push(`--user-agent="${opts.customUserAgent.userAgent}"`);
+        }
+        if (opts?.customUserAgent?.botConfigPlatform) {
+            args.push(`--bot-config-platform=${opts.customUserAgent.botConfigPlatform}`);
+        }
+        if (opts?.customUserAgent?.botConfigPlatformVersion) {
+            args.push(`--bot-config-platform-version=${opts.customUserAgent.botConfigPlatformVersion}`);
+        }
+        if (opts?.customUserAgent?.botConfigModel) {
+            args.push(`--bot-config-model=${opts.customUserAgent.botConfigModel}`);
+        }
+        if (opts?.customUserAgent?.botConfigArchitecture) {
+            args.push(`--bot-config-architecture=${opts.customUserAgent.botConfigArchitecture}`);
+        }
+        if (opts?.customUserAgent?.botConfigBitness) {
+            args.push(`--bot-config-bitness=${opts.customUserAgent.botConfigBitness}`);
+        }
+        if (opts?.customUserAgent?.botConfigMobile) {
+            args.push('--bot-config-mobile');
+        }
+
+        // Display & Input
+        if (opts?.displayInput?.botConfigWindow) {
+            args.push(`--bot-config-window=${opts.displayInput.botConfigWindow}`);
+        }
+        if (opts?.displayInput?.botConfigScreen) {
+            args.push(`--bot-config-screen=${opts.displayInput.botConfigScreen}`);
+        }
+        if (opts?.displayInput?.botConfigKeyboard) {
+            args.push(`--bot-config-keyboard=${opts.displayInput.botConfigKeyboard}`);
+        }
+        if (opts?.displayInput?.botConfigFonts) {
+            args.push(`--bot-config-fonts=${opts.displayInput.botConfigFonts}`);
+        }
+        if (opts?.displayInput?.botConfigColorScheme) {
+            args.push(`--bot-config-color-scheme=${opts.displayInput.botConfigColorScheme}`);
+        }
+        if (opts?.displayInput?.botConfigDisableDeviceScaleFactor) {
+            args.push('--bot-config-disable-device-scale-factor');
+        }
+
+        // Noise
+        if (opts?.noise?.botConfigNoiseWebglImage) args.push('--bot-config-noise-webgl-image');
+        if (opts?.noise?.botConfigNoiseCanvas) args.push('--bot-config-noise-canvas');
+        if (opts?.noise?.botConfigNoiseAudioContext) args.push('--bot-config-noise-audio-context');
+        if (opts?.noise?.botConfigNoiseClientRects) args.push('--bot-config-noise-client-rects');
+        if (opts?.noise?.botConfigNoiseTextRects) args.push('--bot-config-noise-text-rects');
+        if (opts?.noise?.botNoiseSeed !== undefined && opts?.noise?.botNoiseSeed !== null) {
+            args.push(`--bot-noise-seed=${opts.noise.botNoiseSeed}`);
+        }
+        if (opts?.noise?.botTimeScale !== undefined && opts?.noise?.botTimeScale !== null) {
+            args.push(`--bot-time-scale=${opts.noise.botTimeScale}`);
+        }
+
+        // Rendering & Media
+        if (opts?.renderingMedia?.botConfigWebgl) {
+            args.push(`--bot-config-webgl=${opts.renderingMedia.botConfigWebgl}`);
+        }
+        if (opts?.renderingMedia?.botConfigWebgpu) {
+            args.push(`--bot-config-webgpu=${opts.renderingMedia.botConfigWebgpu}`);
+        }
+        if (opts?.renderingMedia?.botConfigSpeechVoices) {
+            args.push(`--bot-config-speech-voices=${opts.renderingMedia.botConfigSpeechVoices}`);
+        }
+        if (opts?.renderingMedia?.botConfigMediaDevices) {
+            args.push(`--bot-config-media-devices=${opts.renderingMedia.botConfigMediaDevices}`);
+        }
+        if (opts?.renderingMedia?.botConfigMediaTypes) {
+            args.push(`--bot-config-media-types=${opts.renderingMedia.botConfigMediaTypes}`);
+        }
+        if (opts?.renderingMedia?.botConfigWebrtc) {
+            args.push(`--bot-config-webrtc=${opts.renderingMedia.botConfigWebrtc}`);
+        }
+        if (opts?.renderingMedia?.botWebrtcIce) {
+            args.push(`--bot-webrtc-ice=${opts.renderingMedia.botWebrtcIce}`);
+        }
+
+        // Proxy
         if (browserProfile.proxyServer) {
             args.push(`--proxy-server=${browserProfile.proxyServer}`);
+        }
+        if (opts?.proxy?.proxyIp) {
+            args.push(`--proxy-ip=${opts.proxy.proxyIp}`);
+        }
+        if (opts?.proxy?.botIpService) {
+            args.push(`--bot-ip-service=${opts.proxy.botIpService}`);
         }
 
         if (browserProfile.basicInfo.profileName) {
@@ -245,5 +403,36 @@ export class BrowserLauncherService {
 
         runningInfo.status = BrowserProfileStatus.Stopping;
         await Neutralino.os.updateSpawnedProcess(runningInfo.spawnProcessInfo.id, 'exit');
+    }
+
+    async #findMacOSExecutable(appPath: string): Promise<string> {
+        // Try common executable names inside .app bundle
+        const possibleNames = ['Chromium', 'chrome', 'Google Chrome', 'BotBrowser'];
+
+        for (const name of possibleNames) {
+            const execPath = await Neutralino.filesystem.getJoinedPath(appPath, 'Contents', 'MacOS', name);
+            try {
+                await Neutralino.filesystem.getStats(execPath);
+                return execPath;
+            } catch {
+                continue;
+            }
+        }
+
+        // If no known name found, try to find the first executable in Contents/MacOS
+        try {
+            const result = await Neutralino.os.execCommand(
+                `ls "${appPath}/Contents/MacOS" 2>/dev/null | head -1`
+            );
+            const mainExec = result.stdOut.trim();
+            if (mainExec) {
+                return await Neutralino.filesystem.getJoinedPath(appPath, 'Contents', 'MacOS', mainExec);
+            }
+        } catch {
+            // Ignore
+        }
+
+        // Fallback to default Chromium path
+        return await Neutralino.filesystem.getJoinedPath(appPath, 'Contents', 'MacOS', 'Chromium');
     }
 }
