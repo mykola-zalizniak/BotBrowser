@@ -1,6 +1,24 @@
 import * as Neutralino from '@neutralinojs/lib';
 import { AppName } from './const';
 
+export function formatProxyDisplay(proxyUrl?: string): string {
+    if (!proxyUrl) return '';
+    try {
+        // Add scheme if missing for URL parsing
+        const urlString = proxyUrl.includes('://') ? proxyUrl : `http://${proxyUrl}`;
+        const url = new URL(urlString);
+        // Only show host:port for brevity
+        return `${url.hostname}:${url.port}`;
+    } catch {
+        // Fallback: try to extract host:port from string
+        const match = proxyUrl.match(/@?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d+)/);
+        if (match) {
+            return `${match[1]}:${match[2]}`;
+        }
+        return proxyUrl.length > 20 ? proxyUrl.slice(0, 20) + '...' : proxyUrl;
+    }
+}
+
 export function formatDateTime(ts?: number | Date | null): string {
     if (!ts) return '';
     const date = typeof ts === 'number' ? new Date(ts) : ts;

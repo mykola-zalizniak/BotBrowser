@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "BotBrowser-Console": {
+        "BotBrowser-Launcher": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/botbrowser-console",
+                        "outputPath": "dist/botbrowser-launcher",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": ["zone.js"],
@@ -60,10 +60,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "buildTarget": "BotBrowser-Console:build:production"
+                            "buildTarget": "BotBrowser-Launcher:build:production"
                         },
                         "development": {
-                            "buildTarget": "BotBrowser-Console:build:development"
+                            "buildTarget": "BotBrowser-Launcher:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
                                 "input": "public"
                             }
                         ],
-                        "styles": ["@angular/material/prebuilt-themes/azure-blue.css", "src/styles.scss"],
+                        "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
                         "scripts": []
                     }
                 }
@@ -115,5 +115,8 @@
         "@schematics/angular:resolver": {
             "typeSeparator": "."
         }
+    },
+    "cli": {
+        "analytics": false
     }
 }

@@ -1,0 +1,18 @@
+@use '../shared/shared-styles' as shared;
+
+:host {
+    @include shared.content-panel;
+}
+
+mat-toolbar {
+    @include shared.toolbar;
+}
+
+.table-container {
+    @include shared.table-container;
+    @include shared.table-cell-flex;
+}
+
+.empty-state {
+    @include shared.empty-state;
+}

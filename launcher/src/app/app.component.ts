@@ -5,10 +5,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterOutlet } from '@angular/router';
 import * as Neutralino from '@neutralinojs/lib';
 import { cloneDeep } from 'lodash-es';
@@ -17,12 +21,17 @@ import { CloneBrowserProfileComponent } from './clone-browser-profile.component'
 import { AppName } from './const';
 import { BrowserProfileStatus, type BrowserProfile } from './data/browser-profile';
 import { EditBrowserProfileComponent } from './edit-browser-profile.component';
+import { KernelManagementComponent } from './kernel-management/kernel-management.component';
+import { ProxyManagementComponent } from './proxy-management/proxy-management.component';
 import { BrowserLauncherService } from './shared/browser-launcher.service';
 import { BrowserProfileService } from './shared/browser-profile.service';
 import { ConfirmDialogComponent } from './shared/confirm-dialog.component';
+import { KernelService } from './shared/kernel.service';
 import { StopPropagationDirective } from './shared/stop-propagation.directive';
-import { compressFolder, decompressZip, formatDateTime } from './utils';
+import { compressFolder, decompressZip, formatDateTime, formatProxyDisplay } from './utils';
 import { WarmupComponent } from './warmup.component';
+
+export type NavItem = 'profiles' | 'proxies' | 'kernels';
 
 @Component({
     selector: 'app-root',
@@ -38,7 +47,13 @@ import { WarmupComponent } from './warmup.component';
         MatCheckboxModule,
         MatToolbarModule,
         MatIconModule,
+        MatSidenavModule,
+        MatListModule,
+        MatProgressBarModule,
+        MatTooltipModule,
         StopPropagationDirective,
+        ProxyManagementComponent,
+        KernelManagementComponent,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
@@ -46,26 +61,50 @@ import { WarmupComponent } from './warmup.component';
 export class AppComponent implements AfterViewInit {
     readonly #browserProfileService = inject(BrowserProfileService);
     readonly browserLauncherService = inject(BrowserLauncherService);
+    readonly kernelService = inject(KernelService);
 
     readonly AppName = AppName;
     readonly #dialog = inject(MatDialog);
+    currentNav: NavItem = 'profiles';
     readonly formatDateTime = formatDateTime;
+    readonly formatProxyDisplay = formatProxyDisplay;
     readonly BrowserProfileStatus = BrowserProfileStatus;
-    readonly displayedColumns = ['select', 'name', 'group', 'status', 'lastUsedAt', 'updatedAt', 'createdAt'];
+    readonly displayedColumns = ['select', 'name', 'group', 'proxy', 'status', 'lastUsedAt'];
     readonly dataSource = new MatTableDataSource<BrowserProfile>([]);
     readonly selection = new SelectionModel<BrowserProfile>(true, []);
 
-    @ViewChild(MatSort) sort!: MatSort;
+    loading = false;
 
-    constructor() {}
+    @ViewChild(MatSort) set sort(sort: MatSort) {
+        if (sort) {
+            this.dataSource.sort = sort;
+        }
+    }
+
+    constructor() {
+        this.dataSource.sortingDataAccessor = (data, sortHeaderId) => {
+            switch (sortHeaderId) {
+                case 'name':
+                    return data.basicInfo.profileName ?? '';
+                case 'group':
+                    return data.basicInfo.groupName ?? '';
+                case 'status':
+                    return this.browserLauncherService.getRunningStatus(data);
+                case 'lastUsedAt':
+                    return data.lastUsedAt ?? 0;
+                default:
+                    return '';
+            }
+        };
+    }
 
     newProfile(): void {
         this.#dialog
             .open(EditBrowserProfileComponent)
             .afterClosed()
             .subscribe((result) => {
-                console.log(`Dialog result: ${result}`);
-                this.refreshProfiles().then().catch(console.error);
+                if (!result) return;
+                this.refreshProfiles().catch(console.error);
             });
     }
 
@@ -76,8 +115,8 @@ export class AppComponent implements AfterViewInit {
             })
             .afterClosed()
             .subscribe((result) => {
-                console.log(`Dialog result: ${result}`);
-                this.refreshProfiles().then().catch(console.error);
+                if (!result) return;
+                this.refreshProfiles().catch(console.error);
             });
     }
 
@@ -184,43 +223,23 @@ export class AppComponent implements AfterViewInit {
     }
 
     async refreshProfiles(): Promise<void> {
-        const profiles = await this.#browserProfileService.getAllBrowserProfiles();
-        const selectedIds = this.selection.selected.map((profile) => profile.id);
-        this.dataSource.data = profiles;
+        this.loading = true;
+        try {
+            const profiles = await this.#browserProfileService.getAllBrowserProfiles();
+            const selectedIds = this.selection.selected.map((profile) => profile.id);
+            this.dataSource.data = profiles;
 
-        this.selection.clear();
-        this.selection.select(...profiles.filter((profile) => selectedIds.includes(profile.id)));
+            this.selection.clear();
+            this.selection.select(...profiles.filter((profile) => selectedIds.includes(profile.id)));
+        } finally {
+            this.loading = false;
+        }
     }
 
     async ngAfterViewInit(): Promise<void> {
-        const envs = await Neutralino.os.getEnvs();
-        console.log('Envs:', envs);
-
-        const config = await Neutralino.app.getConfig();
-        console.log('Config:', config);
-
-        console.log('MatSort:', this.sort);
-        this.dataSource.sort = this.sort;
-        this.dataSource.sortingDataAccessor = (data, sortHeaderId) => {
-            switch (sortHeaderId) {
-                case 'name':
-                    return data.basicInfo.profileName ?? '';
-                case 'group':
-                    return data.basicInfo.groupName ?? '';
-                case 'status':
-                    return this.browserLauncherService.getRunningStatus(data);
-                case 'lastUsedAt':
-                    return data.lastUsedAt ?? 0;
-                case 'updatedAt':
-                    return data.updatedAt ?? 0;
-                case 'createdAt':
-                    return data.createdAt ?? 0;
-                default:
-                    return '';
-            }
-        };
-
         await this.refreshProfiles();
+        // Start kernel auto-update and auto-download tasks in the background
+        this.kernelService.performStartupTasks().catch(console.error);
     }
 
     get isAllSelected(): boolean {
@@ -441,5 +460,13 @@ export class AppComponent implements AfterViewInit {
                 console.error(`Failed to stop profile ${profile.basicInfo.profileName}:`, error);
             }
         }
+    }
+
+    openExternalUrl(url: string): void {
+        Neutralino.os.open(url);
+    }
+
+    is7ZipError(error: string | undefined): boolean {
+        return !!error && error.includes('7-Zip');
     }
 }
