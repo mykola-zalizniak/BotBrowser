@@ -1,6 +1,6 @@
-# BotBrowser v145 Profiles
+# BotBrowser Canary Profiles (v145)
 
-Please download the 145 kernel BotBrowser from [this release](https://github.com/botswin/BotBrowser/releases/tag/145.0.7632.26).
+Please download BotBrowser **145.0.7632.26** from [this release](https://github.com/botswin/BotBrowser/releases/tag/145.0.7632.26).
 
 ---
 
