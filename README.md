@@ -25,7 +25,7 @@
 </p>
 
 <div align="center">
-  <img width="600" alt="BotBrowser GUI - Your Command Center" src="https://github.com/user-attachments/assets/5f8a2cbc-67e8-4425-89bf-5f76d78bdde6">
+  <img width="600" alt="BotBrowser GUI - Your Command Center" src="https://github.com/user-attachments/assets/0f003494-ec92-4c3a-b879-b08d3521a0fb">
 </div>
 
 ---
