@@ -39,11 +39,6 @@ $env:PATH = "$NODE_DIR;$env:PATH"
 $nodeVersion = & "$NODE_DIR\node.exe" --version
 Write-Host "Node.js version: $nodeVersion" -ForegroundColor Green
 
-# Install Neutralino CLI
-Write-Host "Installing Neutralino CLI..." -ForegroundColor Yellow
-& "$NODE_DIR\npm.cmd" install -g @neutralinojs/neu
-Write-Host "Neutralino CLI installed." -ForegroundColor Green
-
 # Download repository
 if (Test-Path $REPO_DIR) {
     Remove-Item -Recurse -Force $REPO_DIR
@@ -61,9 +56,6 @@ Remove-Item $repoZipPath
 Write-Host "Installing dependencies..." -ForegroundColor Yellow
 Push-Location "$REPO_DIR\launcher"
 & "$NODE_DIR\npm.cmd" ci
-
-Write-Host "Downloading Neutralino binaries..." -ForegroundColor Yellow
-& "$NODE_DIR\npx.cmd" @neutralinojs/neu update
 
 Write-Host "Building application..." -ForegroundColor Yellow
 & "$NODE_DIR\npm.cmd" run build
