@@ -68,6 +68,9 @@ cd "$REPO_DIR/launcher"
 echo "Installing dependencies..."
 "$NODE_DIR/bin/npm" ci
 
+echo "Downloading Neutralino binaries..."
+"$NODE_DIR/bin/npx" @neutralinojs/neu update
+
 echo "Building application..."
 "$NODE_DIR/bin/npm" run build
 

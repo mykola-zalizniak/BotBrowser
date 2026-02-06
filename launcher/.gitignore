@@ -47,6 +47,9 @@ Thumbs.db
 # Neutralinojs builds
 /dist
 
+# Neutralinojs binaries (downloaded by `neu update`)
+/bin
+
 # Neutralinojs client (minified)
 neutralino.js
 

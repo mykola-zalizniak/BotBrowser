@@ -62,6 +62,9 @@ Write-Host "Installing dependencies..." -ForegroundColor Yellow
 Push-Location "$REPO_DIR\launcher"
 & "$NODE_DIR\npm.cmd" ci
 
+Write-Host "Downloading Neutralino binaries..." -ForegroundColor Yellow
+& "$NODE_DIR\npx.cmd" @neutralinojs/neu update
+
 Write-Host "Building application..." -ForegroundColor Yellow
 & "$NODE_DIR\npm.cmd" run build
 
