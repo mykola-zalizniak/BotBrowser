@@ -109,23 +109,29 @@ This skips per-page IP lookups and speeds up navigation.
 - Avoid: framework-specific options like `page.authenticate()` that disable BotBrowser's geo-detection, which may leak location information
 
 ### `--proxy-bypass-rgx` (PRO)
-Define URL patterns via regular expressions for proxy routing control.
+Define URL patterns via regular expressions for proxy routing control. Uses RE2 regex syntax. Matches against both hostname and full URL path (including HTTPS).
 
 ```bash
-# Regex pattern with | for multiple domains
---proxy-bypass-rgx="\.google\.com$|\.github\.com$"
-
-# Combined with standard bypass list
---proxy-server=socks5://127.0.0.1:1080 \
---proxy-bypass-list="localhost,127.0.0.1" \
---proxy-bypass-rgx="\.internal\.company\.com$"
+--proxy-bypass-rgx="\.js(\?|$)"                      # Bypass .js files
+--proxy-bypass-rgx="\.(js|css|png|svg)(\?|$)"        # Bypass static assets
+--proxy-bypass-rgx="/api/public/|/static/"           # Bypass specific paths
+--proxy-bypass-rgx="cdn\.|\.google\.com$"            # Bypass by domain pattern
 ```
 
-**Features:**
-- Uses RE2 regex syntax
-- Use `|` within the pattern for multiple domains (e.g., `domain1\.com$|domain2\.com$`)
-- Works as a union with `--proxy-bypass-list`
-- Matches against both hostname and full URL
+**JavaScript Usage:**
+
+Do NOT include quotes inside the value:
+
+```javascript
+// Wrong - quotes become part of regex
+launchArgs.push('--proxy-bypass-rgx="\\.js$"');
+
+// Correct
+launchArgs.push('--proxy-bypass-rgx=\\.js($|\\?)');
+launchArgs.push('--proxy-bypass-rgx=example\\.com.*\\.js($|\\?)');
+```
+
+In JavaScript strings: `\\.` becomes `\.`, `\\?` becomes `\?`
 
 ### `--bot-local-dns` (ENT Tier1)
 Enable the local DNS solver. This keeps DNS resolution local instead of relying on a proxy provider's DNS behavior, improving privacy and speed while avoiding common DNS poisoning paths.
