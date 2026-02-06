@@ -282,6 +282,7 @@ Most `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) work with per-context con
 | Window | `--bot-always-active` to maintain active window state |
 | Session | `--bot-inject-random-history` for session authenticity |
 | Proxy | `--proxy-server` (configure proxy per-context via `botbrowserFlags`), `--proxy-ip` to skip IP lookups |
+| HTTP | `--bot-custom-headers` for custom HTTP request headers per context |
 | Config | `--bot-config-platform`, `--bot-config-timezone`, `--bot-config-noise-canvas`, etc. |
 
 See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.

@@ -3,6 +3,37 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-02-06]
+### Major
+- **Chromium Core → 144.0.7559.111**: Updated the engine to Chrome 144 stable (144.0.7559.111). This keeps Web Platform behavior, rendering consistency, and security patches aligned with upstream Chrome.
+
+- **Android WebView Simulation**: Complete Android WebView fingerprint support with authentic behavior. Properly handles WebView-specific disabled features, permission differences, and Privacy Sandbox restrictions. Enables accurate WebView identity when using `--user-agent` with WebView user-agent strings.
+
+### New
+- **Regex Proxy Rules (PRO)**: Added `--proxy-bypass-rgx` flag to define URL patterns via regular expressions for proxy routing control. Supports RE2 syntax with `|` for multiple patterns and works in conjunction with `--proxy-bypass-list`.
+
+- **Custom HTTP Headers (PRO)**: Added `--bot-custom-headers` flag to inject custom HTTP request headers into all outgoing requests. Configure via CLI (`--bot-custom-headers='{"X-Custom":"value"}'`), profile JSON (`configs.customHeaders`), or CDP (`BotBrowser.setCustomHeaders`).
+
+### Improvements
+- **Window/Screen Size CLI Formats**: Extended `--bot-config-window` and `--bot-config-screen` to support WxH format (e.g., `1920x1080`) and full JSON configuration, in addition to existing `real` and `profile` options.
+
+### Fixes
+- **Per-Context Fingerprint on Windows (ENT Tier3)**: Fixed per-context fingerprints not applying correctly on Windows.
+
+- **Per-Context HTTP Headers (ENT Tier3)**: HTTP request headers (`User-Agent`, `sec-ch-ua-*`) now correctly reflect per-context fingerprint settings, matching the JavaScript API values.
+
+- **Performance Memory API Consistency**: `performance.memory` values now show natural fluctuations consistent with real browser behavior.
+
+- **Docker Font Consistency**: Font fingerprints now remain consistent regardless of host system font availability in containerized environments.
+
+- **Windows Profile Extension Loading**: Fixed `--bot-script` extensions failing to load when using Windows fingerprint profiles on Linux/macOS hosts.
+
+
+## [2026-01-31]
+### Major
+- **Chromium Core → 145.0.7632.26**: Updated the engine to Chrome 145 early release (145.0.7632.26) to stay ahead with the latest Chrome development. This maintains Web Platform parity, rendering consistency, and security patches with upstream.
+
+
 ## [2026-01-27]
 ### Major
 - **Chromium Core → 144.0.7559.97**: Updated the engine to the latest Chrome 144 stable (144.0.7559.97). This keeps Web Platform behavior, rendering consistency, and security patches aligned with upstream Chrome.

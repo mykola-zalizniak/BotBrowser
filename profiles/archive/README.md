@@ -1,6 +1,10 @@
-# BotBrowser v144 Profiles
+# Archived Profiles
 
-Please download the 144 kernel BotBrowser from [this release](https://github.com/botswin/BotBrowser/releases/tag/144.0.7559.76).
+This directory contains previous BotBrowser profile versions (v135–v143).
+
+For the latest profiles, see:
+- [stable/](../stable/) — Current stable release
+- [canary/](../canary/) — Early development release
 
 ---
 
