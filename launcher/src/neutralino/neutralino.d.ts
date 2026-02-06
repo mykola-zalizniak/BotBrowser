@@ -384,6 +384,10 @@ declare namespace Neutralino {
             isDisabled?: boolean;
             isChecked?: boolean;
             menuItems?: WindowMenuItem[];
+            /** macOS only: native selector (e.g., 'cut:', 'copy:', 'paste:') */
+            action?: string;
+            /** macOS only: keyboard shortcut key (e.g., 'x', 'c', 'v') mapped to Cmd+key */
+            shortcut?: string;
         }
         function setTitle(title: string): Promise<void>;
         function getTitle(): Promise<string>;
