@@ -45,11 +45,6 @@ export PATH="$NODE_DIR/bin:$PATH"
 # Verify Node.js
 echo "Node.js version: $("$NODE_DIR/bin/node" --version)"
 
-# Install Neutralino CLI
-echo "Installing Neutralino CLI..."
-"$NODE_DIR/bin/npm" install -g @neutralinojs/neu
-echo "Neutralino CLI installed."
-
 # Download repository
 if [ -d "$REPO_DIR" ]; then
     rm -rf "$REPO_DIR"

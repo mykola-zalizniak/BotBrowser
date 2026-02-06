@@ -14,7 +14,8 @@
         "filesystem.*",
         "computer.*",
         "debug.*",
-        "resources.*"
+        "resources.*",
+        "clipboard.*"
     ],
     "modes": {
         "window": {
@@ -39,7 +40,7 @@
         "binaryName": "BotBrowserLauncher",
         "resourcesPath": "/dist/botbrowser-launcher/browser",
         "extensionsPath": "/extensions/",
-        "binaryVersion": "5.4.0",
-        "clientVersion": "5.4.0"
+        "binaryVersion": "6.5.0",
+        "clientVersion": "6.5.0"
     }
 }
