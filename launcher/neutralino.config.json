@@ -14,7 +14,8 @@
         "filesystem.*",
         "computer.*",
         "debug.*",
-        "resources.*"
+        "resources.*",
+        "clipboard.*"
     ],
     "modes": {
         "window": {

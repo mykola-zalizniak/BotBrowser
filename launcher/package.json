@@ -3,6 +3,7 @@
     "version": "0.0.0",
     "scripts": {
         "ng": "ng",
+        "postinstall": "neu update",
         "build": "ng build && neu build",
         "watch": "ng build --watch --configuration development",
         "app": "neu run"
@@ -30,6 +31,7 @@
         "@angular-devkit/build-angular": "^21.1.0",
         "@angular/cli": "^21.1.0",
         "@angular/compiler-cli": "^21.1.0",
+        "@neutralinojs/neu": "^6.4.0",
         "@types/lodash-es": "^4.17.12",
         "prettier": "^3.8.0",
         "typescript": "~5.9.3"

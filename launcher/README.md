@@ -62,15 +62,15 @@ curl -fsSL https://raw.githubusercontent.com/botswin/BotBrowser/main/launcher/sc
 ### Prerequisites
 
 - **Node.js 24+** (Angular 21 requirement)
-- **Neutralino CLI**: `npm i -g @neutralinojs/neu`
 
 ### Build & Run
 
 ```bash
-npm ci
+npm ci          # installs dependencies + downloads Neutralino binary automatically
 npm run build
 npm run app
 ```
+
 
 ## Usage
 

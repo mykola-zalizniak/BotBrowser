@@ -24,22 +24,45 @@ Neutralino.events.on('ready', () => {
                 { id: 'selectAll', text: 'Select All', action: 'selectAll:', shortcut: 'a' },
             ],
         },
-    ]).catch(() => {});
+    ]).catch((err: unknown) => console.warn('setMainMenu failed:', err));
 
-    // JS fallback for Cmd+V paste (in case native menu shortcuts don't reach the webview)
+    // JS fallback for Cmd+C/X/V (in case native menu shortcuts don't reach the webview)
     document.addEventListener('keydown', async (e) => {
-        if (!e.metaKey || e.key !== 'v') return;
-        const el = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
-        if (!el || !('value' in el)) return;
-        e.preventDefault();
-        try {
-            const text = await Neutralino.clipboard.readText();
-            const start = el.selectionStart ?? el.value.length;
-            const end = el.selectionEnd ?? el.value.length;
-            el.value = el.value.slice(0, start) + text + el.value.slice(end);
-            el.selectionStart = el.selectionEnd = start + text.length;
-            el.dispatchEvent(new Event('input', { bubbles: true }));
-        } catch { /* clipboard unavailable */ }
+        if (!e.metaKey) return;
+
+        if (e.key === 'c' || e.key === 'x') {
+            // Copy / Cut
+            const selection = window.getSelection()?.toString();
+            if (!selection) return;
+            e.preventDefault();
+            try {
+                await Neutralino.clipboard.writeText(selection);
+                if (e.key === 'x') {
+                    // Cut: remove selected text
+                    const el = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
+                    if (el && 'value' in el && el.selectionStart != null && el.selectionEnd != null) {
+                        const start = el.selectionStart;
+                        const end = el.selectionEnd;
+                        el.value = el.value.slice(0, start) + el.value.slice(end);
+                        el.selectionStart = el.selectionEnd = start;
+                        el.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }
+            } catch { /* clipboard unavailable */ }
+        } else if (e.key === 'v') {
+            // Paste
+            const el = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
+            if (!el || !('value' in el)) return;
+            e.preventDefault();
+            try {
+                const text = await Neutralino.clipboard.readText();
+                const start = el.selectionStart ?? el.value.length;
+                const end = el.selectionEnd ?? el.value.length;
+                el.value = el.value.slice(0, start) + text + el.value.slice(end);
+                el.selectionStart = el.selectionEnd = start + text.length;
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+            } catch { /* clipboard unavailable */ }
+        }
     });
 });
 
