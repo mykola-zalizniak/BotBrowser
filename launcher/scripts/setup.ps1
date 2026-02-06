@@ -21,7 +21,8 @@ if (!(Test-Path $INSTALL_DIR)) {
 if (!(Test-Path "$NODE_DIR\node.exe")) {
     Write-Host "Downloading Node.js v${NODE_VERSION}..." -ForegroundColor Yellow
     $zipPath = "$env:TEMP\node.zip"
-    Invoke-WebRequest -Uri $NODE_URL -OutFile $zipPath
+    $ProgressPreference = 'SilentlyContinue'
+    Invoke-WebRequest -Uri $NODE_URL -OutFile $zipPath -UseBasicParsing
 
     Write-Host "Extracting Node.js..." -ForegroundColor Yellow
     Expand-Archive -Path $zipPath -DestinationPath $INSTALL_DIR -Force
@@ -45,7 +46,8 @@ if (Test-Path $REPO_DIR) {
 }
 Write-Host "Downloading repository..." -ForegroundColor Yellow
 $repoZipPath = "$env:TEMP\botbrowser.zip"
-Invoke-WebRequest -Uri $REPO_ZIP_URL -OutFile $repoZipPath
+$ProgressPreference = 'SilentlyContinue'
+Invoke-WebRequest -Uri $REPO_ZIP_URL -OutFile $repoZipPath -UseBasicParsing
 
 Write-Host "Extracting repository..." -ForegroundColor Yellow
 Expand-Archive -Path $repoZipPath -DestinationPath $INSTALL_DIR -Force
