@@ -30,9 +30,9 @@ BotBrowser uses a three-tier priority system for configuration:
 
 ### Priority Order (Highest to Lowest)
 
-1. **🥇 CLI `--bot-config-*` flags** - Highest priority, overrides everything
-2. **🥈 Profile `configs` settings** - Medium priority, overrides profile defaults
-3. **🥉 Profile default values** - Lowest priority, built-in profile data
+1. **CLI `--bot-config-*` flags** - Highest priority, overrides everything
+2. **Profile `configs` settings** - Medium priority, overrides profile defaults
+3. **Profile default values** - Lowest priority, built-in profile data
 
 ### Why CLI Flags Are Recommended
 
@@ -137,6 +137,12 @@ These fields work together with `--user-agent` CLI flag. BotBrowser auto-generat
 ⚠️ **Proxy configurations are intended for authorized networks only. They must not be used for unauthorized data collection or abuse.**
 
 > **UDP-over-SOCKS5:** ENT Tier3 support detects when a SOCKS5 upstream offers UDP associate and natively tunnels QUIC/STUN through it. No additional flag is required; simply provide a SOCKS5 proxy that advertises UDP support.
+
+### HTTP Request Settings
+
+| Field            | Description                               | Default |
+| ---------------- | ----------------------------------------- | ------- |
+| `customHeaders` (PRO) | Inject custom HTTP request headers into all outgoing requests. Object with header name-value pairs (e.g., `{"X-Custom":"value"}`). | `{}`    |
 
 ### Window & Screen Settings
 
@@ -277,6 +283,11 @@ These fields work together with `--user-agent` CLI flag. BotBrowser auto-generat
 
     // mobileForceTouch: Force touch events on/off when simulating mobile devices
     "mobileForceTouch": false,
+
+    // customHeaders (PRO): inject custom HTTP headers into all outgoing requests
+    "customHeaders": {
+      "X-Custom-Header": "value"
+    }
   }
 }
 

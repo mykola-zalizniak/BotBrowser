@@ -108,6 +108,25 @@ This skips per-page IP lookups and speeds up navigation.
 - Per-context proxy (ENT Tier1): set different proxies via `createBrowserContext({ proxy })`; BotBrowser auto-derives geo info in both cases
 - Avoid: framework-specific options like `page.authenticate()` that disable BotBrowser's geo-detection, which may leak location information
 
+### `--proxy-bypass-rgx` (PRO)
+Define URL patterns via regular expressions for proxy routing control.
+
+```bash
+# Regex pattern with | for multiple domains
+--proxy-bypass-rgx="\.google\.com$|\.github\.com$"
+
+# Combined with standard bypass list
+--proxy-server=socks5://127.0.0.1:1080 \
+--proxy-bypass-list="localhost,127.0.0.1" \
+--proxy-bypass-rgx="\.internal\.company\.com$"
+```
+
+**Features:**
+- Uses RE2 regex syntax
+- Use `|` within the pattern for multiple domains (e.g., `domain1\.com$|domain2\.com$`)
+- Works as a union with `--proxy-bypass-list`
+- Matches against both hostname and full URL
+
 ### `--bot-local-dns` (ENT Tier1)
 Enable the local DNS solver. This keeps DNS resolution local instead of relying on a proxy provider's DNS behavior, improving privacy and speed while avoiding common DNS poisoning paths.
 
@@ -214,6 +233,24 @@ Documentation: Chrome `chrome.debugger` API - <https://developer.chrome.com/docs
 
 Examples: [Bot Script](examples/bot-script)
 
+### `--bot-custom-headers` (PRO)
+Inject custom HTTP request headers into all outgoing requests.
+
+```bash
+# JSON format with header name-value pairs
+--bot-custom-headers='{"X-Custom-Header":"value","X-Another":"value2"}'
+```
+
+**Configuration Methods:**
+- CLI flag: `--bot-custom-headers='{"Header":"value"}'`
+- Profile JSON: `configs.customHeaders`
+- CDP: `BotBrowser.setCustomHeaders`
+
+**Notes:**
+- Headers are added to all HTTP/HTTPS requests
+- Useful for API authentication, session management, or request routing
+- JSON format with string key-value pairs
+
 ---
 
 <a id="profile-configuration-override-flags"></a>
@@ -260,8 +297,16 @@ BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersio
 > **Note: UA/Engine Congruence:** Keep `--bot-config-ua-full-version` aligned with your Chromium major version, and use `--bot-config-brand-full-version` when a vendor's cadence (Edge, Opera, Brave) diverges so UA-CH metadata stays internally protected.
 
 **Display & Input**
-- `--bot-config-window=profile`: Window dimensions: profile (use profile), real (system window)
-- `--bot-config-screen=profile`: Screen properties: profile (use profile), real (system screen)
+- `--bot-config-window=<value>`: Window dimensions with multiple formats:
+  - `profile` - Use profile's window settings (default)
+  - `real` - Use actual system window dimensions
+  - `WxH` - Direct size specification (e.g., `1920x1080`), sets innerWidth/innerHeight with outerWidth/outerHeight auto-derived from profile borders
+  - `JSON` - Full customization (e.g., `'{"innerWidth":1920,"innerHeight":1080,"devicePixelRatio":2}'`)
+- `--bot-config-screen=<value>`: Screen properties with multiple formats:
+  - `profile` - Use profile's screen settings (default)
+  - `real` - Use actual system screen dimensions
+  - `WxH` - Direct size specification (e.g., `2560x1440`), sets width/height with availWidth/availHeight auto-derived from profile
+  - `JSON` - Full customization (e.g., `'{"width":2560,"height":1440,"availWidth":2560,"availHeight":1400}'`)
 - `--bot-config-keyboard=profile`: Keyboard settings: profile (emulated), real (system keyboard)
 - `--bot-config-fonts=profile`: Font settings: profile (embedded), expand (profile + fallback), real (system fonts)
 - `--bot-config-color-scheme=light`: Color scheme: light, dark
@@ -378,6 +423,13 @@ chromium-browser \
   --bot-config-browser-brand="edge" \  # ENT Tier2 feature
   --bot-config-window="real" \
   --user-data-dir="/tmp/instance2" &
+
+# Instance 3 - Custom window/screen size for OCR or specific viewport testing
+chromium-browser \
+  --bot-profile="/absolute/path/to/profile.enc" \
+  --bot-config-window="1920x1080" \
+  --bot-config-screen="2560x1440" \
+  --user-data-dir="/tmp/instance3" &
 ```
 
 ### Performance timing & noise control (ENT Tier2)
