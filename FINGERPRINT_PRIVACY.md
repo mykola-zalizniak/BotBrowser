@@ -1,6 +1,6 @@
 # Browser Fingerprinting: A Recognized Privacy Threat
 
-This document compiles authoritative references from web standards bodies, major browser vendors, and regulatory authorities that classify browser fingerprinting as a privacy violation.
+This document compiles authoritative references from web standards bodies, major browser vendors, regulatory authorities, and academic research that classify browser fingerprinting as a privacy violation. It also presents empirical data on the scale and prevalence of fingerprint-based tracking across the web.
 
 ---
 
@@ -50,7 +50,7 @@ Mozilla defines fingerprinting as an unintended identification technique:
 
 ---
 
-## Google Chrome (Privacy Sandbox)
+## Google Chrome
 
 **Source:** [User-Agent Reduction](https://privacysandbox.google.com/protections/user-agent)
 
@@ -62,7 +62,25 @@ Google acknowledges that traditional browser information enables passive fingerp
 
 > "User-Agent (UA) reduction minimizes the identifying information shared in the User-Agent string, which may be used for **passive fingerprinting**."
 
-**Classification:** Google is actively reducing fingerprinting surface area through User-Agent Reduction and other Privacy Sandbox initiatives.
+Google previously prohibited fingerprinting in its advertising products. In February 2025, Google reversed this policy, prompting regulatory backlash from the UK Information Commissioner's Office (see below).
+
+**Classification:** Google recognizes fingerprinting as a privacy risk and has been reducing fingerprinting surface area through User-Agent Reduction and Privacy Sandbox, despite its recent advertising policy change.
+
+---
+
+## ICO (UK Information Commissioner's Office)
+
+**Source:** [Our Response to Google's Policy Change on Fingerprinting](https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2024/12/our-response-to-google-s-policy-change-on-fingerprinting/) (December 2024)
+
+The UK's data protection authority responded to Google's decision to permit fingerprinting in its advertising products:
+
+> "Fingerprinting is **not a fair means** of tracking users online because it is likely to **reduce people's choice and control** over how their information is collected."
+
+> "Fingerprinting relies on signals that cannot be easily wiped, so even if users clear all site data, an organisation using fingerprinting techniques could **immediately identify them again**, which is not transparent and cannot easily be controlled."
+
+The ICO characterized Google's policy reversal as "irresponsible" and confirmed that businesses deploying fingerprinting must demonstrate compliance with data protection law, including obtaining user consent.
+
+**Classification:** Fingerprinting is unfair tracking that undermines user choice. The ICO has committed to publishing binding guidance on fingerprinting and storage-access technologies.
 
 ---
 
@@ -82,7 +100,7 @@ The EU's data protection advisory body ruled that device fingerprinting requires
 
 ## Electronic Frontier Foundation (EFF)
 
-**Source:** [GDPR and Browser Fingerprinting](https://www.eff.org/deeplinks/2018/06/gdpr-and-browser-fingerprinting-how-it-changes-game-sneakiest-web-trackers)
+**Sources:** [GDPR and Browser Fingerprinting](https://www.eff.org/deeplinks/2018/06/gdpr-and-browser-fingerprinting-how-it-changes-game-sneakiest-web-trackers) | [Cover Your Tracks](https://coveryourtracks.eff.org/about)
 
 The EFF, a leading digital rights organization, states:
 
@@ -92,7 +110,9 @@ The EFF, a leading digital rights organization, states:
 
 > "There's **nothing legitimate** about this method of tracking."
 
-**Classification:** Fingerprinting is designed to circumvent user privacy controls and constitutes personal data processing under GDPR.
+The EFF's research project Panopticlick (now [Cover Your Tracks](https://coveryourtracks.eff.org/)) found that **84% of browsers tested had unique fingerprint configurations**, rising to **94%** when plugin-enabled browsers were included. Only 1% of fingerprints appeared more than twice in their dataset of over 470,000 browsers.
+
+**Classification:** Fingerprinting is designed to circumvent user privacy controls. The vast majority of browsers can be uniquely identified through fingerprint data alone.
 
 ---
 
@@ -114,6 +134,62 @@ France's data protection authority explicitly addresses fingerprinting:
 
 ---
 
+## Academic Research: Prevalence and Scale
+
+Browser fingerprinting is not a theoretical concern. Peer-reviewed research documents its widespread deployment across the web.
+
+### Princeton Web Census (2016)
+
+**Source:** [Online Tracking: A 1-Million-Site Measurement and Analysis](https://webtransparency.cs.princeton.edu/webcensus/) — Englehardt & Narayanan, Princeton University
+
+The largest academic web-tracking study to date crawled the top 1 million websites and found:
+
+- **Canvas fingerprinting** scripts present on **14,371 websites**, loaded from approximately 400 distinct domains
+- **AudioContext fingerprinting** detected on 67 websites
+- While prominent trackers reduced canvas fingerprinting after public exposure, the total number of domains deploying it **increased considerably** as the technique spread to smaller operators
+
+### KU Leuven & Princeton Joint Study
+
+**Source:** [The Web Never Forgets: Persistent Tracking Mechanisms in the Wild](https://www.esat.kuleuven.be/cosic/news/the-web-never-forgets-persistent-tracking-mechanisms-in-the-wild/)
+
+Researchers found canvas fingerprinting scripts on **5,542 of the top 100,000 websites** (5.5%), with the tracking occurring without any visible indication to users.
+
+### Majestic 10K Fingerprinting Study (2018)
+
+**Source:** [Who Touched My Browser Fingerprint?](https://dl.acm.org/doi/10.1145/3419394.3423614) — ACM Internet Measurement Conference
+
+An analysis of the top 10,000 websites found that **6,876 (68.8%) performed some form of browser fingerprinting**, collecting attributes including canvas hashes, WebGL parameters, installed fonts, screen properties, and audio processing characteristics.
+
+### Real-World Interaction Study (2024)
+
+**Source:** [Beyond the Crawl: Unmasking Browser Fingerprinting in Real User Interactions](https://arxiv.org/html/2502.01608v1)
+
+A 10-week study with real users browsing 3,000 top-ranked websites revealed that automated crawlers **undercount fingerprinting prevalence** because many fingerprinting scripts are triggered only by user interactions such as login flows and authentication pages. The actual fingerprinting exposure users face is higher than crawl-based estimates suggest.
+
+---
+
+## What Fingerprinting Collects
+
+Browser fingerprinting combines dozens of browser and device attributes into a composite identifier. Each attribute alone may seem innocuous, but together they form a unique signature:
+
+| Category | Data Points |
+|----------|-------------|
+| **Graphics** | Canvas 2D rendering output, WebGL renderer/vendor strings, WebGPU adapter info, GPU micro-benchmark timing, shader precision formats |
+| **Text & Fonts** | Installed font list, text measurement metrics (ClientRects, TextMetrics), HarfBuzz shaping output, font rendering characteristics |
+| **Audio** | AudioContext processing output (OfflineAudioContext hash), audio hardware properties, sample rate, channel count |
+| **Hardware** | Screen resolution, device pixel ratio, CPU core count (hardwareConcurrency), device memory, battery status, sensor availability |
+| **Browser** | User-Agent string, userAgentData brands, installed plugins, language preferences, timezone, Do Not Track setting, PDF viewer status |
+| **Network** | WebRTC local IP addresses, ICE candidates, STUN/TURN responses, connection type |
+| **TLS / Protocol** | JA3/JA4 hash, HTTP/2 SETTINGS frame parameters, cipher suite ordering, TLS extension list, ALPN negotiation |
+| **CSS & Media Queries** | prefers-color-scheme, prefers-reduced-motion, forced-colors mode, system color values, matchMedia results |
+| **JavaScript Engine** | Math function precision (e.g., `Math.tan` output), error stack trace format, `Intl` API locale behavior, Date formatting |
+| **Storage & APIs** | localStorage/sessionStorage quota, IndexedDB availability, service worker support, permission states, Notification API status |
+| **Behavior** | Keyboard layout, touch support, pointer type, maximum touch points, gamepad API availability |
+
+Unlike cookies, this data cannot be cleared, reset, or blocked through standard browser controls. Users have no visibility into when collection occurs and no mechanism to opt out.
+
+---
+
 ## Summary
 
 | Authority | Classification | Action |
@@ -122,15 +198,19 @@ France's data protection authority explicitly addresses fingerprinting:
 | **Apple WebKit** | Covert tracking | Actively prevents in Safari |
 | **Mozilla** | Tracking technique | Blocks by default in Firefox |
 | **Google Chrome** | Passive fingerprinting | Reducing via Privacy Sandbox |
+| **ICO (UK)** | Unfair tracking | Called Google's policy reversal "irresponsible"; drafting binding guidance |
 | **EU Article 29** | Requires consent | Same rules as cookies |
-| **EFF** | Privacy violation | Advocates for user protection |
+| **EFF** | Privacy violation | Research shows 84% of browsers uniquely identifiable |
 | **CNIL** | Requires consent | Fines for non-compliance |
+| **Academic research** | Widespread deployment | 5.5–68.8% of top websites deploy fingerprinting scripts |
 
 ---
 
 ## Conclusion
 
-The consensus across web standards bodies, all major browser vendors, and privacy regulators is clear: **browser fingerprinting is a privacy threat that operates without user knowledge or consent**.
+The consensus across web standards bodies, all major browser vendors, regulatory authorities, and academic research is clear: **browser fingerprinting is a pervasive privacy threat that operates without user knowledge, consent, or any means of control**.
+
+Academic studies confirm that fingerprinting scripts are deployed on a significant portion of the web's most-visited sites, and that the true exposure users face exceeds what automated measurements can detect. Regulatory bodies across the EU and UK have ruled that fingerprinting requires the same level of consent as cookies, yet the tracking persists largely without it.
 
 Users have the right to protect themselves from this form of tracking.
 

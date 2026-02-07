@@ -109,23 +109,29 @@ This skips per-page IP lookups and speeds up navigation.
 - Avoid: framework-specific options like `page.authenticate()` that disable BotBrowser's geo-detection, which may leak location information
 
 ### `--proxy-bypass-rgx` (PRO)
-Define URL patterns via regular expressions for proxy routing control.
+Define URL patterns via regular expressions for proxy routing control. Uses RE2 regex syntax. Matches against both hostname and full URL path (including HTTPS).
 
 ```bash
-# Regex pattern with | for multiple domains
---proxy-bypass-rgx="\.google\.com$|\.github\.com$"
-
-# Combined with standard bypass list
---proxy-server=socks5://127.0.0.1:1080 \
---proxy-bypass-list="localhost,127.0.0.1" \
---proxy-bypass-rgx="\.internal\.company\.com$"
+--proxy-bypass-rgx="\.js(\?|$)"                      # Bypass .js files
+--proxy-bypass-rgx="\.(js|css|png|svg)(\?|$)"        # Bypass static assets
+--proxy-bypass-rgx="/api/public/|/static/"           # Bypass specific paths
+--proxy-bypass-rgx="cdn\.|\.google\.com$"            # Bypass by domain pattern
 ```
 
-**Features:**
-- Uses RE2 regex syntax
-- Use `|` within the pattern for multiple domains (e.g., `domain1\.com$|domain2\.com$`)
-- Works as a union with `--proxy-bypass-list`
-- Matches against both hostname and full URL
+**JavaScript Usage:**
+
+Do NOT include quotes inside the value:
+
+```javascript
+// Wrong - quotes become part of regex
+launchArgs.push('--proxy-bypass-rgx="\\.js$"');
+
+// Correct
+launchArgs.push('--proxy-bypass-rgx=\\.js($|\\?)');
+launchArgs.push('--proxy-bypass-rgx=example\\.com.*\\.js($|\\?)');
+```
+
+In JavaScript strings: `\\.` becomes `\.`, `\\?` becomes `\?`
 
 ### `--bot-local-dns` (ENT Tier1)
 Enable the local DNS solver. This keeps DNS resolution local instead of relying on a proxy provider's DNS behavior, improving privacy and speed while avoiding common DNS poisoning paths.
@@ -241,10 +247,42 @@ Inject custom HTTP request headers into all outgoing requests.
 --bot-custom-headers='{"X-Custom-Header":"value","X-Another":"value2"}'
 ```
 
+**JavaScript Usage:**
+
+Do NOT wrap the JSON value in extra quotes; the shell-style single quotes shown above are for Bash only. In JavaScript they become literal characters inside the flag value:
+
+```javascript
+// Wrong - single quotes become part of the value
+args.push(`--bot-custom-headers='${JSON.stringify(customHeaders)}'`);
+
+// Correct
+args.push("--bot-custom-headers=" + JSON.stringify(customHeaders));
+```
+
 **Configuration Methods:**
 - CLI flag: `--bot-custom-headers='{"Header":"value"}'`
 - Profile JSON: `configs.customHeaders`
-- CDP: `BotBrowser.setCustomHeaders`
+- CDP: `BotBrowser.setCustomHeaders` (see below)
+
+**CDP Usage:**
+
+The `BotBrowser.setCustomHeaders` command must be sent to the **browser-level** CDP session, not a page-level session. Sending it to a page target will return `ProtocolError: 'BotBrowser.setCustomHeaders' wasn't found`.
+
+Puppeteer:
+```javascript
+const cdpSession = await browser.target().createCDPSession();
+await cdpSession.send('BotBrowser.setCustomHeaders', {
+  headers: { 'x-requested-with': 'com.facebook.katana' }
+});
+```
+
+Playwright:
+```javascript
+const cdpSession = await browser.newBrowserCDPSession();
+await cdpSession.send('BotBrowser.setCustomHeaders', {
+  headers: { 'x-requested-with': 'com.facebook.katana' }
+});
+```
 
 **Notes:**
 - Headers are added to all HTTP/HTTPS requests
@@ -298,15 +336,18 @@ BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersio
 
 **Display & Input**
 - `--bot-config-window=<value>`: Window dimensions with multiple formats:
-  - `profile` - Use profile's window settings (default)
-  - `real` - Use actual system window dimensions
+  - `profile` - Use profile's window settings (default for headless and Android profiles)
+  - `real` - Use actual system window dimensions (default for desktop headful)
   - `WxH` - Direct size specification (e.g., `1920x1080`), sets innerWidth/innerHeight with outerWidth/outerHeight auto-derived from profile borders
   - `JSON` - Full customization (e.g., `'{"innerWidth":1920,"innerHeight":1080,"devicePixelRatio":2}'`)
 - `--bot-config-screen=<value>`: Screen properties with multiple formats:
-  - `profile` - Use profile's screen settings (default)
-  - `real` - Use actual system screen dimensions
+  - `profile` - Use profile's screen settings (default for headless and Android profiles)
+  - `real` - Use actual system screen dimensions (default for desktop headful)
   - `WxH` - Direct size specification (e.g., `2560x1440`), sets width/height with availWidth/availHeight auto-derived from profile
   - `JSON` - Full customization (e.g., `'{"width":2560,"height":1440,"availWidth":2560,"availHeight":1400}'`)
+
+> **Headful note:** Desktop profiles default to `real` in headful mode, meaning the browser uses the actual system window and screen dimensions. To apply profile-defined dimensions in headful, set both `--bot-config-window=profile` and `--bot-config-screen=profile` explicitly.
+
 - `--bot-config-keyboard=profile`: Keyboard settings: profile (emulated), real (system keyboard)
 - `--bot-config-fonts=profile`: Font settings: profile (embedded), expand (profile + fallback), real (system fonts)
 - `--bot-config-color-scheme=light`: Color scheme: light, dark
