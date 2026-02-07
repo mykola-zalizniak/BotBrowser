@@ -54,10 +54,10 @@ See [Setting up the Build](https://chromium.googlesource.com/chromium/src/+/main
 Then replace `src/out/Default/args.gn` with BotBrowser config:
 
 ```bash
-cp build/debian/args.gn src/out/Default/args.gn
+cp build/v132/debian/x86_64/args.gn src/out/Default/args.gn
 ```
 
-[args.gn](debian/args.gn) has BotBrowser build flags. Edit as needed. See [GN Build Configuration](https://www.chromium.org/developers/gn-build-configuration/) for details.
+[args.gn](v132/debian/x86_64/args.gn) has BotBrowser build flags. Edit as needed. See [GN Build Configuration](https://www.chromium.org/developers/gn-build-configuration/) for details.
 
 ### 6. Build
 
