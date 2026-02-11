@@ -10,7 +10,22 @@ Get the installer for your OS from the [Releases](https://github.com/botswin/Bot
 
 ### 2. Windows Installation
 
-#### Standard Installation
+#### Quick Install (PowerShell)
+
+```powershell
+# Install latest version
+iwr -Uri "https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.ps1" -OutFile "$env:TEMP\install_botbrowser.ps1"; & "$env:TEMP\install_botbrowser.ps1"
+
+# Install specific Chrome version
+iwr -Uri "https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.ps1" -OutFile "$env:TEMP\install_botbrowser.ps1"; & "$env:TEMP\install_botbrowser.ps1" -Version 145
+
+# Install to custom directory
+iwr -Uri "https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.ps1" -OutFile "$env:TEMP\install_botbrowser.ps1"; & "$env:TEMP\install_botbrowser.ps1" -InstallDir "D:\BotBrowser"
+```
+
+> **Note:** Requires [7-Zip](https://www.7-zip.org/) for extraction.
+
+#### Manual Installation
 1. Extract the downloaded `.7z` archive
 2. Run `chrome.exe` from the extracted folder
 
@@ -39,28 +54,19 @@ chrome.exe --bot-profile="C:\absolute\path\to\profile.enc" --user-data-dir="%TEM
 ### 3. macOS Installation
 
 #### Quick Install (Script)
-For the fastest setup, use our installation script:
 
 ```bash
-# One-line install (downloads and runs script directly)
-curl -L https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash
+# Install latest version
+curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash
+
+# Install specific Chrome version
+curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- 145
+
+# Download only, don't install
+curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- --download
 ```
 
-Or download and run locally:
-```bash
-# Clone repository and run script
-git clone https://github.com/botswin/BotBrowser.git
-cd BotBrowser
-./scripts/install_botbrowser.sh
-```
-
-The script will:
-- Auto-detect your Mac's architecture (Apple Silicon or Intel)
-- Fetch the latest release from GitHub automatically
-- Download the correct DMG for your platform
-- Mount and copy the application to `/Applications/`
-- Remove macOS quarantine attributes
-- Clean up temporary files
+The script auto-detects your Mac's architecture (Apple Silicon or Intel), fetches the latest release via the GitHub API, and installs to `/Applications/`.
 
 #### Manual Installation
 1. Open the downloaded `.dmg` file
@@ -93,7 +99,28 @@ The script will:
 
 > **Note:** Ubuntu/Linux binaries require an ENT Plan Tier 1 or higher subscription.
 
-#### Standard Installation
+#### Quick Install (Script)
+
+```bash
+# One-line install (auto-detects architecture: x86_64 or arm64)
+curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash
+
+# Install specific Chrome version
+curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- 145
+
+# Download only, don't install
+curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- --download
+```
+
+#### Docker / CI
+
+```dockerfile
+RUN curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash
+```
+
+No hardcoded URLs needed. The script uses the GitHub Releases API to always fetch the latest build for your platform.
+
+#### Manual Installation
 1. Install via `dpkg`:
    ```bash
    sudo dpkg -i botbrowser_<version>_amd64.deb
