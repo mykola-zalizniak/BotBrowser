@@ -4,11 +4,11 @@ Academic Framework for Browser-Environment Simulation.
 
 ## Current Versions
 
-| Channel | Version | Chrome | Description |
-|---------|---------|--------|-------------|
-| [stable](stable/) | v144 | 144.0.7559.97 | Current stable release |
-| [canary](canary/) | v145 | 145.0.7632.26 | Early development release |
-| [archive](archive/) | v135–v143 | — | Previous versions |
+| Channel | Version | Description |
+|---------|---------|------------------------|
+| [stable](stable/) | v145   |  Current stable release |
+| [canary](canary/) | v146   |  Early development release |
+| [archive](archive/) | v135–v144 | Previous versions |
 
 In BotBrowser, everything starts with a profile. Browser fingerprinting is recognized as a privacy threat by [W3C, major browser vendors, and EU regulators](../FINGERPRINT_PRIVACY.md), and profiles are the foundation of protection against such tracking. Profiles are provided to authorized researchers, so review the project [Legal Disclaimer](../DISCLAIMER.md) and [Responsible Use Guidelines](../RESPONSIBLE_USE.md) for access policies.
 
