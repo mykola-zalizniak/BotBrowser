@@ -21,9 +21,9 @@ import { CloneBrowserProfileComponent } from './clone-browser-profile.component'
 import { AppName } from './const';
 import { BrowserProfileStatus, type BrowserProfile } from './data/browser-profile';
 import { EditBrowserProfileComponent } from './edit-browser-profile.component';
-import { QuickProxyChangeComponent } from './quick-proxy-change.component';
 import { KernelManagementComponent } from './kernel-management/kernel-management.component';
 import { ProxyManagementComponent } from './proxy-management/proxy-management.component';
+import { QuickProxyChangeComponent } from './quick-proxy-change.component';
 import { BrowserLauncherService } from './shared/browser-launcher.service';
 import { BrowserProfileService } from './shared/browser-profile.service';
 import { ConfirmDialogComponent } from './shared/confirm-dialog.component';
@@ -219,10 +219,16 @@ export class AppComponent implements AfterViewInit {
             .subscribe(async (result: boolean) => {
                 if (!result) return;
 
-                await this.#browserProfileService.deleteBrowserProfiles(
-                    this.selection.selected.map((profile) => profile.id)
-                );
-                await this.refreshProfiles();
+                this.loading = true;
+                try {
+                    await this.#stopRunningProfiles(this.selection.selected);
+                    await this.#browserProfileService.deleteBrowserProfiles(
+                        this.selection.selected.map((profile) => profile.id)
+                    );
+                    await this.refreshProfiles();
+                } finally {
+                    this.loading = false;
+                }
             });
     }
 
@@ -237,9 +243,32 @@ export class AppComponent implements AfterViewInit {
             .subscribe(async (result: boolean) => {
                 if (!result) return;
 
-                await this.#browserProfileService.deleteBrowserProfiles([browserProfile.id]);
-                await this.refreshProfiles();
+                this.loading = true;
+                try {
+                    await this.#stopRunningProfiles([browserProfile]);
+                    await this.#browserProfileService.deleteBrowserProfiles([browserProfile.id]);
+                    await this.refreshProfiles();
+                } finally {
+                    this.loading = false;
+                }
             });
+    }
+
+    async #stopRunningProfiles(profiles: BrowserProfile[]): Promise<void> {
+        const running = profiles.filter(
+            (p) => this.browserLauncherService.getRunningStatus(p) === BrowserProfileStatus.Running
+        );
+        for (const profile of running) {
+            try {
+                await this.browserLauncherService.stop(profile);
+            } catch (error) {
+                console.error(`Failed to stop profile ${profile.basicInfo.profileName}:`, error);
+            }
+        }
+        // Wait for processes to fully exit
+        if (running.length > 0) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
     }
 
     async refreshProfiles(): Promise<void> {

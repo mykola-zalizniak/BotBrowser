@@ -348,15 +348,6 @@
                         }
                     </mat-select>
                 </mat-form-field>
-
-                <mat-form-field class="flex-1">
-                    <mat-label>WebRTC</mat-label>
-                    <mat-select formControlName="botConfigWebrtc">
-                        @for (opt of profileRealDisabledOptions; track opt) {
-                            <mat-option [value]="opt">{{ opt }}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
             </div>
 
             <div class="form-row">
@@ -388,10 +379,21 @@
                 </mat-form-field>
             </div>
 
-            <mat-form-field>
-                <mat-label>WebRTC ICE Candidates</mat-label>
-                <input matInput placeholder="Custom ICE candidates" formControlName="botWebrtcIce" />
-            </mat-form-field>
+            <div class="form-row">
+                <mat-form-field class="flex-1">
+                    <mat-label>WebRTC</mat-label>
+                    <mat-select formControlName="botConfigWebrtc">
+                        @for (opt of profileRealDisabledOptions; track opt) {
+                            <mat-option [value]="opt">{{ opt }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field class="flex-2">
+                    <mat-label>WebRTC ICE Candidates</mat-label>
+                    <input matInput placeholder="Custom ICE candidates" formControlName="botWebrtcIce" />
+                </mat-form-field>
+            </div>
         </form>
     </div>
 
