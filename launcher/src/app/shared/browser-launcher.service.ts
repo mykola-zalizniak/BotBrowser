@@ -158,14 +158,8 @@ export class BrowserLauncherService {
         await this.#kernelService.initialize();
         const kernel = await this.#kernelService.getInstalledKernelByMajorVersion(majorVersion);
 
-        if (kernel) {
-            if (osType.includes('Darwin') && kernel.executablePath.endsWith('.app')) {
-                execPath = await this.#findMacOSExecutable(kernel.executablePath);
-            } else {
-                execPath = kernel.executablePath;
-            }
-        } else if (browserProfile.binaryPath) {
-            // Legacy support for binaryPath
+        if (browserProfile.binaryPath) {
+            // Custom executable path set in profile takes highest priority
             if (osType.includes('Darwin')) {
                 if (browserProfile.binaryPath.endsWith('.app')) {
                     execPath = await this.#findMacOSExecutable(browserProfile.binaryPath);
@@ -174,6 +168,12 @@ export class BrowserLauncherService {
                 }
             } else {
                 execPath = browserProfile.binaryPath;
+            }
+        } else if (kernel) {
+            if (osType.includes('Darwin') && kernel.executablePath.endsWith('.app')) {
+                execPath = await this.#findMacOSExecutable(kernel.executablePath);
+            } else {
+                execPath = kernel.executablePath;
             }
         }
 

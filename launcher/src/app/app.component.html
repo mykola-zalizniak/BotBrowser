@@ -171,10 +171,6 @@
                                                     <mat-icon>swap_horiz</mat-icon>
                                                     <span>Change Proxy</span>
                                                 </button>
-                                                <button mat-menu-item (click)="deleteProfile(element)">
-                                                    <mat-icon>delete</mat-icon>
-                                                    <span>Delete</span>
-                                                </button>
                                                 <button mat-menu-item (click)="runBrowserProfile(element)">
                                                     <mat-icon>play_arrow</mat-icon>
                                                     <span>Run</span>
@@ -188,6 +184,10 @@
                                                     <span>Stop</span>
                                                 </button>
                                             }
+                                            <button mat-menu-item (click)="deleteProfile(element)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span>Delete</span>
+                                            </button>
                                             <button mat-menu-item (click)="cloneProfile(element)">
                                                 <mat-icon>content_copy</mat-icon>
                                                 <span>Clone</span>
