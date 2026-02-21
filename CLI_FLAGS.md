@@ -109,6 +109,7 @@ This skips per-page IP lookups and speeds up navigation.
 - [Per-context proxy](PER_CONTEXT_FINGERPRINT.md) (ENT Tier1): set different proxies via `createBrowserContext({ proxy })`; BotBrowser auto-derives geo info in both cases
 - Avoid: framework-specific options like `page.authenticate()` that disable BotBrowser's geo-detection, which may leak location information
 
+<a id="--proxy-bypass-rgx"></a>
 ### `--proxy-bypass-rgx` (PRO)
 Define URL patterns via regular expressions for proxy routing control. Uses RE2 regex syntax. Matches against both hostname and full URL path (including HTTPS).
 
@@ -189,6 +190,7 @@ Sets custom browser window title and taskbar/dock icon label.
 - Displays as a label next to the Refresh button
 - Useful for managing multiple instances
 
+<a id="--bot-cookies"></a>
 ### `--bot-cookies` (PRO)
 Session restoration and cookie management.
 
@@ -206,6 +208,7 @@ Accepts cookie data as either inline JSON or from a file.
 
 The file should contain a JSON array of cookie objects with name, value, and domain fields.
 
+<a id="--bot-bookmarks"></a>
 ### `--bot-bookmarks`
 Pre-populate bookmarks for session preservation.
 
