@@ -3,6 +3,59 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-02-23]
+### Major
+- **Chromium Core → 145.0.7632.110**: Updated to Chrome 145 stable (145.0.7632.110). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **CanvasLab WebGL/WebGL2 Recording**: CanvasLab now records WebGL and WebGL2 API calls in addition to Canvas 2D, enabling complete analysis of graphics-based fingerprint collection across all canvas contexts.
+
+- **Profile Compression**: Optimized fingerprint profile format to reduce file size by 25-30% without affecting privacy protection. Reduces disk I/O and speeds up profile loading, especially beneficial for large-scale deployments.
+
+### Improvements
+- **Per-Context Proxy Routing Completeness**: `botbrowserFlags` now supports the full proxy parameter set (`--proxy-server`, `--proxy-ip`, `--proxy-bypass-list`, `--proxy-bypass-rgx`) across both `Target.createBrowserContext` and `BotBrowser.setBrowserContextFlags` CDP paths.
+
+### Fixes
+- **SpeechSynthesis Voice Consistency**: `speechSynthesis.getVoices()` now returns profile-defined voices on headless Linux hosts and Docker containers, matching the target platform's voice list regardless of host TTS availability.
+
+- **Cross-Platform Renderer Stability**: Resolved a rare renderer crash when loading certain pages with cross-platform profile configurations on macOS.
+
+
+## [2026-02-18]
+### Major
+- **Chromium Core → 145.0.7632.76**: Updated to Chrome 145 stable. This ensures Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **Per-Context Proxy Switching** (ENT Tier2): Dynamically [switch proxy servers per BrowserContext](ADVANCED_FEATURES.md#dynamic-proxy-switching) at runtime without restarting contexts via CDP `BotBrowser.setBrowserContextProxy()`. Supports SOCKS5, SOCKS5h, HTTP, HTTPS protocols with authentication. Automatically adapts timezone and language based on proxy location.
+
+- **Port Protection** (PRO): Protect [local service ports](ADVANCED_FEATURES.md#port-protection) (VNC, RDP, development servers, etc.) from being scanned by remote pages. Covers 30 commonly-probed ports across IPv4 (`127.0.0.0/8`), IPv6 (`::1`), and `localhost`. Enable via `--bot-port-protection` or profile JSON (`configs.portProtection`).
+
+### Improvements
+- **CSS Media Feature Consistency**: CSS media queries now authentically reflect the profile's display characteristics, ensuring consistency between CSS-level and JavaScript-level reporting.
+
+
+## [2026-02-11]
+### Major
+- **Chromium Core → 145.0.7632.46**: Updated the engine to Chrome 145 stable (145.0.7632.46). This keeps Web Platform behavior, rendering consistency, and security patches aligned with upstream Chrome.
+
+### New
+- **GPU Cross-Platform Consistency**: GPU-related API outputs now correctly match the target platform profile across all host operating systems, with full per-context support.
+
+- **FPS Control (`--bot-fps`)**: Added `--bot-fps` flag to control frame rate behavior. Supports `profile` (use profile data), `real` (use native frame rate), or a specific number (e.g., `--bot-fps=60`).
+
+- **Request Header Integrity**: Authentic request header generation for Google-associated domains, with validation seeds precisely aligned to each Chrome minor version.
+
+### Improvements
+- **Text Metrics Cross-Platform Precision**: Text measurement precision characteristics now match the target platform's native behavior, ensuring consistent results across all host operating systems.
+
+### Fixes
+- **Cross-Origin Iframe Click Handling**: Fixed an issue where click events could miss their target in cross-origin iframes when using `--bot-config-window=profile`.
+
+- **Custom Headers CORS Compatibility**: `--bot-custom-headers` no longer triggers CORS preflight for cross-origin requests, matching expected browser behavior.
+
+- **Windows Installer Widevine Packaging**: Fixed Widevine DRM component missing from Windows installation packages. Linux and macOS packages were unaffected.
+
+
 ## [2026-02-06]
 ### Major
 - **Chromium Core → 144.0.7559.111**: Updated the engine to Chrome 144 stable (144.0.7559.111). This keeps Web Platform behavior, rendering consistency, and security patches aligned with upstream Chrome.

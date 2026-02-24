@@ -102,28 +102,80 @@ await page.goto('https://abrahamjuliot.github.io/creepjs/');
 
 **Notes:**
 - Use `--user-data-dir` with a unique temporary folder to avoid conflicts with running Chromium instances
-- Prefer `--proxy-server` or per-context proxies (ENT Tier1); auto timezone/locale detection applies in both cases
+- Prefer `--proxy-server` or [per-context proxies](PER_CONTEXT_FINGERPRINT.md) (ENT Tier1); auto timezone/locale detection applies in both cases
 - Avoid framework-specific proxy/auth options (e.g., `page.authenticate()`), which disable BotBrowser's geo-detection and may leak location information
 
 Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/)
 
 **More options:**
-- Framework-less approach: [`--bot-script` + CDP](examples/bot-script/) (privileged context, earlier hook, fewer artifacts)
+- Framework-less approach: [`--bot-script`](CLI_FLAGS.md#--bot-script) + [CDP](examples/bot-script/) (privileged context, earlier hook, fewer artifacts)
 - Docker: [docker/README.md](docker/)
 - Full flags: [CLI_FLAGS.md](CLI_FLAGS.md)
 
-## Advanced Capabilities
-> **Professional-grade privacy technology** built on multi-layer fingerprint protection, network-stack control, and hardening.
+## Feature Reference
 
-- **Multi Layer Noise**: Canvas, WebGL, WebGPU, text, and AudioContext surfaces share deterministic, cross-worker noise with low-level Skia and HarfBuzz tuning so observers cannot correlate runs
-- **Per-Context Fingerprint**: Independent fingerprint per BrowserContext without new processes, [millisecond-level switching](PER_CONTEXT_FINGERPRINT.md) (ENT Tier3); clean execution contexts and console suppression (ENT Tier1) maintain isolation
-- **Configurable Stack**: 50+ CLI overrides, per-context proxies (ENT Tier1) with auto geo, session tooling (cookies, bookmarks, title, history), and [plaintext storage access](examples/storage-access/) (PRO) make privacy scripting flexible
-- **Typography Fidelity**: DOM text renders from embedded Windows and macOS font packs (Android fonts require PRO) so host fonts never leak during cross-OS simulation
-- **Client Hints Lockstep**: DPR, device-memory, and UA-CH headers match JavaScript-visible values; custom User-Agent with full userAgentData control (ENT Tier3)
-- **Headless ↔ GUI Parity**: Identical GPU, WebGPU, and media signals across browser modes so privacy regression tests remain stable
-- **Performance Controls (ENT Tier2)**: Precision FPS, timing controls, and noise seeds for reproducible privacy benchmarks
-- **Focus & Session Control**: Always-active tabs, configurable ICE presets, and expanded media reporting keep privacy sessions believable
-- **Network Enhancements**: per-context proxies (ENT Tier1) and optional local DNS solver (ENT Tier1), UDP-over-SOCKS5 (ENT Tier3), and SOCKS5H protocol support for tunnel-based resolution
+> Configuration priority: [CLI flags](CLI_FLAGS.md) (highest) > [Profile configs](profiles/PROFILE_CONFIGS.md) > defaults. Timezone, locale, and language auto-derive from your proxy IP.
+
+### Network & Proxy
+
+| Feature | Reference |
+|---------|-----------|
+| Proxy with embedded credentials (HTTP/SOCKS5/SOCKS5H) | [Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration) |
+| Regex-based proxy routing rules | [--proxy-bypass-rgx](CLI_FLAGS.md#--proxy-bypass-rgx) |
+| Per-context proxy with auto geo-detection | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) |
+| Dynamic proxy switching at runtime | [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching) |
+| UDP over SOCKS5 (QUIC/STUN tunneling) | [UDP over SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) |
+| Local DNS solver | [--bot-local-dns](CLI_FLAGS.md#--bot-local-dns-ent-tier1) |
+| Port protection for local services | [--bot-port-protection](CLI_FLAGS.md#--bot-port-protection-pro) |
+| WebRTC leak protection (SDP/ICE control) | [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection) |
+
+### Fingerprint & Rendering
+
+| Feature | Reference |
+|---------|-----------|
+| Canvas / WebGL / WebGPU deterministic noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) |
+| AudioContext noise calibration | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) |
+| Text metrics & ClientRects noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) |
+| Deterministic noise seeds (reproducible per-tenant) | [--bot-noise-seed](CLI_FLAGS.md#behavior--protection-toggles) |
+| Cross-platform font engine (Win/Mac/Android) | [Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) |
+| GPU simulation on headless servers | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) |
+
+### Identity & Platform
+
+| Feature | Reference |
+|---------|-----------|
+| Cross-platform profile portability (Win / Mac / Linux) | [Advanced Features](ADVANCED_FEATURES.md) |
+| Browser brand switching (Chrome/Edge/Brave/Opera) | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) |
+| Custom User-Agent with full userAgentData control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) |
+| Client Hints alignment (DPR, device-memory, UA-CH) | [Browser & OS](ADVANCED_FEATURES.md#browser-os-fingerprinting) |
+| Android WebView emulation | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) |
+| Chrome behavior emulation (HTTP/2, HTTP/3, headers) | [Chrome Behavior](ADVANCED_FEATURES.md#chrome-behavior-emulation) |
+
+### Automation & Scripting
+
+| Feature | Reference |
+|---------|-----------|
+| Playwright / Puppeteer integration | [Examples](examples/) |
+| Framework-less bot-script (chrome.debugger API) | [--bot-script](CLI_FLAGS.md#--bot-script) |
+| Per-context fingerprint (multiple profiles per process) | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) |
+| Console message suppression | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) |
+| Headless / GUI parity | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) |
+| Mirror: distributed privacy consistency | [Mirror Documentation](tools/mirror/) |
+| CanvasLab: Canvas 2D / WebGL / WebGL2 recorder | [--bot-canvas-record-file](CLI_FLAGS.md#--bot-canvas-record-file) |
+
+### Session & Behavior
+
+| Feature | Reference |
+|---------|-----------|
+| Cookie management (inline JSON or file) | [--bot-cookies](CLI_FLAGS.md#--bot-cookies) |
+| Bookmark injection | [--bot-bookmarks](CLI_FLAGS.md#--bot-bookmarks) |
+| Random history injection | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) |
+| Always-active windows (anti-focus-tracking) | [Active Window](ADVANCED_FEATURES.md#active-window-emulation) |
+| Custom HTTP headers (CLI + CDP) | [--bot-custom-headers](CLI_FLAGS.md#--bot-custom-headers-pro) |
+| Plaintext storage access (cookies, localStorage) | [Storage Access](examples/storage-access/) |
+| Precision FPS simulation | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) |
+| Timing scale (performance.now compression) | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) |
+| Window/screen dimension control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) |
 
 <details>
 <summary><strong>Fingerprint Protection Implementation: Privacy Controls → Technical Design → Validation</strong></summary>
@@ -162,24 +214,9 @@ This reference maps privacy protection goals to BotBrowser implementation detail
 </details>
 
 
-**[Complete Advanced Features Documentation →](ADVANCED_FEATURES.md)**
+**[Advanced Features (architecture & design) →](ADVANCED_FEATURES.md)** | **[CLI Flags (all options) →](CLI_FLAGS.md)**
 
 
-
----
-
-## Configuration & Profiles
-
-> BotBrowser combines synthetic and aggregated profiles with flexible configuration for authorized privacy research. Profile protection and CLI settings enable comparative analysis without leaking host traits.
-
-- **Profile Foundation:** Synthetic and aggregated profiles provide realistic fingerprint data for authorized privacy testing
-- **CLI Flexibility:** Override profile settings at runtime without modifying encrypted files
-- **Cross-Platform Compatibility:** A *macOS profile* works on Ubuntu; a *Windows profile* works on macOS; an *Android profile* can be fully emulated on any OS
-- **Smart Configuration:** Timezone, locale, and languages intelligently derived from IP/proxy
-- **CLI Flags:** See the [CLI Flags Reference](CLI_FLAGS.md) - *Recommended for most users*
-
-
-> ⚠️ Note: This project must only be used in environments you own or where you have explicit authorization. Use against third-party services without permission is strictly prohibited and undermines the privacy mission.
 
 ---
 
@@ -189,23 +226,9 @@ Prefer a GUI launcher? See [launcher/README.md](launcher) for BotBrowserLauncher
 
 ---
 
-## Mirror: Distributed Privacy Consistency (ENT Tier3)
-
-Ensure your privacy protection works effectively across platforms and networks. Run a controller instance and multiple client instances to verify that all instances maintain identical privacy defenses, protecting you from tracking across Windows, macOS, Linux, and remote environments.
-
-Launch with CLI flags: `--bot-mirror-controller-endpoint=127.0.0.1:9990` on the controller, `--bot-mirror-client-endpoint=127.0.0.1:9990` on each client. Runtime activation via CDP is also supported for programmatic control.
-
-See [Mirror documentation](tools/mirror/) for detailed setup, testing procedures, and troubleshooting.
-
----
-
 ## Fingerprint Protection Validation
 
-### Validation Methodology
-
-Our fingerprint protection validation examines how standardized browser fingerprints prevent tracking systems from collecting tracking data to identify users across platforms. By maintaining identical fingerprints across operating systems, we demonstrate how privacy protection prevents the tracking methods that malicious observers rely on.
-
-> ⚠️ Research validation uses authorized test environments. See [DISCLAIMER](DISCLAIMER.md).
+Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER](DISCLAIMER.md) for authorized use.
 
 <table cellspacing="0" cellpadding="8">
   <tr>
@@ -233,7 +256,7 @@ Our fingerprint protection validation examines how standardized browser fingerpr
 - **Android Emulation on Desktop (PRO):** Mobile API parity enables fingerprint testing for cross-device privacy research
 - **Headless vs GUI Mode:** Identical fingerprint behavior ensures privacy validation results remain effective across execution contexts
 
-**[Complete Validation Results & Research Data →](VALIDATION.md)** - 31+ tracking analysis scenarios, 15+ tracking methodologies, statistical analysis
+**[Complete Validation Results & Research Data →](VALIDATION.md)**
 
 ---
 
@@ -241,26 +264,11 @@ Our fingerprint protection validation examines how standardized browser fingerpr
 
 ### Documentation
 
-| Document | Description | Content Preview |
-|----------|-------------|-----------------|
-| **[Installation Guide](INSTALLATION.md)** | Platform-specific setup | Windows/macOS guides, Ubuntu (ENT Tier1), Docker deployment, troubleshooting |
-| **[Advanced Features](ADVANCED_FEATURES.md)** | Technical capabilities | 50+ CLI flags, privacy noise augmentation, GPU micro-benchmarks |
-| **[Validation Results](VALIDATION.md)** | Research data | 31+ tracking observatories, 50,000+ test sessions, statistical analysis |
-| **[CLI Flags Reference](CLI_FLAGS.md)** | Command-line options | `--bot-*` flags, proxy auth, session management |
-| **[Profile Configuration](profiles/PROFILE_CONFIGS.md)** | Profile customization | Fingerprint control, cross-platform compatibility |
-| **[Mirror](tools/mirror/)** | Distributed privacy consistency | Verify privacy protection across multiple browser instances simultaneously |
-| **[CanvasLab](tools/canvaslab/)** | Canvas forensics tool | Canvas 2D recording with JSONL viewer (deterministic replay under development) |
-| **[Examples](examples/)** | Code samples | Playwright, Puppeteer, bot-script integration |
-
-### Quick Access
-
-**Framework Integration:**
-- [Playwright Examples](examples/playwright/) - TypeScript/Python integration
-- [Puppeteer Examples](examples/puppeteer/) - JavaScript scripting
-- [Bot-Script Examples](examples/bot-script/) - Framework-less `chrome.debugger` API
-
-**Profile Management:**
-- Demo profiles available in [profiles/](profiles/) directory
+- [Installation Guide](INSTALLATION.md) - Platform-specific setup, Docker deployment, troubleshooting
+- [Advanced Features](ADVANCED_FEATURES.md) - Architecture and design details
+- [CLI Flags Reference](CLI_FLAGS.md) - Core and extended runtime flags with examples
+- [Profile Configuration](profiles/PROFILE_CONFIGS.md) - Profile JSON field reference
+- [Validation Results](VALIDATION.md) - Research data across 31+ tracking scenarios
 
 ### Support Channels
 
