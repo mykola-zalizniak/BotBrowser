@@ -81,11 +81,9 @@ export function getAssetDate(name: string): string {
 }
 
 export function getPlatformFromAssetName(name: string): KernelPlatform | null {
-    if (name.includes('_win_x86_64')) return 'win_x86_64';
-    if (name.includes('_mac_arm64')) return 'mac_arm64';
-    if (name.includes('_mac_x86_64')) return 'mac_x86_64';
-    if (name.includes('_x86_64.deb')) return 'linux_x86_64';
-    if (name.includes('_arm64.deb')) return 'linux_arm64';
+    if (name.endsWith('.7z')) return 'win_x86_64';
+    if (name.endsWith('.dmg')) return name.includes('arm64') ? 'mac_arm64' : 'mac_x86_64';
+    if (name.endsWith('.deb')) return name.includes('arm64') ? 'linux_arm64' : 'linux_x86_64';
     return null;
 }
 
