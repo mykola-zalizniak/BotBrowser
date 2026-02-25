@@ -50,8 +50,8 @@ case "$OS" in
     ;;
   Linux)
     case "$ARCH" in
-      x86_64|amd64)   ASSET_PATTERN="_x86_64.deb" ;;
-      aarch64|arm64)  ASSET_PATTERN="_arm64.deb" ;;
+      x86_64|amd64)   ASSET_PATTERN="(amd64|x86_64|x64)\.deb" ;;
+      aarch64|arm64)  ASSET_PATTERN="_arm64\.deb" ;;
       *) echo "Error: Unsupported architecture: $ARCH"; exit 1 ;;
     esac
     echo "Platform: Linux ${ARCH}"
@@ -69,7 +69,7 @@ if [ -n "$MAJOR_VERSION" ]; then
   ASSET_URL="$(curl -sL "${API_BASE}?per_page=100" \
     | grep "browser_download_url" \
     | grep "/${MAJOR_VERSION}\." \
-    | grep "$ASSET_PATTERN" \
+    | grep -E "$ASSET_PATTERN" \
     | cut -d '"' -f 4 \
     | sort -t_ -k2 -r \
     | head -1)"
@@ -77,7 +77,7 @@ else
   echo "1. Fetching latest release info..."
   ASSET_URL="$(curl -sL "${API_BASE}/latest" \
     | grep "browser_download_url" \
-    | grep "$ASSET_PATTERN" \
+    | grep -E "$ASSET_PATTERN" \
     | cut -d '"' -f 4 \
     | sort -t_ -k2 -r \
     | head -1)"

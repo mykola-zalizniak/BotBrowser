@@ -25,7 +25,7 @@ if ($Help) {
 $ErrorActionPreference = "Stop"
 $Repo = "botswin/BotBrowser"
 $ApiBase = "https://api.github.com/repos/$Repo/releases"
-$AssetPattern = "_win_x86_64.7z"
+$AssetPattern = ".7z"
 
 Write-Host "Platform: Windows x86_64"
 
