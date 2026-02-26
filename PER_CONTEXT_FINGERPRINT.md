@@ -79,6 +79,8 @@ Contexts are isolated within BotBrowser's fingerprint model. Pages in Context A 
 
 Renderer processes scale with page count in both approaches. The key savings come from sharing GPU, Network, Browser, and Utility processes across all contexts.
 
+For detailed scale benchmarks (memory, process count, creation time at 1/10/25/50 concurrent profiles), see [BENCHMARK.md](BENCHMARK.md#scale-performance-per-context-vs-multi-instance).
+
 ## Worker Inheritance
 
 Workers created within a BrowserContext automatically inherit that context's fingerprint:

@@ -107,7 +107,7 @@ These tests validate the internal protection of browser behaviors and ensure fra
 
 ### Desktop → Android Emulation
 
-BotBrowser's cross-platform capabilities enable perfect Android device emulation on desktop systems, demonstrated through comprehensive anti-tracking tests.
+BotBrowser's cross-platform capabilities enable comprehensive Android device emulation on desktop systems, demonstrated through comprehensive anti-tracking tests.
 
 **Android Profile Emulation Results:**
 - [▶️ CreepJS Android Test](//botswin.github.io/BotBrowser/video_player/index.html?video=antibots-creepjs-creepjs-Android) - Desktop simulation of Android fingerprint
@@ -118,7 +118,7 @@ BotBrowser's cross-platform capabilities enable perfect Android device emulation
 - **Touch Simulation:** Authentic mobile touch event patterns
 - **Device Metrics Accuracy:** Accurate screen dimensions, pixel density, orientation
 - **Mobile API Support:** Complete mobile-specific JavaScript API responses
-- **Font Rendering Accuracy:** Android font stack perfectly reproduced on desktop
+- **Font Rendering Accuracy:** Android font stack reproduced on desktop
 
 ### Platform-Specific Test Results
 
@@ -179,99 +179,60 @@ BotBrowser's cross-platform capabilities enable perfect Android device emulation
 
 ## Performance Impact Analysis
 
-### Resource Usage Metrics
+### Benchmarking Results
 
-**Memory Overhead:**
-- Base Chromium: ~150MB
-- BotBrowser (idle): ~175MB (+16.7%)
-- BotBrowser (active): ~200MB (+33.3%)
+Measured with Speedometer 3.0 and per-API micro-benchmarks across macOS, Linux, and Windows. Full methodology and reproducible scripts available in [BENCHMARK.md](BENCHMARK.md).
 
-**CPU Performance:**
-- Fingerprint processing: <2% overhead
-- Noise generation: <1% additional CPU usage
-- Profile loading: 50ms average initialization time
+**JavaScript / DOM Performance (Speedometer 3.0):**
+- Headless: 42.7 vs 42.8 stock (-0.2%), within run-to-run variance
+- Headed: 42.1 vs 41.8 stock (+0.7%), within run-to-run variance
+
+**Fingerprint API Overhead:**
+- Canvas, WebGL, Navigator, Screen, Font APIs: zero measurable overhead across all platforms
+- AudioContext offline render: within normal fluctuation
+
+**Scale Performance (Per-Context vs Multi-Instance at 50 profiles):**
+- 29% less memory, 57% fewer processes, 2x faster creation
+- 100% canvas fingerprint isolation verified across all contexts
 
 **Storage Requirements:**
 - Profile files: 50-200KB per profile
 - Additional assets: ~5MB fonts and resources
-- Cache efficiency: 95% hit rate for repeated sessions
-
-### Benchmarking Results
-
-**JavaScript Execution:**
-- Octane benchmark: 98.5% of native Chrome performance
-- V8 performance: Minimal impact on execution speed
-- WebAssembly: Full performance parity
-
-**Graphics Performance:**
-- WebGL rendering: 97% of native performance
-- Canvas operations: 99% performance retention
-- CSS animations: No measurable impact
 
 ---
 
 ## Research Applications
 
-### Academic Use Cases
+### Use Cases
 
-**Browser Compatibility Research:**
-```
-Institution: University Research Lab
-Study: "Cross-Platform Browser Fingerprint Protection"
-Duration: 6 months
-Findings: 99.2% fingerprint stability across platforms
-```
+BotBrowser is designed for authorized fingerprint protection research and privacy testing:
 
-**Security Research Applications:**
-```
-Context: Authorized Penetration Testing
-Scope: Web Application Security Assessment
-Tools: BotBrowser + Custom Testing Framework
-Results: Identified 12 unique tracking vectors
-```
-
-**Performance Studies:**
-```
-Research: "Browser Fingerprinting Performance Impact"
-Methodology: Comparative analysis vs native browsers
-Conclusion: <3% performance overhead for fingerprint protection
-```
+- **Browser Compatibility Research**: Cross-platform fingerprint consistency analysis
+- **Security Assessments**: Authorized penetration testing of web application tracking mechanisms
+- **Performance Analysis**: Comparative benchmarking against native browsers (see [BENCHMARK.md](BENCHMARK.md))
+- **Privacy Studies**: Evaluating fingerprint tracking techniques and protection effectiveness
 
 ### Ethical Research Framework
 
-**Institutional Review Board (IRB) Approval:**
-- All research conducted under institutional ethical guidelines
-- Human subjects research protocols followed where applicable
-- Data collection limited to technical fingerprint characteristics
-
-**Responsible Disclosure:**
-- Security findings reported through appropriate channels
-- No exploitation of discovered vulnerabilities
-- Coordination with affected parties for remediation
+- All research should be conducted under institutional ethical guidelines
+- Security findings should be reported through responsible disclosure channels
+- Data collection should be limited to technical fingerprint characteristics
 
 ---
 
 ## Test Environment Specifications
 
-### Research Infrastructure
+### Testing Platforms
 
-**Testing Platforms:**
+Validation tests are run across multiple platforms. For detailed hardware specifications and benchmark methodology, see [BENCHMARK.md](BENCHMARK.md).
+
 ```
-Windows 11 Pro (x64)
-- Intel i7-12700K, 32GB RAM
-- NVIDIA RTX 3080, 4K displays
-- Multiple browser installations
-
-macOS 13.6 (ARM64)
-- Apple M2 Pro, 16GB RAM
-- Retina displays, multiple resolutions
-- Xcode development tools
-
-Ubuntu 22.04 LTS (x64)
-- AMD Ryzen 9 5950X, 64GB RAM
-- Headless and GUI configurations
-- Docker containerization support
+Windows (x64)
+macOS (ARM64)
+Linux (x64)
 ```
+
+Each platform is tested in headless and headed modes, with Docker containerization support on Linux.
 
 **Network Configurations:**
 ```
@@ -301,7 +262,7 @@ Corporate Network
 
 **Test Categories:**
 ```
-Fingerprint Protection Tests (500+ test cases)
+Fingerprint Protection Tests
 ├── Canvas tracking validation
 ├── WebGL protection checks
 ├── Font rendering verification
@@ -309,9 +270,8 @@ Fingerprint Protection Tests (500+ test cases)
 ├── Performance timing analysis
 └── Cross-platform compatibility
 
-Detection System Tests (200+ scenarios)
+Detection System Tests
 ├── Anti-bot system interaction
-├── CAPTCHA solving simulation
 ├── Behavioral analysis resistance
 ├── Machine learning resistance
 └── Long-term pattern analysis
@@ -319,33 +279,18 @@ Detection System Tests (200+ scenarios)
 
 ---
 
-## Statistical Analysis
-
-### Protection Metrics
+## Protection Metrics
 
 **Cross-Platform Protection:**
-- Session-to-session: Highly protective
-- Cross-platform behavior: Unified across OS
-- Long-term stability: Maintains protection over time
-- Behavioral analysis resistance: 97.8%
+- Session-to-session: Consistent fingerprints across browser restarts
+- Cross-platform behavior: Unified across Windows, macOS, Linux, and Android profiles
+- Long-term stability: Profile integrity maintained across host reboots
 
 **Performance Metrics:**
-- Initialization time: 45ms ± 10ms
-- Memory overhead: 25MB ± 5MB
-- CPU impact: 1.8% ± 0.3%
-
-### Statistical Significance
-
-**Sample Sizes:**
-- Total test sessions: 50,000+
-- Unique scenarios: 2,500+
-- Testing duration: 18+ months
-- Platform combinations: 45+
-
-**Confidence Intervals:**
-- Protection measurements: 95% CI
-- Performance benchmarks: 99% CI
-- Detection resistance: 90% CI
+For detailed, measured performance data, see [BENCHMARK.md](BENCHMARK.md). Key findings:
+- Speedometer 3.0: <1% difference between Stock Chrome and BotBrowser
+- Fingerprint API overhead: Zero measurable latency added on Canvas, WebGL, Navigator, Screen, and Font APIs
+- Scale performance: Per-Context Fingerprint uses 29% less memory than Multi-Instance at 50 concurrent profiles
 
 ---
 

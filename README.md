@@ -43,16 +43,16 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 
 <table cellspacing="0" cellpadding="8">
   <tr>
-    <td width="50%"><strong>High-fidelity Profile Simulation</strong> including Android WebView, keeps synthetic and aggregated fingerprints ready for policy-compliant privacy experiments</td>
-    <td width="50%"><strong>Latest Chromium Base</strong> stays synced to the newest stable Chrome so trackers cannot key on stale engines</td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>Advanced Programmatic Control</strong> offers <a href="examples/">Playwright/Puppeteer integration</a> with CDP leak blocking so privacy tooling leaves no telemetry residue</td>
+    <td width="50%"><strong>High-Fidelity, Always-Current Profiles</strong> including Android WebView, built on the latest stable Chromium so fingerprints always match current browser behavior and trackers cannot key on stale engines</td>
     <td width="50%"><strong>Network Stack Parity</strong> with <a href="ADVANCED_FEATURES.md#network-fingerprint-control">Full-Proxy QUIC/STUN</a> (UDP over SOCKS5) delivers Chromium-level tunneling so geo metadata does not leak and privacy labs maintain clean transport parity</td>
   </tr>
   <tr>
-    <td width="50%"><strong>Distributed Privacy Consistency</strong> lets you verify privacy protection across multiple browser instances simultaneously <a href="tools/mirror/">with Mirror</a>, validating privacy posture in parallel</td>
+    <td width="50%"><strong>Advanced Programmatic Control</strong> offers <a href="examples/">Playwright/Puppeteer integration</a> with CDP leak blocking so privacy tooling leaves no telemetry residue</td>
+    <td width="50%"><strong>Distributed Privacy Consistency</strong> lets you verify privacy protection across multiple browser instances simultaneously <a href="tools/mirror/">with Mirror</a>, synchronizing input and validating privacy posture in parallel</td>
+  </tr>
+  <tr>
     <td width="50%"><strong>Per-Context Fingerprint</strong> enables <a href="PER_CONTEXT_FINGERPRINT.md">independent fingerprint bundles per BrowserContext</a> without spawning new processes, with millisecond-level switching and reduced memory overhead</td>
+    <td width="50%"><strong>Zero-Overhead Performance</strong> adds <a href="BENCHMARK.md">no measurable latency</a>: Speedometer 3.0 within &lt;1% of stock Chrome, zero fingerprint API overhead across macOS/Linux/Windows, and 29% memory savings at scale with Per-Context Fingerprint</td>
   </tr>
 </table>
 
@@ -269,6 +269,7 @@ Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER]
 - [CLI Flags Reference](CLI_FLAGS.md) - Core and extended runtime flags with examples
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md) - Profile JSON field reference
 - [Validation Results](VALIDATION.md) - Research data across 31+ tracking scenarios
+- [Performance Benchmark](BENCHMARK.md) - Speedometer 3.0, fingerprint API overhead, and scale performance data
 
 ### Support Channels
 

@@ -1404,7 +1404,7 @@ Example:
 
 ## [2024-12-29]
 ### Fixed
-- **Pixelscan PDF Viewer Compatibility Fix:** Successfully resolved PDF viewer compatibility issues during **Pixelscan** testing. This issue was categorized as **P0 severity**.  [#11](https://github.com/botswin/BotBrowser/issues/11)
+- **Pixelscan PDF Viewer Compatibility Fix:** Successfully resolved PDF viewer compatibility issues during **Pixelscan** testing.  [#11](https://github.com/botswin/BotBrowser/issues/11)
 
 ### Changed
 - **WebPreferences Update:** Updated **WebPreferences** based on the `ostype` specified in the profile, replacing the previous `BUILDFLAG()` logic for improved flexibility and accuracy.
