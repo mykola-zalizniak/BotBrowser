@@ -123,13 +123,59 @@
 
     function groupByCanvas(events) {
       const map = new Map();
-      for (const e of events) {
+      for (let i = 0; i < events.length; i++) {
+        const e = events[i];
+        e._lineIdx = i;
         const id = e.canvas_id ?? -1;
         if (!map.has(id)) map.set(id, []);
         map.get(id).push(e);
       }
-      for (const [id, list] of map.entries()) list.sort((a,b)=> (a.seq??0) - (b.seq??0));
-      return map;
+      // De-interleave overlapping sequences on the same canvas_id.
+      // Antibots may run multiple independent operations on one canvas element,
+      // producing interleaved events with overlapping seq numbers.
+      const result = new Map();
+      for (const [id, list] of map.entries()) {
+        const byLine = [...list].sort((a,b) => a._lineIdx - b._lineIdx);
+        // Check for seq anomalies
+        const seqCounts = new Map();
+        for (const e of byLine) { const s = e.seq ?? 0; seqCounts.set(s, (seqCounts.get(s)||0)+1); }
+        const hasDup = [...seqCounts.values()].some(c => c > 1);
+        let hasReset = false;
+        for (let i = 1; i < byLine.length; i++) {
+          if ((byLine[i].seq??0) < (byLine[i-1].seq??0) - 1) { hasReset = true; break; }
+        }
+        if (!hasDup && !hasReset) {
+          list.sort((a,b)=> (a.seq??0) - (b.seq??0));
+          result.set(id, list);
+          continue;
+        }
+        // Greedy sequence assignment (patience-sort style)
+        const seqs = [];
+        for (const e of byLine) {
+          const es = e.seq ?? 0;
+          let best = -1, bestGap = Infinity;
+          for (let si = 0; si < seqs.length; si++) {
+            const gap = es - seqs[si].last;
+            if (gap > 0 && gap < bestGap) { bestGap = gap; best = si; }
+          }
+          if (best >= 0) { seqs[best].evts.push(e); seqs[best].last = es; }
+          else seqs.push({ evts: [e], last: es });
+        }
+        if (seqs.length <= 1) {
+          const evts = seqs[0]?.evts || list;
+          evts.sort((a,b)=> (a.seq??0) - (b.seq??0));
+          result.set(id, evts);
+        } else {
+          for (let si = 0; si < seqs.length; si++) {
+            const s = seqs[si];
+            s.evts.sort((a,b)=> (a.seq??0) - (b.seq??0));
+            const vid = `${id}_${si}`;
+            for (const e of s.evts) e.canvas_id = vid;
+            result.set(vid, s.evts);
+          }
+        }
+      }
+      return result;
     }
 
     function formatArgs(obj) {
@@ -401,6 +447,20 @@
         }
         case 'draw': {
           if (e.gl_method) {
+            // BotBrowser(#776): bufferData with recorded vertex data
+            if (e.gl_method === 'bufferData') {
+              const t = glFormatValue('target', a.target);
+              const u = glFormatValue('usage', a.usage);
+              if (a.data_b64) {
+                return `gl.bufferData(${t}, new Float32Array(Uint8Array.from(atob(${JSON.stringify(a.data_b64)}), c => c.charCodeAt(0)).buffer), ${u});${callerComment}`;
+              }
+              if (Array.isArray(a.data)) {
+                return `gl.bufferData(${t}, new Float32Array(${JSON.stringify(a.data)}), ${u});${callerComment}`;
+              }
+              // No data field = bufferData(target, sizeInBytes, usage) allocation only (zeros per WebGL spec)
+              const floatCount = Math.floor((a.size || 0) / 4);
+              return `gl.bufferData(${t}, new Float32Array(${floatCount}), ${u});${callerComment}`;
+            }
             return glCodeLine(e.gl_method, a, e.gl_category, callerComment);
           }
           if (m === 'fillRect' || m === 'strokeRect' || m === 'clearRect') {
@@ -444,7 +504,8 @@
               else if (op === 'C') lines.push(`path.bezierCurveTo(${args[0]}, ${args[1]}, ${args[2]}, ${args[3]}, ${args[4]}, ${args[5]});`);
               else if (op === 'Z') lines.push('path.closePath();');
             }
-            lines.push(`ctx.fill(path${a.fillRule?`, ${JSON.stringify(a.fillRule)}`:''});`);
+            const _fw1 = a.fillRule || a.winding || a.fill_rule;
+            lines.push(`ctx.fill(path${_fw1 && _fw1 !== 'nonzero'?`, ${JSON.stringify(_fw1)}`:''});`);
             lines.push(`})();${callerComment}`);
             return lines.join('\n');
           }
@@ -463,7 +524,7 @@
             lines.push(`})();${callerComment}`);
             return lines.join('\n');
           }
-          if (m === 'fill') return `ctx.fill(${a.fillRule?JSON.stringify(a.fillRule):''});${callerComment}`;
+          if (m === 'fill') { const _fw = a.fillRule || a.winding || a.fill_rule; return `ctx.fill(${_fw && _fw !== 'nonzero'?JSON.stringify(_fw):''});${callerComment}`; }
           if (m === 'stroke') return `ctx.stroke();${callerComment}`;
           if (m === 'clip') {
             if (a.path) {
@@ -477,11 +538,12 @@
                 else if (op === 'C') lines.push(`path.bezierCurveTo(${args[0]}, ${args[1]}, ${args[2]}, ${args[3]}, ${args[4]}, ${args[5]});`);
                 else if (op === 'Z') lines.push('path.closePath();');
               }
-              lines.push(`ctx.clip(path${a.fillRule?`, ${JSON.stringify(a.fillRule)}`:''});`);
+              const _cw1 = a.fillRule || a.winding || a.fill_rule;
+              lines.push(`ctx.clip(path${_cw1 && _cw1 !== 'nonzero'?`, ${JSON.stringify(_cw1)}`:''});`);
               lines.push(`})();${callerComment}`);
               return lines.join('\n');
             }
-            return `ctx.clip(${a.fillRule?JSON.stringify(a.fillRule):''});${callerComment}`;
+            { const _cw = a.fillRule || a.winding || a.fill_rule; return `ctx.clip(${_cw && _cw !== 'nonzero'?JSON.stringify(_cw):''});${callerComment}`; }
           }
           if (m === 'beginLayer') {
             const opts = [];
@@ -591,7 +653,7 @@
 
           if (m === 'getLineDash') return `ctx.getLineDash();${callerComment}`;
           if (m === 'getTransform') return `ctx.getTransform();${callerComment}`;
-          if (m === 'isPointInPath') return `ctx.isPointInPath(${a.x}, ${a.y}${a.fillRule?`, ${JSON.stringify(a.fillRule)}`:''});${callerComment}`;
+          if (m === 'isPointInPath') { const _ipw = a.fillRule || a.winding || a.fill_rule; return `ctx.isPointInPath(${a.x}, ${a.y}${_ipw && _ipw !== 'nonzero'?`, ${JSON.stringify(_ipw)}`:''});${callerComment}`; }
           if (m === 'isPointInStroke') return `ctx.isPointInStroke(${a.x}, ${a.y});${callerComment}`;
           if (m === 'measureText') return `ctx.measureText(${JSON.stringify((a && a.text) || '')});${callerComment}`;
           return `// read ${e.method}${callerComment}`;
@@ -826,16 +888,18 @@
               case 'rect': ctx.rect(a.x, a.y, (a.w ?? a.width), (a.h ?? a.height)); break;
               case 'roundRect': ctx.roundRect(a.x, a.y, a.width, a.height, a.radius); break;
               case 'fill':
-                if (a.path) { const p = createPath2DFromCommands(a.path); ctx.fill(p, a.fillRule || 'nonzero'); }
-                else ctx.fill(a.fillRule || undefined);
+                { const _fw = a.fillRule || a.winding || a.fill_rule;
+                if (a.path) { const p = createPath2DFromCommands(a.path); ctx.fill(p, _fw || 'nonzero'); }
+                else ctx.fill(_fw || undefined); }
                 break;
               case 'stroke':
                 if (a.path) { const p = createPath2DFromCommands(a.path); ctx.stroke(p); }
                 else ctx.stroke();
                 break;
               case 'clip':
-                if (a.path) { const p = createPath2DFromCommands(a.path); ctx.clip(p, a.fillRule || 'nonzero'); }
-                else ctx.clip(a.fillRule || undefined);
+                { const _cw = a.fillRule || a.winding || a.fill_rule;
+                if (a.path) { const p = createPath2DFromCommands(a.path); ctx.clip(p, _cw || 'nonzero'); }
+                else ctx.clip(_cw || undefined); }
                 break;
               case 'fillText': ctx.fillText(a.text, a.x, a.y, a.maxWidth); break;
               case 'strokeText': ctx.strokeText(a.text, a.x, a.y, a.maxWidth); break;

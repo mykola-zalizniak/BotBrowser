@@ -95,7 +95,9 @@ No additional configuration needed. Fingerprint consistency is maintained across
 
 ### Via CDP (Runtime Configuration)
 
-Configure fingerprint flags on an existing BrowserContext:
+Configure fingerprint flags on an existing BrowserContext.
+
+> **Critical**: `BotBrowser.setBrowserContextFlags` must be called on a **browser-level** CDP session, and **before** any page is created in that context. The renderer process reads its flags at startup. If a page already exists, the flags will not take effect.
 
 ```javascript
 const puppeteer = require('puppeteer-core');
@@ -105,14 +107,13 @@ const browser = await puppeteer.launch({
   args: ['--bot-profile=/path/to/base-profile.enc']
 });
 
+// Browser-level CDP session (required for BotBrowser.* commands)
+const client = await browser.target().createCDPSession();
+
 // Create a new browser context
 const context = await browser.createBrowserContext();
 
-// Get CDP session for the context
-const page = await context.newPage();
-const client = await page.createCDPSession();
-
-// Set per-context fingerprint flags
+// Set per-context fingerprint flags BEFORE creating any page
 // Load a different profile and customize locale settings
 await client.send('BotBrowser.setBrowserContextFlags', {
   browserContextId: context._contextId,
@@ -124,7 +125,8 @@ await client.send('BotBrowser.setBrowserContextFlags', {
   ]
 });
 
-// Navigate with the unique fingerprint
+// NOW create a page. The renderer will start with the correct flags.
+const page = await context.newPage();
 await page.goto('https://example.com');
 ```
 
@@ -164,11 +166,12 @@ const { targetId } = await client.send('Target.createTarget', {
 ### Multiple Contexts Example
 
 ```javascript
+// Browser-level CDP session (reuse for all contexts)
+const client = await browser.target().createCDPSession();
+
 // Context 1: Windows profile with US location
 const ctx1 = await browser.createBrowserContext();
-const page1 = await ctx1.newPage();
-const client1 = await page1.createCDPSession();
-await client1.send('BotBrowser.setBrowserContextFlags', {
+await client.send('BotBrowser.setBrowserContextFlags', {
   browserContextId: ctx1._contextId,
   botbrowserFlags: [
     '--bot-profile=/path/to/windows-profile.enc',
@@ -176,12 +179,11 @@ await client1.send('BotBrowser.setBrowserContextFlags', {
     '--bot-config-languages=en-US'
   ]
 });
+const page1 = await ctx1.newPage();
 
 // Context 2: macOS profile with UK location
 const ctx2 = await browser.createBrowserContext();
-const page2 = await ctx2.newPage();
-const client2 = await page2.createCDPSession();
-await client2.send('BotBrowser.setBrowserContextFlags', {
+await client.send('BotBrowser.setBrowserContextFlags', {
   browserContextId: ctx2._contextId,
   botbrowserFlags: [
     '--bot-profile=/path/to/macos-profile.enc',
@@ -189,6 +191,7 @@ await client2.send('BotBrowser.setBrowserContextFlags', {
     '--bot-config-languages=en-GB'
   ]
 });
+const page2 = await ctx2.newPage();
 
 // Both contexts run simultaneously with completely different fingerprints
 await Promise.all([
@@ -205,33 +208,33 @@ Pass the proxy via context creation options, and set `--proxy-ip` via CDP to ski
 
 ```javascript
 // Puppeteer example
+const client = await browser.target().createCDPSession();
+
 // Context 1: US proxy with known IP
 const ctx1 = await browser.createBrowserContext({
   proxyServer: 'socks5://user:pass@us-proxy.example.com:1080'
 });
-const page1 = await ctx1.newPage();
-const client1 = await page1.createCDPSession();
-await client1.send('BotBrowser.setBrowserContextFlags', {
+await client.send('BotBrowser.setBrowserContextFlags', {
   browserContextId: ctx1._contextId,
   botbrowserFlags: [
     '--bot-profile=/path/to/profile.enc',
     '--proxy-ip=203.0.113.1'
   ]
 });
+const page1 = await ctx1.newPage();
 
 // Context 2: UK proxy with known IP
 const ctx2 = await browser.createBrowserContext({
   proxyServer: 'socks5://user:pass@uk-proxy.example.com:1080'
 });
-const page2 = await ctx2.newPage();
-const client2 = await page2.createCDPSession();
-await client2.send('BotBrowser.setBrowserContextFlags', {
+await client.send('BotBrowser.setBrowserContextFlags', {
   browserContextId: ctx2._contextId,
   botbrowserFlags: [
     '--bot-profile=/path/to/profile.enc',
     '--proxy-ip=198.51.100.1'
   ]
 });
+const page2 = await ctx2.newPage();
 
 // All contexts navigate without IP lookup overhead
 // BotBrowser derives timezone and locale from the provided proxy IP
@@ -246,11 +249,11 @@ await Promise.all([
 Configure proxy and other settings together through `botbrowserFlags`:
 
 ```javascript
+const client = await browser.target().createCDPSession();
+
 // Context 1: US proxy via botbrowserFlags
 const ctx1 = await browser.createBrowserContext();
-const page1 = await ctx1.newPage();
-const client1 = await page1.createCDPSession();
-await client1.send('BotBrowser.setBrowserContextFlags', {
+await client.send('BotBrowser.setBrowserContextFlags', {
   browserContextId: ctx1._contextId,
   botbrowserFlags: [
     '--bot-profile=/path/to/profile.enc',
@@ -260,12 +263,11 @@ await client1.send('BotBrowser.setBrowserContextFlags', {
     '--bot-config-timezone=America/Chicago'
   ]
 });
+const page1 = await ctx1.newPage();
 
 // Context 2: UK proxy via botbrowserFlags (with regex bypass)
 const ctx2 = await browser.createBrowserContext();
-const page2 = await ctx2.newPage();
-const client2 = await page2.createCDPSession();
-await client2.send('BotBrowser.setBrowserContextFlags', {
+await client.send('BotBrowser.setBrowserContextFlags', {
   browserContextId: ctx2._contextId,
   botbrowserFlags: [
     '--bot-profile=/path/to/profile.enc',
@@ -275,6 +277,7 @@ await client2.send('BotBrowser.setBrowserContextFlags', {
     '--bot-config-timezone=Europe/London'
   ]
 });
+const page2 = await ctx2.newPage();
 
 // Both contexts run with different proxies and settings
 await Promise.all([
@@ -324,6 +327,10 @@ See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
 
 ## Important Notes
 
+⚠️ `BotBrowser.setBrowserContextFlags` must be called on a **browser-level CDP session** (`browser.target().createCDPSession()` in Puppeteer, `browser.newBrowserCDPSession()` in Playwright). Page-level CDP sessions (`page.createCDPSession()`) do not have access to the `BotBrowser` domain.
+
+⚠️ `setBrowserContextFlags` must be called **before** creating any page in that context. The renderer process reads its flags at startup. If a page already exists, the new flags will not apply to that renderer. Correct order: `createBrowserContext` → `setBrowserContextFlags` → `newPage`.
+
 ⚠️ Per-context proxy via `botbrowserFlags` or `createBrowserContext` must be set before navigation. To switch proxies at runtime, use `BotBrowser.setBrowserContextProxy` (ENT Tier2). See [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching).
 
 ⚠️ Some network-layer settings ([`--bot-local-dns`](CLI_FLAGS.md#--bot-local-dns-ent-tier1), UDP proxy support) apply at the browser level and cannot be configured per-context.
@@ -335,7 +342,10 @@ See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
 - [CLI Flags Reference](CLI_FLAGS.md)
 - [Advanced Features](ADVANCED_FEATURES.md)
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md)
-- [Examples](examples/)
+- [Per-Context Fingerprint Example (Puppeteer)](examples/puppeteer/per_context_fingerprint.js)
+- [Per-Context Fingerprint Example (Playwright)](examples/playwright/nodejs/per_context_fingerprint.js)
+- [Per-Context Proxy Example (Puppeteer)](examples/puppeteer/per_context_proxy.js)
+- [Per-Context Proxy Example (Playwright)](examples/playwright/nodejs/per_context_proxy.js)
 
 ---
 
