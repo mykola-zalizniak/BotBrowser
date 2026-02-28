@@ -43,16 +43,16 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 
 <table cellspacing="0" cellpadding="8">
   <tr>
-    <td width="50%"><strong>High-fidelity Profile Simulation</strong> including Android WebView, keeps synthetic and aggregated fingerprints ready for policy-compliant privacy experiments</td>
-    <td width="50%"><strong>Latest Chromium Base</strong> stays synced to the newest stable Chrome so trackers cannot key on stale engines</td>
-  </tr>
-  <tr>
-    <td width="50%"><strong>Advanced Programmatic Control</strong> offers <a href="examples/">Playwright/Puppeteer integration</a> with CDP leak blocking so privacy tooling leaves no telemetry residue</td>
+    <td width="50%"><strong>High-Fidelity, Always-Current Profiles</strong> including Android WebView, built on the latest stable Chromium so fingerprints always match current browser behavior and trackers cannot key on stale engines</td>
     <td width="50%"><strong>Network Stack Parity</strong> with <a href="ADVANCED_FEATURES.md#network-fingerprint-control">Full-Proxy QUIC/STUN</a> (UDP over SOCKS5) delivers Chromium-level tunneling so geo metadata does not leak and privacy labs maintain clean transport parity</td>
   </tr>
   <tr>
-    <td width="50%"><strong>Distributed Privacy Consistency</strong> lets you verify privacy protection across multiple browser instances simultaneously <a href="tools/mirror/">with Mirror</a>, validating privacy posture in parallel</td>
+    <td width="50%"><strong>Advanced Programmatic Control</strong> offers <a href="examples/">Playwright/Puppeteer integration</a> with CDP leak blocking so privacy tooling leaves no telemetry residue</td>
+    <td width="50%"><strong>Distributed Privacy Consistency</strong> lets you verify privacy protection across multiple browser instances simultaneously <a href="tools/mirror/">with Mirror</a>, synchronizing input and validating privacy posture in parallel</td>
+  </tr>
+  <tr>
     <td width="50%"><strong>Per-Context Fingerprint</strong> enables <a href="PER_CONTEXT_FINGERPRINT.md">independent fingerprint bundles per BrowserContext</a> without spawning new processes, with millisecond-level switching and reduced memory overhead</td>
+    <td width="50%"><strong>Zero-Overhead Performance</strong> adds <a href="BENCHMARK.md">no measurable latency</a>: Speedometer 3.0 within &lt;1% of stock Chrome, zero fingerprint API overhead across macOS/Linux/Windows, and 29% memory savings at scale with Per-Context Fingerprint</td>
   </tr>
 </table>
 
@@ -72,8 +72,9 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 - [Latest release](https://github.com/botswin/BotBrowser/releases) for your OS
 - [Demo profile](profiles/) (any `.enc` file)
 
-**Step 2: Launch** (use absolute paths)
-- **Windows example:**
+**Step 2: Launch**
+- **GUI:** Use [BotBrowserLauncher](launcher/) for one-click profile selection and multi-instance management
+- **CLI** (use absolute paths):
   ```cmd
   chrome.exe --bot-profile="C:\absolute\path\to\profile.enc" --user-data-dir="%TEMP%\botprofile_%RANDOM%"
   ```
@@ -220,12 +221,6 @@ This reference maps privacy protection goals to BotBrowser implementation detail
 
 ---
 
-## BotBrowserLauncher (GUI Tool)
-
-Prefer a GUI launcher? See [launcher/README.md](launcher) for BotBrowserLauncher usage, multi-instance management, and privacy profile selection.
-
----
-
 ## Fingerprint Protection Validation
 
 Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER](DISCLAIMER.md) for authorized use.
@@ -260,6 +255,12 @@ Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER]
 
 ---
 
+## Engine Internals
+
+BotBrowser's engine is built in-house on top of Chromium, with no forks or external project dependencies. Selected patch examples, build configurations, and the Chromium source directory tree are published in [patches/](patches/). The full core remains proprietary.
+
+---
+
 ## Resources & Support
 
 ### Documentation
@@ -269,6 +270,7 @@ Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER]
 - [CLI Flags Reference](CLI_FLAGS.md) - Core and extended runtime flags with examples
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md) - Profile JSON field reference
 - [Validation Results](VALIDATION.md) - Research data across 31+ tracking scenarios
+- [Performance Benchmark](BENCHMARK.md) - Speedometer 3.0, fingerprint API overhead, and scale performance data
 
 ### Support Channels
 
@@ -276,24 +278,6 @@ Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER]
   <tr><td>Email</td><td>Technical questions, source code access</td><td><a href="mailto:support@botbrowser.io">support@botbrowser.io</a></td></tr>
   <tr><td>Telegram</td><td>Community support, quick questions</td><td><a href="https://t.me/botbrowser_support">@botbrowser_support</a></td></tr>
 </table>
-
-### Building from Source
-
-For advanced users who want to build BotBrowser from source:
-
-1. **Requirements:** Linux build environment, Chromium build tools
-2. **Source Access:** Available to qualified researchers and institutions
-
-See the step-by-step build guide in [build/README.md](build/README.md).
-
-### Debugging & FAQs
-
-| Issue | Platform | Solution |
-|-------|----------|----------|
-| **"Chromium" is damaged** | macOS | Run `xattr -rd com.apple.quarantine /Applications/Chromium.app` |
-| **Missing dependencies** | Ubuntu | Run `sudo apt-get install -f` |
-| **Profile file permission errors** | All | Ensure `.enc` file has read permissions (`chmod 644`) |
-| **BotBrowser won't start or crashes** | All | Check that your OS and Chromium version match the build; update BotBrowser to the latest release |
 
 ---
 
