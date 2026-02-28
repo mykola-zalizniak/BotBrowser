@@ -72,8 +72,9 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 - [Latest release](https://github.com/botswin/BotBrowser/releases) for your OS
 - [Demo profile](profiles/) (any `.enc` file)
 
-**Step 2: Launch** (use absolute paths)
-- **Windows example:**
+**Step 2: Launch**
+- **GUI:** Use [BotBrowserLauncher](launcher/) for one-click profile selection and multi-instance management
+- **CLI** (use absolute paths):
   ```cmd
   chrome.exe --bot-profile="C:\absolute\path\to\profile.enc" --user-data-dir="%TEMP%\botprofile_%RANDOM%"
   ```
@@ -220,12 +221,6 @@ This reference maps privacy protection goals to BotBrowser implementation detail
 
 ---
 
-## BotBrowserLauncher (GUI Tool)
-
-Prefer a GUI launcher? See [launcher/README.md](launcher) for BotBrowserLauncher usage, multi-instance management, and privacy profile selection.
-
----
-
 ## Fingerprint Protection Validation
 
 Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER](DISCLAIMER.md) for authorized use.
@@ -260,6 +255,12 @@ Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER]
 
 ---
 
+## Engine Internals
+
+BotBrowser's engine is built in-house on top of Chromium, with no forks or external project dependencies. Selected patch examples, build configurations, and the Chromium source directory tree are published in [patches/](patches/). The full core remains proprietary.
+
+---
+
 ## Resources & Support
 
 ### Documentation
@@ -277,15 +278,6 @@ Fingerprint protection validated across 31+ tracking scenarios. See [DISCLAIMER]
   <tr><td>Email</td><td>Technical questions, source code access</td><td><a href="mailto:support@botbrowser.io">support@botbrowser.io</a></td></tr>
   <tr><td>Telegram</td><td>Community support, quick questions</td><td><a href="https://t.me/botbrowser_support">@botbrowser_support</a></td></tr>
 </table>
-
-### Building from Source
-
-For advanced users who want to build BotBrowser from source:
-
-1. **Requirements:** Linux build environment, Chromium build tools
-2. **Source Access:** Available to qualified researchers and institutions
-
-See the step-by-step build guide in [build/README.md](build/README.md).
 
 ### Debugging & FAQs
 

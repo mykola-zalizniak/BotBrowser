@@ -153,4 +153,10 @@ patches_v2/136.0.7103.49/
 
 ---
 
+## Build Guide
+
+See [build/README.md](build/README.md) for instructions on building BotBrowser from Chromium source, including platform-specific `args.gn` configurations.
+
+---
+
 **[Legal Disclaimer & Terms of Use](https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md) • [Responsible Use Guidelines](https://github.com/botswin/BotBrowser/blob/main/RESPONSIBLE_USE.md)**. BotBrowser is for authorized fingerprint protection and privacy research only.

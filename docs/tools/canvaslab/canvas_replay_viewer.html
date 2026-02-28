@@ -461,6 +461,12 @@
               const floatCount = Math.floor((a.size || 0) / 4);
               return `gl.bufferData(${t}, new Float32Array(${floatCount}), ${u});${callerComment}`;
             }
+            if (e.gl_method === 'uniform1f') return `gl.uniform1f(uniformLoc_${a.location ?? 0}, ${a.x});${callerComment}`;
+            if (e.gl_method === 'uniform1i') return `gl.uniform1i(uniformLoc_${a.location ?? 0}, ${a.x});${callerComment}`;
+            if (e.gl_method === 'uniform2f') return `gl.uniform2f(uniformLoc_${a.location ?? 0}, ${a.x}, ${a.y});${callerComment}`;
+            if (e.gl_method === 'uniform3f') return `gl.uniform3f(uniformLoc_${a.location ?? 0}, ${a.x}, ${a.y}, ${a.z});${callerComment}`;
+            if (e.gl_method === 'uniform4f') return `gl.uniform4f(uniformLoc_${a.location ?? 0}, ${a.x}, ${a.y}, ${a.z}, ${a.w});${callerComment}`;
+            if (e.gl_method === 'drawElements') return `gl.drawElements(${glFormatValue('mode', a.mode)}, ${a.count}, ${glFormatValue('type', a.type)}, ${a.offset ?? 0});${callerComment}`;
             return glCodeLine(e.gl_method, a, e.gl_category, callerComment);
           }
           if (m === 'fillRect' || m === 'strokeRect' || m === 'clearRect') {
@@ -574,19 +580,13 @@
           }
           if (m === 'drawImage') {
             const imgInfo = a.image || {};
-            if (imgInfo.type === 'HTMLImageElement' && imgInfo.src) {
-              const drawLine = (a.sw!=null)
-                ? `ctx.drawImage(image, ${a.sx},${a.sy},${a.sw},${a.sh}, ${a.dx},${a.dy},${a.dw},${a.dh});`
-                : (a.dw!=null)
-                  ? `ctx.drawImage(image, ${a.dx}, ${a.dy}, ${a.dw}, ${a.dh});`
-                  : `ctx.drawImage(image, ${a.dx}, ${a.dy});`;
-              return [
-                '(() => {',
-                '  const image=new Image();',
-                `  image.onload = () => { try{ ${drawLine} }catch(e){} };`,
-                `  image.src=${JSON.stringify(imgInfo.src)};`,
-                `})();${callerComment}`
-              ].join('\n');
+            if ((imgInfo.type === 'HTMLImageElement' && imgInfo.src) || (imgInfo.src && imgInfo.src.startsWith('data:'))) {
+              const drawArgs = (a.sx!=null && a.sy!=null && a.sw!=null && a.sh!=null)
+                ? `_img, ${a.sx},${a.sy},${a.sw},${a.sh}, ${a.dx},${a.dy},${a.dw},${a.dh}`
+                : (a.dw!=null && a.dh!=null)
+                  ? `_img, ${a.dx??0}, ${a.dy??0}, ${a.dw}, ${a.dh}`
+                  : `_img, ${a.dx??0}, ${a.dy??0}`;
+              return `await (async () => { const _img = new Image(); _img.src = ${JSON.stringify(imgInfo.src)}; await _img.decode(); ctx.drawImage(${drawArgs}); })();${callerComment}`;
             }
             const drawLine = (a.sw!=null)
               ? `ctx.drawImage(image, ${a.sx},${a.sy},${a.sw},${a.sh}, ${a.dx},${a.dy},${a.dw},${a.dh});`
@@ -635,9 +635,14 @@
           const a = e.args || {};
           // Canvas-level methods (work on both 2D and WebGL canvases)
           if (m === 'toDataURL') {
-            const mime = a && a.mime ? JSON.stringify(a.mime) : '';
-            const q = (a && a.quality != null) ? `, ${a.quality}` : '';
-            return `canvas.toDataURL(${mime}${q});${callerComment}`;
+            const tdArgs = [];
+            if (a && a.mime) tdArgs.push(JSON.stringify(a.mime));
+            if (a && a.quality != null) { if (!a.mime) tdArgs.push('undefined'); tdArgs.push(String(a.quality)); }
+            if (isWebGL) {
+              const cid = e.canvas_id ?? 'X';
+              return `const glDataURL = canvas.toDataURL(${tdArgs.join(', ')});\nwindow.__canvas${cid}_url1 = glDataURL;${callerComment}`;
+            }
+            return `canvas.toDataURL(${tdArgs.join(', ')});${callerComment}`;
           }
           if (m === 'toBlob' || m === 'convertToBlob') {
             const mime = a && a.mime ? JSON.stringify(a.mime) : 'undefined';
