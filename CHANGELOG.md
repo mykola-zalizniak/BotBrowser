@@ -3,6 +3,17 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-03-04]
+### New
+- **Performance Timing Protection (`--bot-time-seed`)** (ENT Tier2): Protects against performance fingerprinting and timing-based tracking. `--bot-time-seed=<integer>` (1–UINT32_MAX, `0` = disabled) produces authentic, deterministic timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, and more), giving each instance a unique and stable performance profile.
+
+### Improvements
+- **Startup Performance**: Faster browser startup and profile loading, especially on lower-spec machines.
+
+### Fixes
+- **Sub-Pixel Border Rendering Consistency**: Sub-pixel border measurements now return correct `offsetHeight` values matching the target profile's display density, including Retina and high-DPI configurations across all host environments.
+
+
 ## [2026-03-01]
 ### Major
 - **Chromium Core → 146.0.7680.31**: Updated the engine to Chrome 146 early release (146.0.7680.31) to stay ahead with the latest Chrome development. This maintains Web Platform parity, rendering consistency, and security patches with upstream.
