@@ -398,6 +398,7 @@ Runtime toggles that don’t rely on profile `configs` but still override behavi
 - `--bot-noise-seed` (ENT Tier2): Float seed (1.0–1.2) for the deterministic noise RNG; each seed augments privacy variance across Canvas 2D/WebGL/WebGPU images, text metrics, HarfBuzz layout, ClientRect measurements, and offline audio hashes so you can treat a seed as a reproducible fingerprint ID per tenant while keeping runs stable.
 - `--bot-fps` (ENT Tier2): Control frame rate behavior at runtime. Accepts `profile` (use profile data, default when capable), `real` (use native frame rate), or a number (e.g., `60`).
 - `--bot-time-scale` (ENT Tier2): Float < 1.0; scales down `performance.now()` intervals to emulate lower load and reduce timing skew signals (typical range 0.80–0.99)
+- `--bot-time-seed` (ENT Tier2): Integer seed (1–UINT32_MAX) for deterministic execution timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, and more). `0` disables the feature (default). Each seed produces a unique, stable performance profile that protects against timing-based tracking.
 
 Example tracking probe BotBrowser avoids when console forwarding stays disabled:
 
@@ -499,7 +500,8 @@ chromium-browser \
 chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
   --bot-time-scale=0.92 \  # ENT Tier2 feature
-  --bot-noise-seed=1.07   # ENT Tier2 feature
+  --bot-time-seed=42 \     # ENT Tier2 feature, deterministic timing diversity
+  --bot-noise-seed=1.07    # ENT Tier2 feature
 ```
 
 ### Custom User-Agent with WebView (ENT Tier3)
