@@ -254,16 +254,22 @@ Comprehensive hardware emulation and fingerprint management.
 
 ## Deep System Integration
 
+<a id="performance-timing-protection"></a>
+
+**Performance Timing Protection** (ENT Tier2): Every device has a unique "speed signature": how fast it renders a Canvas path, compiles a WebGL shader, or measures a font. Tracking systems collect these execution times to build a hardware-level fingerprint. When multiple browser instances share the same hardware, their timing profiles are identical, making them vulnerable to correlation. [`--bot-time-seed=<integer>`](CLI_FLAGS.md#behavior--protection-toggles) (valid range: 1–UINT32_MAX, `0` = disabled) protects each instance with its own stable performance profile across 27 browser operations.
+
+> `--bot-time-seed` varies actual operation execution speeds (the workload). `--bot-time-scale` compresses `performance.now()` intervals globally (the clock). They protect against different tracking vectors and can be used together.
+
 <details>
 <summary><strong>Full details: Deep System Integration</strong></summary>
 
 ### Precise FPS Simulation (ENT Tier2)
 
+- Frame rate control via [`--bot-fps`](CLI_FLAGS.md#behavior--protection-toggles): `profile` (use profile data), `real` (native rate), or a number (e.g., `60`)
 - requestAnimationFrame delay matching target FPS
 - Emulate target refresh rates (60Hz, 120Hz, 144Hz, etc.)
 - Simulate high-FPS macOS behavior on Ubuntu hosts (Ubuntu requires ENT Tier1)
 - Authentic vsync and frame timing patterns
-- Runtime timing scaling via [`--bot-time-scale`](CLI_FLAGS.md#behavior--protection-toggles) to compress `performance.now()` deltas
 
 ### Performance Fingerprint Controls
 
@@ -271,6 +277,8 @@ Comprehensive hardware emulation and fingerprint management.
 - IndexedDB, localStorage, and Cache API response timing
 - JavaScript execution timing and WebAssembly performance simulation
 - Deterministic noise seeds via [`--bot-noise-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2) to stabilize noise distributions across sessions
+- Performance timing protection via [`--bot-time-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2): deterministic execution timing diversity across 27 browser operations (see above)
+- Runtime timing scaling via [`--bot-time-scale`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2) to compress `performance.now()` deltas
 
 ### Extended Media Types & WebCodecs APIs
 
