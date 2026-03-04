@@ -367,6 +367,10 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         this.selectedProxyId = '';
     }
 
+    onIpCheckResult(result: ProxyCheckResult): void {
+        this.proxyConfigGroup.patchValue({ proxyIp: result.ip });
+    }
+
     async onSaveProxyToList(proxy: ParsedProxy): Promise<void> {
         const duplicate = this.proxies.find((p) => p.host === proxy.host && p.port === proxy.port);
         if (duplicate) {
@@ -389,14 +393,6 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         this.#dialog.open(AlertDialogComponent, {
             data: { message: `Proxy ${proxy.host}:${proxy.port} saved to proxy list.` },
         });
-    }
-
-    onIpCheckResult(_result: ProxyCheckResult): void {
-        // IP saving is handled by the Save IP button via onSaveIp
-    }
-
-    onSaveIp(ip: string): void {
-        this.proxyConfigGroup.patchValue({ proxyIp: ip });
     }
 
     async chooseFile(): Promise<void> {
