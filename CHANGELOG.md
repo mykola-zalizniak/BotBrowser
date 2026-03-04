@@ -3,7 +3,7 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
-## [2026-03-03]
+## [2026-03-04]
 ### New
 - **Performance Timing Protection (`--bot-time-seed`)** (ENT Tier2): Protects against performance fingerprinting and timing-based tracking. `--bot-time-seed=<integer>` (1–UINT32_MAX, `0` = disabled) produces authentic, deterministic timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, and more), giving each instance a unique and stable performance profile.
 
