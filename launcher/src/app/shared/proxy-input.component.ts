@@ -75,18 +75,20 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
                 </mat-form-field>
             </div>
 
-            <mat-form-field>
-                <mat-label>Username</mat-label>
-                <input matInput formControlName="username" (input)="onFormChange()" />
-            </mat-form-field>
+            <div class="host-port-row">
+                <mat-form-field class="host-field">
+                    <mat-label>Username</mat-label>
+                    <input matInput formControlName="username" (input)="onFormChange()" />
+                </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Password</mat-label>
-                <input matInput formControlName="password" (input)="onFormChange()" />
-            </mat-form-field>
+                <mat-form-field class="host-field">
+                    <mat-label>Password</mat-label>
+                    <input matInput formControlName="password" (input)="onFormChange()" />
+                </mat-form-field>
+            </div>
         </form>
 
-        @if (showCheckButton || showSaveButton) {
+        @if (showCheckButton || showSaveButton || showSaveIpButton) {
             <div class="check-ip-section">
                 <div class="button-row">
                     @if (showCheckButton) {
@@ -97,6 +99,11 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
                             } @else {
                                 <span>Check IP</span>
                             }
+                        </button>
+                    }
+                    @if (showSaveIpButton) {
+                        <button mat-stroked-button (click)="onSaveIp()" [disabled]="!checkResult || ipSaved">
+                            {{ ipSaved ? 'IP Saved' : 'Save IP' }}
                         </button>
                     }
                     @if (showSaveButton && getValue()) {
@@ -294,6 +301,7 @@ export class ProxyInputComponent {
     @Input() showQuickParse = true;
     @Input() showCheckButton = false;
     @Input() showSaveButton = false;
+    @Input() showSaveIpButton = false;
 
     @Input() set value(v: ParsedProxy | null) {
         if (v) {
@@ -318,6 +326,7 @@ export class ProxyInputComponent {
     @Output() valueChange = new EventEmitter<ParsedProxy | null>();
     @Output() ipCheckResult = new EventEmitter<ProxyCheckResult>();
     @Output() saveToList = new EventEmitter<ParsedProxy>();
+    @Output() saveIp = new EventEmitter<string>();
 
     quickParseInput = '';
     parseError = '';
@@ -327,6 +336,7 @@ export class ProxyInputComponent {
     checkResult: ProxyCheckResult | null = null;
     checkError = '';
     copyTooltip = 'Copy IP';
+    ipSaved = false;
 
     readonly formGroup = this.#formBuilder.group({
         type: 'http' as ProxyType,
@@ -371,6 +381,7 @@ export class ProxyInputComponent {
         this.checking = true;
         this.checkResult = null;
         this.checkError = '';
+        this.ipSaved = false;
 
         try {
             const result = await this.#proxyCheck.checkProxy(proxy);
@@ -400,6 +411,13 @@ export class ProxyInputComponent {
             });
         } catch {
             // fallback ignored
+        }
+    }
+
+    onSaveIp(): void {
+        if (this.checkResult) {
+            this.saveIp.emit(this.checkResult.ip);
+            this.ipSaved = true;
         }
     }
 

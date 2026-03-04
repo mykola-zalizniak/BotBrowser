@@ -119,6 +119,8 @@ export interface NoiseConfig {
     botConfigNoiseTextRects?: boolean;
     botNoiseSeed?: number;
     botTimeScale?: number;
+    botFps?: string;
+    botTimeSeed?: number;
 }
 
 // Rendering & Media config
@@ -137,6 +139,14 @@ export interface ProxyConfig {
     proxyServer?: string;
     proxyIp?: string;
     botIpService?: string;
+    proxyBypassRgx?: string;
+}
+
+// Advanced config
+export interface AdvancedConfig {
+    botCookies?: string;
+    botBookmarks?: string;
+    botCustomHeaders?: string;
 }
 
 // Launch options (all CLI flags combined)
@@ -148,6 +158,7 @@ export interface LaunchOptions {
     noise?: NoiseConfig;
     renderingMedia?: RenderingMediaConfig;
     proxy?: ProxyConfig;
+    advanced?: AdvancedConfig;
 }
 
 export interface BrowserProfile {

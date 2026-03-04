@@ -332,6 +332,9 @@ export class BrowserLauncherService {
         if (opts?.noise?.botConfigNoiseTextRects) args.push('--bot-config-noise-text-rects');
         if (opts?.noise?.botNoiseSeed != null) args.push(`--bot-noise-seed=${opts.noise.botNoiseSeed}`);
         if (opts?.noise?.botTimeScale != null) args.push(`--bot-time-scale=${opts.noise.botTimeScale}`);
+        if (opts?.noise?.botFps) args.push(`--bot-fps=${opts.noise.botFps}`);
+        if (opts?.noise?.botTimeSeed != null && opts.noise.botTimeSeed !== 0)
+            args.push(`--bot-time-seed=${opts.noise.botTimeSeed}`);
 
         // Rendering & Media
         if (opts?.renderingMedia?.botConfigWebgl)
@@ -353,6 +356,13 @@ export class BrowserLauncherService {
         if (profile.proxyServer) args.push(`--proxy-server=${profile.proxyServer}`);
         if (opts?.proxy?.proxyIp) args.push(`--proxy-ip=${opts.proxy.proxyIp}`);
         if (opts?.proxy?.botIpService) args.push(`--bot-ip-service=${opts.proxy.botIpService}`);
+        if (opts?.proxy?.proxyBypassRgx) args.push(`--proxy-bypass-rgx=${opts.proxy.proxyBypassRgx}`);
+
+        // Advanced
+        if (opts?.advanced?.botCookies) args.push(`--bot-cookies=${opts.advanced.botCookies}`);
+        if (opts?.advanced?.botBookmarks) args.push(`--bot-bookmarks=${opts.advanced.botBookmarks}`);
+        if (opts?.advanced?.botCustomHeaders)
+            args.push(`--bot-custom-headers=${opts.advanced.botCustomHeaders}`);
 
         if (profile.basicInfo.profileName) args.push(`--bot-title="${profile.basicInfo.profileName}"`);
 

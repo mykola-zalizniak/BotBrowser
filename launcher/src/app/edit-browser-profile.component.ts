@@ -1,11 +1,11 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject, NgZone, type OnInit } from '@angular/core';
+import { Component, ElementRef, inject, NgZone, ViewChild, type AfterViewInit, type OnDestroy, type OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -34,6 +34,7 @@ import {
     type DisplayInputConfig,
     type IdentityLocaleConfig,
     type LaunchOptions,
+    type AdvancedConfig,
     type NoiseConfig,
     type ProxyConfig,
     type RenderingMediaConfig,
@@ -60,9 +61,9 @@ import { ProxyService } from './shared/proxy.service';
         MatInputModule,
         MatCheckboxModule,
         MatButtonModule,
+        MatButtonToggleModule,
         MatAutocompleteModule,
         MatSelectModule,
-        MatExpansionModule,
         MatSlideToggleModule,
         AsyncPipe,
         ProxyInputComponent,
@@ -70,7 +71,7 @@ import { ProxyService } from './shared/proxy.service';
     templateUrl: './edit-browser-profile.component.html',
     styleUrl: './edit-browser-profile.component.scss',
 })
-export class EditBrowserProfileComponent implements OnInit {
+export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     readonly #browserProfileService = inject(BrowserProfileService);
     readonly #browserLauncherService = inject(BrowserLauncherService);
     readonly #proxyService = inject(ProxyService);
@@ -82,6 +83,22 @@ export class EditBrowserProfileComponent implements OnInit {
     readonly #dialog = inject(MatDialog);
     readonly #dialogRef = inject(MatDialogRef<EditBrowserProfileComponent>);
     readonly #ngZone = inject(NgZone);
+
+    // Section navigation
+    @ViewChild('sectionContent') sectionContent!: ElementRef<HTMLElement>;
+
+    readonly navItems = [
+        { id: 'section-basic', label: 'Basic Info' },
+        { id: 'section-proxy', label: 'Proxy' },
+        { id: 'section-identity', label: 'Identity' },
+        { id: 'section-display', label: 'Display' },
+        { id: 'section-noise', label: 'Noise' },
+        { id: 'section-rendering', label: 'Rendering' },
+        { id: 'section-behavior', label: 'Behavior' },
+        { id: 'section-advanced', label: 'Advanced' },
+    ];
+    activeSection = 'section-basic';
+    #observer: IntersectionObserver | null = null;
 
     // Expose constants for template
     readonly browserBrands = BrowserBrands;
@@ -184,7 +201,17 @@ export class EditBrowserProfileComponent implements OnInit {
         botConfigNoiseTextRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseTextRects ?? true,
         botNoiseSeed: this.#injectedData?.launchOptions?.noise?.botNoiseSeed,
         botTimeScale: this.#injectedData?.launchOptions?.noise?.botTimeScale,
+        botFps: this.#injectedData?.launchOptions?.noise?.botFps,
+        botTimeSeed: this.#injectedData?.launchOptions?.noise?.botTimeSeed,
     });
+
+    // FPS mode derived from botFps value
+    fpsMode: '' | 'profile' | 'real' | 'number' = (() => {
+        const fps = this.#injectedData?.launchOptions?.noise?.botFps;
+        if (fps === 'profile' || fps === 'real') return fps;
+        if (fps) return 'number' as const;
+        return '' as const;
+    })();
 
     // Rendering & Media - defaults: webgl/webgpu/speechVoices/mediaDevices/webrtc=profile, mediaTypes=expand
     readonly renderingMediaGroup = this.#formBuilder.group<RenderingMediaConfig>({
@@ -202,7 +229,40 @@ export class EditBrowserProfileComponent implements OnInit {
         proxyServer: this.#injectedData?.launchOptions?.proxy?.proxyServer,
         proxyIp: this.#injectedData?.launchOptions?.proxy?.proxyIp,
         botIpService: this.#injectedData?.launchOptions?.proxy?.botIpService,
+        proxyBypassRgx: this.#injectedData?.launchOptions?.proxy?.proxyBypassRgx,
     });
+
+    // Advanced config
+    readonly advancedConfigGroup = this.#formBuilder.group<AdvancedConfig>({
+        botCookies: this.#injectedData?.launchOptions?.advanced?.botCookies,
+        botBookmarks: this.#injectedData?.launchOptions?.advanced?.botBookmarks,
+        botCustomHeaders: this.#injectedData?.launchOptions?.advanced?.botCustomHeaders,
+    });
+
+    // Advanced section modes
+    executableMode: 'kernel' | 'custom' = this.#injectedData?.binaryPath ? 'custom' : 'kernel';
+
+    cookiesMode: 'file' | 'input' = (() => {
+        const v = this.#injectedData?.launchOptions?.advanced?.botCookies;
+        if (!v) return 'file' as const;
+        return v.startsWith('@') ? 'file' as const : 'input' as const;
+    })();
+
+    bookmarksMode: 'file' | 'input' = (() => {
+        const v = this.#injectedData?.launchOptions?.advanced?.botBookmarks;
+        if (!v) return 'file' as const;
+        return v.startsWith('@') ? 'file' as const : 'input' as const;
+    })();
+
+    cookiesFilePath = (() => {
+        const v = this.#injectedData?.launchOptions?.advanced?.botCookies;
+        return v?.startsWith('@') ? v.substring(1) : '';
+    })();
+
+    bookmarksFilePath = (() => {
+        const v = this.#injectedData?.launchOptions?.advanced?.botBookmarks;
+        return v?.startsWith('@') ? v.substring(1) : '';
+    })();
 
     isEdit = false;
     basicInfo: BotProfileBasicInfo | null = null;
@@ -230,6 +290,60 @@ export class EditBrowserProfileComponent implements OnInit {
     async ngOnInit() {
         // Load proxies
         this.proxies = await this.#proxyService.getAllProxies();
+    }
+
+    ngAfterViewInit() {
+        this.#setupScrollspy();
+    }
+
+    ngOnDestroy() {
+        this.#observer?.disconnect();
+    }
+
+    scrollToSection(sectionId: string): void {
+        const el = document.getElementById(sectionId);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            this.activeSection = sectionId;
+        }
+    }
+
+    #setupScrollspy(): void {
+        const container = this.sectionContent?.nativeElement;
+        if (!container) return;
+
+        this.#observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        this.#ngZone.run(() => {
+                            this.activeSection = entry.target.id;
+                        });
+                        break;
+                    }
+                }
+            },
+            {
+                root: container,
+                rootMargin: '-10% 0px -80% 0px',
+                threshold: 0,
+            }
+        );
+
+        for (const nav of this.navItems) {
+            const el = document.getElementById(nav.id);
+            if (el) this.#observer.observe(el);
+        }
+    }
+
+    onFpsModeChange(): void {
+        if (this.fpsMode === 'profile' || this.fpsMode === 'real') {
+            this.noiseGroup.patchValue({ botFps: this.fpsMode });
+        } else if (this.fpsMode === 'number') {
+            this.noiseGroup.patchValue({ botFps: '' });
+        } else {
+            this.noiseGroup.patchValue({ botFps: '' });
+        }
     }
 
     onProxySelected(proxyId: string): void {
@@ -277,8 +391,12 @@ export class EditBrowserProfileComponent implements OnInit {
         });
     }
 
-    onIpCheckResult(result: ProxyCheckResult): void {
-        this.proxyConfigGroup.patchValue({ proxyIp: result.ip });
+    onIpCheckResult(_result: ProxyCheckResult): void {
+        // IP saving is handled by the Save IP button via onSaveIp
+    }
+
+    onSaveIp(ip: string): void {
+        this.proxyConfigGroup.patchValue({ proxyIp: ip });
     }
 
     async chooseFile(): Promise<void> {
@@ -319,6 +437,25 @@ export class EditBrowserProfileComponent implements OnInit {
             });
     }
 
+    onExecutableModeChange(mode: 'kernel' | 'custom'): void {
+        this.executableMode = mode;
+        if (mode === 'kernel') {
+            this.advancedGroup.patchValue({ binaryPath: '' });
+        }
+    }
+
+    onCookiesModeChange(mode: 'file' | 'input'): void {
+        this.cookiesMode = mode;
+        this.cookiesFilePath = '';
+        this.advancedConfigGroup.patchValue({ botCookies: '' });
+    }
+
+    onBookmarksModeChange(mode: 'file' | 'input'): void {
+        this.bookmarksMode = mode;
+        this.bookmarksFilePath = '';
+        this.advancedConfigGroup.patchValue({ botBookmarks: '' });
+    }
+
     async chooseExecutable(): Promise<void> {
         let entries: string[];
         try {
@@ -337,6 +474,44 @@ export class EditBrowserProfileComponent implements OnInit {
         if (!entry) return;
 
         this.advancedGroup.get('binaryPath')?.setValue(entry);
+    }
+
+    async chooseCookiesFile(): Promise<void> {
+        let entries: string[];
+        try {
+            entries = await Neutralino.os.showOpenDialog('Select cookies JSON file', {
+                filters: [{ name: 'JSON', extensions: ['json'] }],
+                multiSelections: false,
+            });
+        } catch {
+            return;
+        }
+        const entry = entries[0];
+        if (!entry) return;
+
+        this.#ngZone.run(() => {
+            this.cookiesFilePath = entry;
+            this.advancedConfigGroup.patchValue({ botCookies: `@${entry}` });
+        });
+    }
+
+    async chooseBookmarksFile(): Promise<void> {
+        let entries: string[];
+        try {
+            entries = await Neutralino.os.showOpenDialog('Select bookmarks JSON file', {
+                filters: [{ name: 'JSON', extensions: ['json'] }],
+                multiSelections: false,
+            });
+        } catch {
+            return;
+        }
+        const entry = entries[0];
+        if (!entry) return;
+
+        this.#ngZone.run(() => {
+            this.bookmarksFilePath = entry;
+            this.advancedConfigGroup.patchValue({ botBookmarks: `@${entry}` });
+        });
     }
 
     #handleFileSelection(filePath: string): void {
@@ -424,6 +599,7 @@ export class EditBrowserProfileComponent implements OnInit {
             noise: this.#cleanObject(this.noiseGroup.value) as NoiseConfig | undefined,
             renderingMedia: this.#cleanObject(this.renderingMediaGroup.value) as RenderingMediaConfig | undefined,
             proxy: this.#cleanObject(this.proxyConfigGroup.value) as ProxyConfig | undefined,
+            advanced: this.#cleanObject(this.advancedConfigGroup.value) as AdvancedConfig | undefined,
         };
 
         const browserProfile: BrowserProfile = {
