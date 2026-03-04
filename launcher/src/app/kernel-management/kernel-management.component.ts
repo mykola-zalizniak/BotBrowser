@@ -125,6 +125,20 @@ export class KernelManagementComponent implements OnInit {
         return new Date(timestamp).toLocaleDateString();
     }
 
+    formatAssetDate(assetDate?: string): string | null {
+        if (!assetDate || assetDate.length !== 8) return null;
+        const year = Number(assetDate.slice(0, 4));
+        const month = Number(assetDate.slice(4, 6));
+        const day = Number(assetDate.slice(6, 8));
+        return new Date(year, month - 1, day).toLocaleDateString();
+    }
+
+    getReleaseAssetDate(release: KernelRelease): string | null {
+        const platform = this.#kernelService.getCurrentPlatform();
+        const asset = release.assets.find((a) => a.platform === platform);
+        return this.formatAssetDate(asset?.assetDate);
+    }
+
     formatSize(bytes: number): string {
         const mb = bytes / (1024 * 1024);
         return `${mb.toFixed(1)} MB`;

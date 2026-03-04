@@ -77,8 +77,10 @@
             [value]="proxyValue"
             [showQuickParse]="true"
             [showCheckButton]="true"
+            [showSaveButton]="!selectedProxyId"
             (valueChange)="onProxyValueChange($event)"
             (ipCheckResult)="onIpCheckResult($event)"
+            (saveToList)="onSaveProxyToList($event)"
         />
 
         <div class="section-title">Advanced Proxy Config</div>

@@ -7,11 +7,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import type { Proxy } from '../data/proxy';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
+import { ProxyCheckService, type ProxyCheckResult } from '../shared/proxy-check.service';
 import { ProxyService } from '../shared/proxy.service';
 import { StopPropagationDirective } from '../shared/stop-propagation.directive';
 import { BulkImportProxyComponent } from './bulk-import-proxy.component';
@@ -31,6 +34,8 @@ import { EditProxyComponent } from './edit-proxy.component';
         MatToolbarModule,
         MatIconModule,
         MatProgressBarModule,
+        MatProgressSpinnerModule,
+        MatTooltipModule,
         StopPropagationDirective,
     ],
     templateUrl: './proxy-management.component.html',
@@ -38,13 +43,16 @@ import { EditProxyComponent } from './edit-proxy.component';
 })
 export class ProxyManagementComponent implements AfterViewInit {
     readonly #proxyService = inject(ProxyService);
+    readonly #proxyCheck = inject(ProxyCheckService);
     readonly #dialog = inject(MatDialog);
 
-    readonly displayedColumns = ['select', 'name', 'type', 'host', 'username'];
+    readonly displayedColumns = ['select', 'name', 'type', 'host', 'username', 'status'];
     readonly dataSource = new MatTableDataSource<Proxy>([]);
     readonly selection = new SelectionModel<Proxy>(true, []);
+    readonly checkResults = new Map<string, { status: 'checking' | 'ok' | 'fail'; result?: ProxyCheckResult; error?: string }>();
 
     loading = false;
+    checking = false;
 
     @ViewChild(MatSort) set sort(sort: MatSort) {
         if (sort) {
@@ -147,6 +155,43 @@ export class ProxyManagementComponent implements AfterViewInit {
                 await this.#proxyService.deleteProxies(this.selection.selected.map((p) => p.id));
                 await this.refreshProxies();
             });
+    }
+
+    async checkProxies(): Promise<void> {
+        if (this.selection.selected.length === 0) return;
+        await this.#checkTargets(this.selection.selected);
+    }
+
+    async checkProxy(proxy: Proxy): Promise<void> {
+        await this.#checkTargets([proxy]);
+    }
+
+    async #checkTargets(targets: Proxy[]): Promise<void> {
+        this.checking = true;
+        for (const proxy of targets) {
+            this.checkResults.set(proxy.id, { status: 'checking' });
+        }
+
+        await Promise.all(
+            targets.map(async (proxy) => {
+                try {
+                    const result = await this.#proxyCheck.checkProxy({
+                        type: proxy.type,
+                        host: proxy.host,
+                        port: proxy.port,
+                        username: proxy.username,
+                        password: proxy.password,
+                    });
+                    this.checkResults.set(proxy.id, { status: 'ok', result });
+                } catch (error) {
+                    this.checkResults.set(proxy.id, {
+                        status: 'fail',
+                        error: error instanceof Error ? error.message : 'Check failed',
+                    });
+                }
+            })
+        );
+        this.checking = false;
     }
 
     toggleSelectProxy(proxy: Proxy): void {

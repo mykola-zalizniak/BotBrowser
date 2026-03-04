@@ -149,6 +149,26 @@ mat-toolbar {
     @include shared.empty-state;
 }
 
+.mat-column-select {
+    width: 48px;
+    max-width: 48px;
+}
+
+.mat-column-status {
+    width: 56px;
+    max-width: 56px;
+    overflow: visible !important;
+}
+
+.mat-column-lastUsedAt {
+    width: 130px;
+    max-width: 130px;
+}
+
+.status-running {
+    color: #f44336;
+}
+
 .profile-name-link {
     color: #1976d2;
     text-decoration: underline;

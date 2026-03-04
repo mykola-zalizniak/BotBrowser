@@ -250,6 +250,31 @@ export class EditBrowserProfileComponent implements OnInit {
 
     onProxyValueChange(value: ParsedProxy | null): void {
         this.proxyValue = value;
+        this.selectedProxyId = '';
+    }
+
+    async onSaveProxyToList(proxy: ParsedProxy): Promise<void> {
+        const duplicate = this.proxies.find((p) => p.host === proxy.host && p.port === proxy.port);
+        if (duplicate) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: { message: `Proxy ${proxy.host}:${proxy.port} already exists in the proxy list.` },
+            });
+            return;
+        }
+
+        await this.#proxyService.addProxy({
+            id: uuidv4(),
+            name: `${proxy.host}:${proxy.port}`,
+            type: proxy.type,
+            host: proxy.host,
+            port: proxy.port,
+            username: proxy.username,
+            password: proxy.password,
+        });
+        this.proxies = await this.#proxyService.getAllProxies();
+        this.#dialog.open(AlertDialogComponent, {
+            data: { message: `Proxy ${proxy.host}:${proxy.port} saved to proxy list.` },
+        });
     }
 
     onIpCheckResult(result: ProxyCheckResult): void {

@@ -24,6 +24,7 @@
 
     table {
         width: 100%;
+        table-layout: fixed;
     }
 
     tr.mat-mdc-row {
@@ -32,6 +33,9 @@
 
     td.mat-mdc-cell {
         padding: 0 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
 
