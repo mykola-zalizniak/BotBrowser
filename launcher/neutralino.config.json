@@ -20,7 +20,7 @@
     "modes": {
         "window": {
             "title": "BotBrowser Launcher",
-            "width": 1000,
+            "width": 1080,
             "height": 800,
             "minWidth": 400,
             "minHeight": 200,

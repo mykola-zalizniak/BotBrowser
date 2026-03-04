@@ -16,7 +16,8 @@ export class ProxyService {
         try {
             const configPath = await this.getConfigPath();
             const content = await Neutralino.filesystem.readFile(configPath);
-            return JSON.parse(content);
+            const proxies: Proxy[] = JSON.parse(content);
+            return proxies.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
         } catch {
             return [];
         }
@@ -29,6 +30,7 @@ export class ProxyService {
 
     async addProxy(proxy: Proxy): Promise<void> {
         const proxies = await this.getAllProxies();
+        proxy.createdAt = proxy.createdAt ?? Date.now();
         proxies.push(proxy);
         await this.saveAllProxies(proxies);
     }

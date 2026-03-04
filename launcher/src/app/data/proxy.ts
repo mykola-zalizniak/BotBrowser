@@ -10,4 +10,5 @@ export interface Proxy {
     port: number;
     username?: string;
     password?: string;
+    createdAt?: number;
 }
