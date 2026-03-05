@@ -372,7 +372,9 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     }
 
     async onSaveProxyToList(proxy: ParsedProxy): Promise<void> {
-        const duplicate = this.proxies.find((p) => p.host === proxy.host && p.port === proxy.port);
+        const duplicate = this.proxies.find(
+            (p) => p.host === proxy.host && p.port === proxy.port && (p.username || '') === (proxy.username || '') && (p.password || '') === (proxy.password || '')
+        );
         if (duplicate) {
             this.#dialog.open(AlertDialogComponent, {
                 data: { message: `Proxy ${proxy.host}:${proxy.port} already exists in the proxy list.` },
