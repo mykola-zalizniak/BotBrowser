@@ -24,6 +24,7 @@ import { EditBrowserProfileComponent } from './edit-browser-profile.component';
 import { KernelManagementComponent } from './kernel-management/kernel-management.component';
 import { ProxyManagementComponent } from './proxy-management/proxy-management.component';
 import { QuickProxyChangeComponent } from './quick-proxy-change.component';
+import { AlertDialogComponent } from './shared/alert-dialog.component';
 import { BrowserLauncherService } from './shared/browser-launcher.service';
 import { BrowserProfileService } from './shared/browser-profile.service';
 import { ConfirmDialogComponent } from './shared/confirm-dialog.component';
@@ -113,6 +114,13 @@ export class AppComponent implements AfterViewInit {
     }
 
     editProfile(browserProfile: BrowserProfile): void {
+        const status = this.browserLauncherService.getRunningStatus(browserProfile);
+        if (status !== BrowserProfileStatus.Idle && status !== BrowserProfileStatus.LaunchFailed) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: { message: 'Cannot edit a profile while it is running. Please stop the browser first.' },
+            });
+            return;
+        }
         this.#dialog
             .open(EditBrowserProfileComponent, {
                 width: '860px',
