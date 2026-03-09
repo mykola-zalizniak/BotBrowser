@@ -179,8 +179,10 @@ These fields work together with `--user-agent` CLI flag. BotBrowser auto-generat
 | ----- | ----------- | ------- |
 | `fps` (ENT Tier2 feature) | Control frame rate behavior: `profile` (use profile data, default when capable), `real` (use native frame rate), or a number (e.g., `60`). | `profile` |
 | `timeScale` (ENT Tier2 feature) | Fractional scalar applied to `performance.now()` deltas to emulate lower CPU load and shorten observable intervals. Valid range `0 < value < 1`. | `1.0` |
-| `noiseSeed` (ENT Tier2 feature) | Floating seed (1.0–1.2) that deterministically shapes the noise applied to Canvas 2D/WebGL/WebGPU images, text metrics, HarfBuzz layout, ClientRects, and offline audio hashes so you can assign reproducible yet distinct fingerprints per tenant. | `auto` |
+| `noiseSeed` (ENT Tier2 feature) | Integer seed (1–UINT32_MAX) that deterministically shapes the noise applied to Canvas 2D/WebGL/WebGPU images, text metrics, HarfBuzz layout, ClientRects, and offline audio hashes so you can assign reproducible yet distinct fingerprints per tenant. `0` keeps noise active with profile defaults. | `auto` |
 | `timeSeed` (ENT Tier2 feature) | Integer seed (1–UINT32_MAX) for deterministic execution timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, etc.). `0` disables the feature. Each seed produces a unique, stable performance profile that protects against timing-based tracking. See [Performance Timing Protection](../ADVANCED_FEATURES.md#performance-timing-protection). | `0` (disabled) |
+| `stackSeed` (ENT Tier2 feature) | Controls JavaScript recursive call stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile's exact depth), `real` (use native depth), or a positive integer seed (1–UINT32_MAX) for per-session depth variation. See [Stack Depth Control](../ADVANCED_FEATURES.md#stack-depth-control). | `real` |
+| `networkInfoOverride` | Enable profile-defined `navigator.connection` values (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers. | `false` |
 
 ---
 
@@ -297,6 +299,12 @@ These fields work together with `--user-agent` CLI flag. BotBrowser auto-generat
 
     // timeSeed (ENT Tier2): deterministic execution timing diversity
     "timeSeed": 42,
+
+    // stackSeed (ENT Tier2): "profile", "real", or positive integer seed
+    "stackSeed": "profile",
+
+    // networkInfoOverride: use profile-defined navigator.connection values
+    "networkInfoOverride": true,
 
     // fps (ENT Tier2): frame rate control: "profile", "real", or a number (e.g., 60)
     "fps": "profile"

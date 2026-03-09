@@ -3,6 +3,28 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-03-09]
+### Major
+- **Chromium Core → 146.0.7680.66**: Updated to Chrome 146 stable (146.0.7680.66). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **Resource and Navigation Timing Protection**: `performance.getEntries()`, `performance.getEntriesByType("navigation")`, and `performance.timing` now return authentic, per-session timing values consistent with natural browser behavior.
+
+- **Network Information Privacy**: `navigator.connection` properties (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers now return profile-defined values. Enable via `--bot-network-info-override` or `configs.networkInfoOverride`.
+
+- **Stack Depth Fingerprint Control** (ENT Tier2): JavaScript recursive call stack depth now matches the target profile across main thread, Worker, and WASM contexts. `--bot-stack-seed` accepts `profile` (match exact depth), `real` (native depth), or a positive integer seed (1–UINT32_MAX) for per-session variation.
+
+- **CPU Core Scaling Protection**: Worker threads are automatically constrained to match `navigator.hardwareConcurrency`, ensuring consistent parallel computation behavior on Linux and Windows.
+
+### Improvements
+- **Canvas 2D Noise System**: Complete rewrite with per-operation noise direction, DPR-aware adjustments for consistent results across all display densities, and expanded `--bot-noise-seed` range (1–UINT32_MAX) for greater fingerprint diversity.
+
+- **Performance Timing Calibration**: Refined `--bot-time-seed` delay ranges to better align with real-world hardware variance across all browser operations.
+
+### Fixes
+- **DNS Prefetch Privacy**: HTML `<link rel="dns-prefetch">` no longer triggers local DNS queries when a proxy is configured, preventing unintended DNS exposure.
+
+
 ## [2026-03-04]
 ### New
 - **Performance Timing Protection (`--bot-time-seed`)** (ENT Tier2): Protects against performance fingerprinting and timing-based tracking. `--bot-time-seed=<integer>` (1–UINT32_MAX, `0` = disabled) produces authentic, deterministic timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, and more), giving each instance a unique and stable performance profile.
