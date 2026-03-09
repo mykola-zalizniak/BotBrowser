@@ -256,9 +256,21 @@ Comprehensive hardware emulation and fingerprint management.
 
 <a id="performance-timing-protection"></a>
 
-**Performance Timing Protection** (ENT Tier2): Every device has a unique "speed signature": how fast it renders a Canvas path, compiles a WebGL shader, or measures a font. Tracking systems collect these execution times to build a hardware-level fingerprint. When multiple browser instances share the same hardware, their timing profiles are identical, making them vulnerable to correlation. [`--bot-time-seed=<integer>`](CLI_FLAGS.md#behavior--protection-toggles) (valid range: 1–UINT32_MAX, `0` = disabled) protects each instance with its own stable performance profile across 27 browser operations.
+**Performance Timing Protection** (ENT Tier2): Every device has a unique "speed signature": how fast it renders a Canvas path, compiles a WebGL shader, or measures a font. Tracking systems collect these execution times to build a hardware-level fingerprint. When multiple browser instances share the same hardware, their timing profiles are identical, making them vulnerable to correlation. [`--bot-time-seed=<integer>`](CLI_FLAGS.md#behavior--protection-toggles) (valid range: 1–UINT32_MAX, `0` = disabled) protects each instance with its own stable performance profile across 27 browser operations. This also covers `performance.getEntries()`, `performance.getEntriesByType("navigation")`, and `performance.timing` with authentic per-session redistribution of resource and navigation timing values.
 
 > `--bot-time-seed` varies actual operation execution speeds (the workload). `--bot-time-scale` compresses `performance.now()` intervals globally (the clock). They protect against different tracking vectors and can be used together.
+
+<a id="stack-depth-control"></a>
+
+**Stack Depth Fingerprint Control** (ENT Tier2): JavaScript engines expose a measurable recursive call stack depth that varies by browser build, platform, and architecture. Tracking systems use this as a stable fingerprint signal. [`--bot-stack-seed`](CLI_FLAGS.md#behavior--protection-toggles) controls stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile's exact depth), `real` (use native depth), or a positive integer seed (1–UINT32_MAX) for per-session depth variation.
+
+<a id="network-info-privacy"></a>
+
+**Network Information Privacy**: `navigator.connection` properties (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers can reveal server-side network characteristics that contradict the profile's geographic identity. Enable [`--bot-network-info-override`](CLI_FLAGS.md#behavior--protection-toggles) or `configs.networkInfoOverride` to return profile-defined values.
+
+<a id="cpu-core-scaling"></a>
+
+**CPU Core Scaling Protection**: When `navigator.hardwareConcurrency` is set by the profile, Worker threads are automatically constrained to match the claimed core count via CPU affinity on Linux and Windows. This ensures parallel computation scaling curves align with the claimed value.
 
 <details>
 <summary><strong>Full details: Deep System Integration</strong></summary>
@@ -276,9 +288,12 @@ Comprehensive hardware emulation and fingerprint management.
 - Realistic memory allocation patterns and garbage collection timing
 - IndexedDB, localStorage, and Cache API response timing
 - JavaScript execution timing and WebAssembly performance simulation
-- Deterministic noise seeds via [`--bot-noise-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2) to stabilize noise distributions across sessions
-- Performance timing protection via [`--bot-time-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2): deterministic execution timing diversity across 27 browser operations (see above)
+- Deterministic noise seeds via [`--bot-noise-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2, 1–UINT32_MAX) to stabilize noise distributions across sessions
+- Performance timing protection via [`--bot-time-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2): deterministic execution timing diversity across 27 browser operations, plus resource and navigation timing redistribution (see above)
+- Stack depth control via [`--bot-stack-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2): `profile`, `real`, or integer seed for stack depth across main thread, Worker, and WASM contexts
 - Runtime timing scaling via [`--bot-time-scale`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2) to compress `performance.now()` deltas
+- Network information privacy via [`--bot-network-info-override`](CLI_FLAGS.md#behavior--protection-toggles): profile-defined `navigator.connection` values and Client Hints headers
+- CPU core scaling: Worker threads automatically constrained to match `navigator.hardwareConcurrency` on Linux and Windows
 
 ### Extended Media Types & WebCodecs APIs
 
