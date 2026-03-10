@@ -8,7 +8,7 @@ Technical architecture and implementation details behind BotBrowser's fingerprin
 
 ## Capabilities Index
 
-[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#multi-layer-fingerprint-noise), [WebGL/WebGPU param control](#multi-layer-fingerprint-noise), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#browser-os-fingerprinting), [custom User-Agent (ENT Tier3)](CLI_FLAGS.md#profile-configuration-override-flags), [per-context proxy (ENT Tier1) geo](CLI_FLAGS.md#enhanced-proxy-configuration), [DNS-through-proxy](#network-fingerprint-control), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS fingerprint (JA3/JARM)](#network-fingerprint-control), [port protection (PRO)](#port-protection), [dynamic proxy switching (ENT Tier2)](#dynamic-proxy-switching), [distributed privacy consistency](#mirror-distributed-privacy-consistency), [CDP quick reference](#cdp-quick-reference)
+[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#multi-layer-fingerprint-noise), [WebGL/WebGPU param control](#multi-layer-fingerprint-noise), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#browser-os-fingerprinting), [custom User-Agent (ENT Tier3)](CLI_FLAGS.md#profile-configuration-override-flags), [per-context proxy (ENT Tier1) geo](CLI_FLAGS.md#enhanced-proxy-configuration), [DNS-through-proxy](#network-fingerprint-control), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS fingerprint (JA3/JARM)](#network-fingerprint-control), [port protection (PRO)](#port-protection), [dynamic proxy switching (ENT Tier3)](#dynamic-proxy-switching), [distributed privacy consistency](#mirror-distributed-privacy-consistency), [CDP quick reference](#cdp-quick-reference)
 
 ---
 
@@ -59,7 +59,7 @@ Covers 30 commonly-probed ports across:
 Enable via CLI (`--bot-port-protection`) or profile JSON (`configs.portProtection`). See [CLI Flags](CLI_FLAGS.md#--bot-port-protection-pro) for details.
 
 <a id="dynamic-proxy-switching"></a>
-### Dynamic Per-Context Proxy Switching (ENT Tier2)
+### Dynamic Per-Context Proxy Switching (ENT Tier3)
 
 Switch proxy servers for a specific BrowserContext at runtime without restarting the context. Use the CDP command `BotBrowser.setBrowserContextProxy` to change proxies on the fly. Supports multiple switches per context, with automatic timezone and language adaptation after each switch.
 
@@ -452,8 +452,8 @@ All commands live under the `BotBrowser` CDP domain. Send them through a CDP ses
 | Command | Scope | Tier | Description | Documentation |
 |---------|-------|------|-------------|---------------|
 | `SetBrowserContextFlags` | page | ENT Tier3 | Assign independent fingerprint flags to a BrowserContext | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) |
-| `SetBrowserContextProxy` | page | ENT Tier2 | Switch proxy for a BrowserContext at runtime | [Dynamic Proxy Switching](#dynamic-proxy-switching) |
-| `ClearBrowserContextProxy` | page | ENT Tier2 | Remove proxy override from a BrowserContext | [Dynamic Proxy Switching](#dynamic-proxy-switching) |
+| `SetBrowserContextProxy` | page | ENT Tier3 | Switch proxy for a BrowserContext at runtime | [Dynamic Proxy Switching](#dynamic-proxy-switching) |
+| `ClearBrowserContextProxy` | page | ENT Tier3 | Remove proxy override from a BrowserContext | [Dynamic Proxy Switching](#dynamic-proxy-switching) |
 | `SetCustomHeaders` | browser | PRO | Replace all custom HTTP request headers | [CLI Flags](CLI_FLAGS.md#--bot-custom-headers-pro) |
 | `GetCustomHeaders` | browser | PRO | Retrieve current custom headers | [CLI Flags](CLI_FLAGS.md#--bot-custom-headers-pro) |
 | `AddCustomHeader` | browser | PRO | Add or update a single custom header | [CLI Flags](CLI_FLAGS.md#--bot-custom-headers-pro) |
