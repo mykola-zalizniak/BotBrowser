@@ -1,6 +1,6 @@
-# BotBrowser Stable Profiles (v145)
+# BotBrowser Stable Profiles (v146)
 
-Please download BotBrowser **145.0.7632.118** from [this release](https://github.com/botswin/BotBrowser/releases/tag/145.0.7632.118).
+Please download BotBrowser **146.0.7680.66** from [this release](https://github.com/botswin/BotBrowser/releases/tag/146.0.7680.66).
 
 > **Usage:** Run demo profiles via [CLI](../../INSTALLATION.md#download--installation) or [Launcher](../../launcher/). Automation framework integration (Puppeteer, Playwright) requires [premium profiles](../README.md#premium-profiles).
 

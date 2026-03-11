@@ -19,7 +19,7 @@ Get the installer for your OS from the [Releases](https://github.com/botswin/Bot
 iwr -Uri "https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.ps1" -OutFile "$env:TEMP\install_botbrowser.ps1"; & "$env:TEMP\install_botbrowser.ps1"
 
 # Install specific Chrome version
-iwr -Uri "https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.ps1" -OutFile "$env:TEMP\install_botbrowser.ps1"; & "$env:TEMP\install_botbrowser.ps1" -Version 145
+iwr -Uri "https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.ps1" -OutFile "$env:TEMP\install_botbrowser.ps1"; & "$env:TEMP\install_botbrowser.ps1" -Version 146
 
 # Install to custom directory
 iwr -Uri "https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.ps1" -OutFile "$env:TEMP\install_botbrowser.ps1"; & "$env:TEMP\install_botbrowser.ps1" -InstallDir "D:\BotBrowser"
@@ -62,7 +62,7 @@ chrome.exe --bot-profile="C:\absolute\path\to\profile.enc" --user-data-dir="%TEM
 curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash
 
 # Install specific Chrome version
-curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- 145
+curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- 146
 
 # Download only, don't install
 curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- --download
@@ -108,7 +108,7 @@ The script auto-detects your Mac's architecture (Apple Silicon or Intel), fetche
 curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash
 
 # Install specific Chrome version
-curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- 145
+curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- 146
 
 # Download only, don't install
 curl -sL https://raw.githubusercontent.com/botswin/BotBrowser/main/scripts/install_botbrowser.sh | bash -s -- --download

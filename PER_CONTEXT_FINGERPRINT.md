@@ -288,7 +288,7 @@ await Promise.all([
 
 Configure proxy directly in `botbrowserFlags` for unified proxy and fingerprint settings in a single call. Supported proxy flags: `--proxy-server`, `--proxy-ip`, `--proxy-bypass-list`, `--proxy-bypass-rgx`.
 
-> **Tip:** Need to switch proxies at runtime without restarting a context? See [Dynamic Proxy Switching (ENT Tier2)](ADVANCED_FEATURES.md#dynamic-proxy-switching) in Advanced Features.
+> **Tip:** Need to switch proxies at runtime without restarting a context? See [Dynamic Proxy Switching (ENT Tier3)](ADVANCED_FEATURES.md#dynamic-proxy-switching) in Advanced Features.
 
 ## Supported Flags
 
@@ -332,7 +332,7 @@ See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
 
 ⚠️ `setBrowserContextFlags` must be called **before** creating any page in that context. The renderer process reads its flags at startup. If a page already exists, the new flags will not apply to that renderer. Correct order: `createBrowserContext` → `setBrowserContextFlags` → `newPage`.
 
-⚠️ Per-context proxy via `botbrowserFlags` or `createBrowserContext` must be set before navigation. To switch proxies at runtime, use `BotBrowser.setBrowserContextProxy` (ENT Tier2). See [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching).
+⚠️ Per-context proxy via `botbrowserFlags` or `createBrowserContext` must be set before navigation. To switch proxies at runtime, use `BotBrowser.setBrowserContextProxy` (ENT Tier3). See [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching).
 
 ⚠️ Some network-layer settings ([`--bot-local-dns`](CLI_FLAGS.md#--bot-local-dns-ent-tier1), UDP proxy support) apply at the browser level and cannot be configured per-context.
 

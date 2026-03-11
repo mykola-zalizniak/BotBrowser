@@ -328,7 +328,7 @@ Flags that directly map to profile `configs` and override them at runtime.
 - `--bot-config-ua-full-version=142.0.7444.60` (ENT Tier2): User agent version: full version string matching Chromium major
 - `--bot-config-languages=auto`: Languages: `auto` (IP-based, default) or custom value like `en-US,fr-FR` (ENT Tier1)
 - `--bot-config-locale=auto`: Browser locale: `auto` (derived from IP/language, default) or custom value like `en-US`, `fr-FR` (ENT Tier1)
-- `--bot-config-timezone=auto`: Timezone: `auto` (IP-based, default), `real` (system), or custom timezone name (ENT Tier1)
+- `--bot-config-timezone=auto`: Timezone: `auto` (IP-based, default), `real` (system), or IANA timezone name like `America/New_York`, `Europe/Berlin` (ENT Tier1)
 - `--bot-config-location=auto`: Location: `auto` (IP-based, default), `real` (system GPS), or custom coordinates like `40.7128,-74.0060` (ENT Tier1)
 
 **Custom User-Agent (ENT Tier3)**
