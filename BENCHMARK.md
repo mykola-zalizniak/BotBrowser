@@ -284,11 +284,14 @@ For enterprise users running concurrent fingerprint profiles, Per-Context Finger
 
 ## Related Documentation
 
+- [Guides](docs/guides/) - Comprehensive guides for all BotBrowser features
 - [Main README](README.md) - Project overview and quick start
 - [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) - Architecture and API details
 - [Validation Results](VALIDATION.md) - Research data across 31+ tracking scenarios
 - [Advanced Features](ADVANCED_FEATURES.md) - Comprehensive technical capabilities
 - [CLI Flags Reference](CLI_FLAGS.md) - Complete command-line options
+
+Related guides: [Performance Optimization](docs/guides/deployment/PERFORMANCE_OPTIMIZATION.md)
 
 ---
 

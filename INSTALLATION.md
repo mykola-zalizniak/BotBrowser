@@ -283,6 +283,7 @@ When reporting installation problems, please include:
 ## Related Documentation
 
 - [Main README](README.md) - Project overview and quick start
+- [Guides](docs/guides/) - Step-by-step guides for proxy, fingerprint, identity, platform emulation, and deployment
 - [CLI Flags Reference](CLI_FLAGS.md) - Complete command-line options
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md) - Advanced profile customization
 - [Docker Guide](docker/README.md) - Containerized deployment

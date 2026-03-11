@@ -16,9 +16,9 @@ Technical architecture and implementation details behind BotBrowser's fingerprin
 
 BotBrowser offers three configuration interfaces with a clear priority order:
 
-1. **CLI `--bot-config-*` flags** (highest priority) — [CLI Flags Reference](CLI_FLAGS.md)
-2. **Profile `configs` JSON** (medium priority) — [Profile Configuration Guide](profiles/PROFILE_CONFIGS.md)
-3. **CDP commands** (runtime, per-context) — [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [CDP Quick Reference](#cdp-quick-reference)
+1. **CLI `--bot-config-*` flags** (highest priority): [CLI Flags Reference](CLI_FLAGS.md)
+2. **Profile `configs` JSON** (medium priority): [Profile Configuration Guide](profiles/PROFILE_CONFIGS.md)
+3. **CDP commands** (runtime, per-context): [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [CDP Quick Reference](#cdp-quick-reference)
 
 Smart auto-configuration: timezone, locale, and languages derive from your proxy IP. Override only when your scenario requires it.
 
@@ -45,6 +45,8 @@ Smart auto-configuration: timezone, locale, and languages derive from your proxy
 > Note: Many privacy-oriented browsers disable QUIC or skip UDP entirely. BotBrowser implements UDP-over-SOCKS5 directly inside Chromium's network stack so QUIC/STUN stay proxied and consistent with TCP traffic.
 
 For proxy configuration syntax and examples, see [CLI Flags: Enhanced Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration).
+
+**Related guides:** [Proxy Configuration](docs/guides/network/PROXY_CONFIGURATION.md) · [DNS Leak Prevention](docs/guides/network/DNS_LEAK_PREVENTION.md) · [UDP over SOCKS5](docs/guides/network/UDP_OVER_SOCKS5.md) · [WebRTC Leak Prevention](docs/guides/network/WEBRTC_LEAK_PREVENTION.md) · [Port Protection](docs/guides/network/PORT_PROTECTION.md) · [Dynamic Proxy Switching](docs/guides/network/DYNAMIC_PROXY_SWITCHING.md)
 
 <a id="port-protection"></a>
 ### Port Protection (PRO)
@@ -89,9 +91,9 @@ await page.goto('https://example.co.uk');
 **Supported protocols:** `socks5://`, `socks5h://`, `http://`, `https://`, all with embedded authentication (`user:pass@host:port`).
 
 **Optional parameters:**
-- `proxyIp` — provides the proxy's exit IP to skip automatic IP detection, resulting in faster geo-based timezone and language adaptation.
-- `proxyBypassList` — semicolon-separated list of hosts/patterns that should bypass the proxy (e.g., `localhost;*.internal.com`).
-- `proxyBypassRgx` — regex pattern (RE2 syntax) for URLs that should bypass the proxy. Supports `|` for multiple patterns (e.g., `cdn\.example\.com|/api/health`).
+- `proxyIp`: provides the proxy's exit IP to skip automatic IP detection, resulting in faster geo-based timezone and language adaptation.
+- `proxyBypassList`: semicolon-separated list of hosts/patterns that should bypass the proxy (e.g., `localhost;*.internal.com`).
+- `proxyBypassRgx`: regex pattern (RE2 syntax) for URLs that should bypass the proxy. Supports `|` for multiple patterns (e.g., `cdn\.example\.com|/api/health`).
 
 ---
 
@@ -115,6 +117,8 @@ Protection model:
 - Text metrics and ClientRects noise sustains realistic font measurements with cross-worker consistency
 
 For noise configuration flags, see [CLI Flags: Rendering, Noise & Media/RTC](CLI_FLAGS.md#profile-configuration-override-flags).
+
+**Related guides:** [Canvas](docs/guides/fingerprint/CANVAS.md) · [WebGL](docs/guides/fingerprint/WEBGL.md) · [Audio](docs/guides/fingerprint/AUDIO.md) · [Noise Seed Reproducibility](docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md) · [Font](docs/guides/fingerprint/FONT.md)
 
 <a id="active-window-emulation"></a>
 ### Active Window Emulation
@@ -154,6 +158,8 @@ Complete WebRTC fingerprint protection and network privacy.
 - Network topology protection through controlled signal patterns
 - ICE server presets and custom lists via [`--bot-webrtc-ice`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier1) to standardize STUN and TURN endpoints observed by page JavaScript
 - Combined with [UDP-over-SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) (ENT Tier3) for Chromium-level QUIC and STUN tunneling
+
+**Related guides:** [WebRTC Leak Prevention](docs/guides/network/WEBRTC_LEAK_PREVENTION.md) · [Incognito Fingerprinting](docs/guides/fingerprint/INCOGNITO.md)
 
 <a id="chrome-behavior-emulation"></a>
 ### Chrome Behavior Emulation
@@ -205,6 +211,8 @@ Advanced font rendering with consistent results across hosts.
 
 > **Implementation Detail:** Low-level rendering paths in Skia (2D/Canvas) and HarfBuzz (text shaping) are tuned to align metrics and glyph shaping across OS targets. Targeted WebGL/WebGPU parameter controls keep visual output stable across contexts.
 
+**Related guides:** [Font Fingerprinting](docs/guides/fingerprint/FONT.md) · [CJK Font Rendering](docs/guides/platform/CJK_FONT_RENDERING.md)
+
 ### Cross-Platform Consistency
 
 Maintains fingerprint and behavior consistency across different host systems.
@@ -220,6 +228,8 @@ Maintains fingerprint and behavior consistency across different host systems.
 - Simulates platform-specific UI element behavior consistently
 - Maintains identical touch and mouse event patterns
 - Emulates authentic device behavior across platforms
+
+**Related guides:** [Cross-Platform Profiles](docs/guides/platform/CROSS_PLATFORM_PROFILES.md) · [Windows on Mac/Linux](docs/guides/platform/WINDOWS_ON_MAC_LINUX.md) · [Android Emulation](docs/guides/platform/ANDROID_EMULATION.md) · [Device Emulation](docs/guides/platform/DEVICE_EMULATION.md)
 
 ### Touch & Input Reliability
 
@@ -271,6 +281,8 @@ Comprehensive hardware emulation and fingerprint management.
 <a id="cpu-core-scaling"></a>
 
 **CPU Core Scaling Protection**: When `navigator.hardwareConcurrency` is set by the profile, Worker threads are automatically constrained to match the claimed core count via CPU affinity on Linux and Windows. This ensures parallel computation scaling curves align with the claimed value.
+
+**Related guides:** [Performance](docs/guides/fingerprint/PERFORMANCE.md) · [Stack Depth](docs/guides/fingerprint/STACK_DEPTH.md) · [FPS Control](docs/guides/fingerprint/FPS_CONTROL.md) · [Navigator Properties](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md)
 
 <details>
 <summary><strong>Full details: Deep System Integration</strong></summary>
@@ -408,11 +420,11 @@ Comprehensive hardware emulation and fingerprint management.
 
 Execute JavaScript with privileged `chrome.debugger` access, with no framework dependencies.
 
-- **Earlier intervention** — Execute before page navigation
-- **Privileged context** — Full `chrome.debugger` API access
-- **Isolated execution** — Framework artifacts do not appear in page context
+- **Earlier intervention.** Execute before page navigation.
+- **Privileged context.** Full `chrome.debugger` API access.
+- **Isolated execution.** Framework artifacts do not appear in page context.
 
-Documentation: [Bot Script Examples](examples/bot-script)
+Documentation: [Bot Script Examples](examples/bot-script) · [Guide](docs/guides/getting-started/BOT_SCRIPT.md)
 
 <a id="playwright-puppeteer-integration"></a>
 ### Playwright/Puppeteer Integration
@@ -424,6 +436,8 @@ Privacy-preserving integration with popular frameworks.
 - Eliminates framework-specific fingerprint signatures
 - ChromeDriver compatibility and Selenium Grid integration support
 
+**Related guides:** [Playwright](docs/guides/getting-started/PLAYWRIGHT.md) · [Puppeteer](docs/guides/getting-started/PUPPETEER.md) · [Automation Consistency](docs/guides/getting-started/AUTOMATION_CONSISTENCY.md)
+
 ---
 
 <a id="mirror-distributed-privacy-consistency"></a>
@@ -431,7 +445,7 @@ Privacy-preserving integration with popular frameworks.
 
 Verify that privacy protection works consistently across platforms and networks. Run a controller instance and multiple clients to ensure all instances maintain identical privacy defenses.
 
-**[Complete Mirror documentation](tools/mirror/)** including setup, CLI flags, CDP examples, and troubleshooting.
+**[Complete Mirror documentation](tools/mirror/)** including setup, CLI flags, CDP examples, and troubleshooting. See also the [deployment guide](docs/guides/deployment/MIRROR_DISTRIBUTED.md).
 
 ---
 
@@ -473,6 +487,7 @@ All commands live under the `BotBrowser` CDP domain. Send them through a CDP ses
 - [CLI Flags Reference](CLI_FLAGS.md) - Complete command-line options and usage examples
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md) - Profile JSON field reference
 - [Installation Guide](INSTALLATION.md) - Platform-specific setup
+- [Guides](docs/guides/) - Step-by-step guides for proxy, fingerprint, identity, platform emulation, and deployment
 - [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) - Independent fingerprint per BrowserContext
 - [Validation Results](VALIDATION.md) - Research and testing data
 - [Mirror](tools/mirror/) - Distributed privacy consistency verification

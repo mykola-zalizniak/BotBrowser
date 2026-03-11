@@ -92,6 +92,8 @@ for (let i = 0; i < 20; i++) {
 
 **Chrome DevTools Protocol:** https://chromedevtools.github.io/devtools-protocol/
 
+Guide: [Bot Script](../../docs/guides/getting-started/BOT_SCRIPT.md)
+
 ---
 
 **[Legal Disclaimer & Terms of Use](https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md) • [Responsible Use Guidelines](https://github.com/botswin/BotBrowser/blob/main/RESPONSIBLE_USE.md)**. BotBrowser is for authorized fingerprint protection and privacy research only.

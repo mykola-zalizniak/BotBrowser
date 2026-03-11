@@ -55,7 +55,7 @@ BOT_MIRROR_CLIENT_ENDPOINT=192.168.1.100:9990 \
 
 ---
 
-See [Mirror Documentation](../../tools/mirror/) for complete usage guide.
+See [Mirror Documentation](../../tools/mirror/) for complete usage guide. Guide: [Mirror Distributed](../../docs/guides/deployment/MIRROR_DISTRIBUTED.md)
 
 ---
 

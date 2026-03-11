@@ -119,68 +119,68 @@ Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/
 
 ### Network & Proxy
 
-| Feature | Reference |
-|---------|-----------|
-| Proxy with embedded credentials (HTTP/SOCKS5/SOCKS5H) | [Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration) |
-| Regex-based proxy routing rules | [--proxy-bypass-rgx](CLI_FLAGS.md#--proxy-bypass-rgx) |
-| Per-context proxy with auto geo-detection | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) |
-| Dynamic proxy switching at runtime | [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching) |
-| UDP over SOCKS5 (QUIC/STUN tunneling) | [UDP over SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) |
-| Local DNS solver | [--bot-local-dns](CLI_FLAGS.md#--bot-local-dns-ent-tier1) |
-| Port protection for local services | [--bot-port-protection](CLI_FLAGS.md#--bot-port-protection-pro) |
-| WebRTC leak protection (SDP/ICE control) | [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection) |
+| Feature | Reference | Guide |
+|---------|-----------|-------|
+| Proxy with embedded credentials (HTTP/SOCKS5/SOCKS5H) | [Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration) | [Guide](docs/guides/network/PROXY_CONFIGURATION.md) |
+| Regex-based proxy routing rules | [--proxy-bypass-rgx](CLI_FLAGS.md#--proxy-bypass-rgx) | [Guide](docs/guides/network/PROXY_SELECTIVE_ROUTING.md) |
+| Per-context proxy with auto geo-detection | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [Guide](docs/guides/network/PER_CONTEXT_PROXY.md) |
+| Dynamic proxy switching at runtime | [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching) | [Guide](docs/guides/network/DYNAMIC_PROXY_SWITCHING.md) |
+| UDP over SOCKS5 (QUIC/STUN tunneling) | [UDP over SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) | [Guide](docs/guides/network/UDP_OVER_SOCKS5.md) |
+| Local DNS solver | [--bot-local-dns](CLI_FLAGS.md#--bot-local-dns-ent-tier1) | [Guide](docs/guides/network/DNS_LEAK_PREVENTION.md) |
+| Port protection for local services | [--bot-port-protection](CLI_FLAGS.md#--bot-port-protection-pro) | [Guide](docs/guides/network/PORT_PROTECTION.md) |
+| WebRTC leak protection (SDP/ICE control) | [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection) | [Guide](docs/guides/network/WEBRTC_LEAK_PREVENTION.md) |
 
 ### Fingerprint & Rendering
 
-| Feature | Reference |
-|---------|-----------|
-| Canvas / WebGL / WebGPU deterministic noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) |
-| AudioContext noise calibration | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) |
-| Text metrics & ClientRects noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) |
-| Deterministic noise seeds (reproducible per-tenant) | [--bot-noise-seed](CLI_FLAGS.md#behavior--protection-toggles) |
-| Performance timing protection (27 browser operations) | [Performance Timing Protection](ADVANCED_FEATURES.md#performance-timing-protection) |
-| Stack depth fingerprint control (main/Worker/WASM) | [Stack Depth Control](ADVANCED_FEATURES.md#stack-depth-control) |
-| Network information privacy (rtt/downlink/effectiveType) | [Network Info Privacy](ADVANCED_FEATURES.md#network-info-privacy) |
-| CPU core scaling protection | [CPU Core Scaling](ADVANCED_FEATURES.md#cpu-core-scaling) |
-| Cross-platform font engine (Win/Mac/Android) | [Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) |
-| GPU simulation on headless servers | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) |
+| Feature | Reference | Guide |
+|---------|-----------|-------|
+| Canvas / WebGL / WebGPU deterministic noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Canvas](docs/guides/fingerprint/CANVAS.md) · [WebGL](docs/guides/fingerprint/WEBGL.md) |
+| AudioContext noise calibration | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Guide](docs/guides/fingerprint/AUDIO.md) |
+| Text metrics & ClientRects noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Guide](docs/guides/fingerprint/FONT.md) |
+| Deterministic noise seeds (reproducible per-tenant) | [--bot-noise-seed](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md) |
+| Performance timing protection (27 browser operations) | [Performance Timing Protection](ADVANCED_FEATURES.md#performance-timing-protection) | [Guide](docs/guides/fingerprint/PERFORMANCE.md) |
+| Stack depth fingerprint control (main/Worker/WASM) | [Stack Depth Control](ADVANCED_FEATURES.md#stack-depth-control) | [Guide](docs/guides/fingerprint/STACK_DEPTH.md) |
+| Network information privacy (rtt/downlink/effectiveType) | [Network Info Privacy](ADVANCED_FEATURES.md#network-info-privacy) | [Guide](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md) |
+| CPU core scaling protection | [CPU Core Scaling](ADVANCED_FEATURES.md#cpu-core-scaling) | |
+| Cross-platform font engine (Win/Mac/Android) | [Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) | [Guide](docs/guides/fingerprint/FONT.md) |
+| GPU simulation on headless servers | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) | [Guide](docs/guides/fingerprint/INCOGNITO.md) |
 
 ### Identity & Platform
 
-| Feature | Reference |
-|---------|-----------|
-| Cross-platform profile portability (Win / Mac / Linux) | [Advanced Features](ADVANCED_FEATURES.md) |
-| Browser brand switching (Chrome/Edge/Brave/Opera) | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) |
-| Custom User-Agent with full userAgentData control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) |
-| Client Hints alignment (DPR, device-memory, UA-CH) | [Browser & OS](ADVANCED_FEATURES.md#browser-os-fingerprinting) |
-| Android WebView emulation | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) |
-| Chrome behavior emulation (HTTP/2, HTTP/3, headers) | [Chrome Behavior](ADVANCED_FEATURES.md#chrome-behavior-emulation) |
+| Feature | Reference | Guide |
+|---------|-----------|-------|
+| Cross-platform profile portability (Win / Mac / Linux) | [Advanced Features](ADVANCED_FEATURES.md) | [Guide](docs/guides/platform/CROSS_PLATFORM_PROFILES.md) |
+| Browser brand switching (Chrome/Edge/Brave/Opera) | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](docs/guides/identity/BROWSER_BRAND_ALIGNMENT.md) |
+| Custom User-Agent with full userAgentData control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](docs/guides/identity/CUSTOM_USER_AGENT.md) |
+| Client Hints alignment (DPR, device-memory, UA-CH) | [Browser & OS](ADVANCED_FEATURES.md#browser-os-fingerprinting) | [Guide](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md) |
+| Android WebView emulation | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](docs/guides/platform/ANDROID_WEBVIEW.md) |
+| Chrome behavior emulation (HTTP/2, HTTP/3, headers) | [Chrome Behavior](ADVANCED_FEATURES.md#chrome-behavior-emulation) | |
 
 ### Automation & Scripting
 
-| Feature | Reference |
-|---------|-----------|
-| Playwright / Puppeteer integration | [Examples](examples/) |
-| Framework-less bot-script (chrome.debugger API) | [--bot-script](CLI_FLAGS.md#--bot-script) |
-| Per-context fingerprint (multiple profiles per process) | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) |
-| Console message suppression | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) |
-| Headless / GUI parity | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) |
-| Mirror: distributed privacy consistency | [Mirror Documentation](tools/mirror/) |
-| CanvasLab: Canvas 2D / WebGL / WebGL2 recorder | [--bot-canvas-record-file](CLI_FLAGS.md#--bot-canvas-record-file) |
+| Feature | Reference | Guide |
+|---------|-----------|-------|
+| Playwright / Puppeteer integration | [Examples](examples/) | [Playwright](docs/guides/getting-started/PLAYWRIGHT.md) · [Puppeteer](docs/guides/getting-started/PUPPETEER.md) |
+| Framework-less bot-script (chrome.debugger API) | [--bot-script](CLI_FLAGS.md#--bot-script) | [Guide](docs/guides/getting-started/BOT_SCRIPT.md) |
+| Per-context fingerprint (multiple profiles per process) | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [Guide](docs/guides/identity/MULTI_ACCOUNT_ISOLATION.md) |
+| Console message suppression | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](docs/guides/fingerprint/CONSOLE_SUPPRESSION.md) |
+| Headless / GUI parity | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) | [Guide](docs/guides/fingerprint/INCOGNITO.md) |
+| Mirror: distributed privacy consistency | [Mirror Documentation](tools/mirror/) | [Guide](docs/guides/deployment/MIRROR_DISTRIBUTED.md) |
+| CanvasLab: Canvas 2D / WebGL / WebGL2 recorder | [--bot-canvas-record-file](CLI_FLAGS.md#--bot-canvas-record-file) | |
 
 ### Session & Behavior
 
-| Feature | Reference |
-|---------|-----------|
-| Cookie management (inline JSON or file) | [--bot-cookies](CLI_FLAGS.md#--bot-cookies) |
-| Bookmark injection | [--bot-bookmarks](CLI_FLAGS.md#--bot-bookmarks) |
-| Random history injection | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) |
-| Always-active windows (anti-focus-tracking) | [Active Window](ADVANCED_FEATURES.md#active-window-emulation) |
-| Custom HTTP headers (CLI + CDP) | [--bot-custom-headers](CLI_FLAGS.md#--bot-custom-headers-pro) |
-| Plaintext storage access (cookies, localStorage) | [Storage Access](examples/storage-access/) |
-| Precision FPS simulation | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) |
-| Timing scale (performance.now compression) | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) |
-| Window/screen dimension control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) |
+| Feature | Reference | Guide |
+|---------|-----------|-------|
+| Cookie management (inline JSON or file) | [--bot-cookies](CLI_FLAGS.md#--bot-cookies) | [Guide](docs/guides/identity/COOKIE_MANAGEMENT.md) |
+| Bookmark injection | [--bot-bookmarks](CLI_FLAGS.md#--bot-bookmarks) | [Guide](docs/guides/identity/BOOKMARK_SEEDING.md) |
+| Random history injection | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](docs/guides/identity/HISTORY_SEEDING.md) |
+| Always-active windows (anti-focus-tracking) | [Active Window](ADVANCED_FEATURES.md#active-window-emulation) | |
+| Custom HTTP headers (CLI + CDP) | [--bot-custom-headers](CLI_FLAGS.md#--bot-custom-headers-pro) | [Guide](docs/guides/network/CUSTOM_HTTP_HEADERS.md) |
+| Plaintext storage access (cookies, localStorage) | [Storage Access](examples/storage-access/) | |
+| Precision FPS simulation | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](docs/guides/fingerprint/FPS_CONTROL.md) |
+| Timing scale (performance.now compression) | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](docs/guides/fingerprint/PERFORMANCE.md) |
+| Window/screen dimension control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](docs/guides/platform/DEVICE_EMULATION.md) |
 
 <details>
 <summary><strong>Fingerprint Protection Implementation: Privacy Controls → Technical Design → Validation</strong></summary>
@@ -269,6 +269,7 @@ BotBrowser's engine is built in-house on top of Chromium, with no forks or exter
 
 ### Documentation
 
+- [Guides](docs/guides/) - Step-by-step guides for proxy, fingerprint, identity, platform emulation, and deployment
 - [Installation Guide](INSTALLATION.md) - Platform-specific setup, Docker deployment, troubleshooting
 - [Advanced Features](ADVANCED_FEATURES.md) - Architecture and design details
 - [CLI Flags Reference](CLI_FLAGS.md) - Core and extended runtime flags with examples
