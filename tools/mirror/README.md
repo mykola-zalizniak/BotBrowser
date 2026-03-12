@@ -160,5 +160,9 @@ All coordinates transmitted over the network are relative to the browser window'
 
 ---
 
+Guide: [Mirror Distributed](../../docs/guides/deployment/MIRROR_DISTRIBUTED.md)
+
+---
+
 **[Legal Disclaimer & Terms of Use](https://github.com/botswin/BotBrowser/blob/main/DISCLAIMER.md) • [Responsible Use Guidelines](https://github.com/botswin/BotBrowser/blob/main/RESPONSIBLE_USE.md)**. BotBrowser is for authorized fingerprint protection and privacy research only.
 

@@ -140,7 +140,7 @@ Browser fingerprinting is not a theoretical concern. Peer-reviewed research docu
 
 ### Princeton Web Census (2016)
 
-**Source:** [Online Tracking: A 1-Million-Site Measurement and Analysis](https://webtransparency.cs.princeton.edu/webcensus/) — Englehardt & Narayanan, Princeton University
+**Source:** [Online Tracking: A 1-Million-Site Measurement and Analysis](https://webtransparency.cs.princeton.edu/webcensus/), Englehardt & Narayanan, Princeton University
 
 The largest academic web-tracking study to date crawled the top 1 million websites and found:
 
@@ -156,7 +156,7 @@ Researchers found canvas fingerprinting scripts on **5,542 of the top 100,000 we
 
 ### Majestic 10K Fingerprinting Study (2018)
 
-**Source:** [Who Touched My Browser Fingerprint?](https://dl.acm.org/doi/10.1145/3419394.3423614) — ACM Internet Measurement Conference
+**Source:** [Who Touched My Browser Fingerprint?](https://dl.acm.org/doi/10.1145/3419394.3423614), ACM Internet Measurement Conference
 
 An analysis of the top 10,000 websites found that **6,876 (68.8%) performed some form of browser fingerprinting**, collecting attributes including canvas hashes, WebGL parameters, installed fonts, screen properties, and audio processing characteristics.
 

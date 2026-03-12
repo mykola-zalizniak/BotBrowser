@@ -247,7 +247,7 @@
 - **Custom public IP service**: Added `--bot-ip-service` so you can point BotBrowser at your own IP lookup endpoint when you want full control over how the public egress IP is detected. Multiple endpoints can be provided as a comma-separated list, and BotBrowser will race them and use the fastest successful response.
 
 ### Improvements
-- **Proxy auth parsing**: Proxy credentials now support additional separators in the username field, including `,` and `|`. This makes structured usernames work reliably with common proxy provider formats, for example `socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.io:1080`.
+- **Proxy auth parsing**: Proxy credentials now support additional separators in the username field, including `,` and `|`. This makes structured usernames work reliably with common proxy provider formats, for example `socks5://user_abc,type_mobile,country_GB,session_1234:11111@portal.proxy.example.com:1080`.
 - **Extension sync (ENT Tier2)**: Updated extension `ghbmnnjooekpmoecnnnilnnbdlolhkhi` to version 1.98.1 to match the latest Chrome Stable packaging and behavior.
 
 ### Fixes
@@ -285,7 +285,7 @@
 - **Screen metrics from profile**: `screen.width/height` now reliably come from the profile on every path, avoiding one-off host reads in edge cases.
 
 ### Improvements
-- **SOCKS5H support**: Added robust support for SOCKS5H protocol across platforms and failure modes. Hostname resolution remains within proxy tunnels, avoiding DNS exposure, with improved connection setup on flaky endpoints.
+- **SOCKS5H support**: Added full support for SOCKS5H protocol across platforms and failure modes. Hostname resolution remains within proxy tunnels, avoiding DNS exposure, with improved connection setup on flaky endpoints.
 - **Noise-seed stability**: Noise seeds adapt more naturally to environment changes so fingerprints remain protected across runs while keeping per-profile diversity.
 
 ---
@@ -358,7 +358,7 @@ Example (Edge browser emulation):
 ### Fixes
 - **Ubuntu Bluetooth emulation leakage**: Fixed a Linux/Ubuntu-specific issue where emulated Bluetooth properties could leak protection-breaking state. Bluetooth emulation exposure is now unified so websites can't infer environment details from mismatched availability/signaling.
 - **Media types (expand) default**: Resolved an issue where `--bot-config-media-types=expand` (and the default behavior) could be ignored in some scenarios. With this fix, local decoders are correctly surfaced so users can **select resolutions** on major video sites.
-- **WebRTC SDP negotiation**: Corrected edge cases where SDP **audio codec selection or direction attributes** failed to negotiate. More robust media negotiation prevents call/setup loops and reduces tracking surface from abnormal SDP.
+- **WebRTC SDP negotiation**: Corrected edge cases where SDP **audio codec selection or direction attributes** failed to negotiate. Reliable media negotiation prevents call/setup loops and reduces tracking surface from abnormal SDP.
 
 ---
 
@@ -1025,7 +1025,7 @@ Refined per-OS rendering differences (fonts, CSS, anti-aliasing, text sizing) so
 ### Improved
 - **On-Demand Proxy Geo & Timezone Fetch**
   - Shifted proxy geolocation, timezone, and public IP retrieval from browser startup to page load via a request interceptor.
-  - Eliminates startup delays while proxy is initializing and enables each `BrowserContext` to use a different proxy seamlessly for testing tasks.
+  - Eliminates startup delays while proxy is initializing and enables each `BrowserContext` to use a different proxy for testing tasks without restart.
 
 
 ---
@@ -1413,7 +1413,7 @@ Example:
 
 ### Improved
 - **Removed RLZ Support:** RLZ support has been removed as it is unnecessary for our product and caused issues in some scenarios.
-- **AdInterest Group Support:** Enhanced support for **AdInterest**, specifically `getInterestGroupAdAuctionData` in Chrome, which now functions seamlessly in **BotBrowser**, improving resilience against tracking checks.
+- **AdInterest Group Support:** Enhanced support for **AdInterest**, specifically `getInterestGroupAdAuctionData` in Chrome, which now works correctly in **BotBrowser**, improving resilience against tracking checks.
 - **Fingerprint Caching:** Introduced caching for specific fingerprints to improve overall performance.
 
 ### Added
