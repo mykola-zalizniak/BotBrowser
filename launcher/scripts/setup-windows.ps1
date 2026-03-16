@@ -1,5 +1,5 @@
 # BotBrowser Launcher Setup Script for Windows
-# Run: powershell -ExecutionPolicy Bypass -File setup.ps1
+# Run: powershell -ExecutionPolicy Bypass -File setup-windows.ps1
 
 $ErrorActionPreference = "Stop"
 

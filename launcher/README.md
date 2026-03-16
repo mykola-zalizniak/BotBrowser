@@ -48,7 +48,7 @@ One-line install scripts that download Node.js, fetch the source, build, and cre
 **Windows (PowerShell):**
 
 ```powershell
-irm https://raw.githubusercontent.com/botswin/BotBrowser/main/launcher/scripts/setup.ps1 -OutFile $env:TEMP\setup.ps1; powershell -ExecutionPolicy Bypass -File $env:TEMP\setup.ps1
+irm https://raw.githubusercontent.com/botswin/BotBrowser/main/launcher/scripts/setup-windows.ps1 -OutFile $env:TEMP\setup-windows.ps1; powershell -ExecutionPolicy Bypass -File $env:TEMP\setup-windows.ps1
 ```
 
 **macOS:**
