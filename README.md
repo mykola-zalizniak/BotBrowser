@@ -22,6 +22,9 @@
   <a href="https://github.com/botswin/BotBrowser">
     <img src="https://img.shields.io/github/stars/botswin/BotBrowser" alt="GitHub Stars">
   </a>
+  <a href="https://botbrowser.io">
+    <img src="https://img.shields.io/badge/Website-botbrowser.io-blue?style=flat-square" alt="Website">
+  </a>
 </p>
 
 <div align="center">
@@ -280,6 +283,7 @@ BotBrowser's engine is built in-house on top of Chromium, with no forks or exter
 ### Support Channels
 
 <table>
+  <tr><td>Website</td><td>Documentation, guides, blog</td><td><a href="https://botbrowser.io">botbrowser.io</a></td></tr>
   <tr><td>Email</td><td>Technical questions, source code access</td><td><a href="mailto:support@botbrowser.io">support@botbrowser.io</a></td></tr>
   <tr><td>Telegram</td><td>Community support, quick questions</td><td><a href="https://t.me/botbrowser_support">@botbrowser_support</a></td></tr>
 </table>
