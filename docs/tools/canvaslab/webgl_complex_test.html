@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>WebGL Complex E2E Test - BotCanvas Recording</title>
+  <title>WebGL Complex E2E Test - CanvasLab Recording</title>
   <style>
     body { font-family: system-ui, sans-serif; margin: 20px; background: #f5f5f5; }
     h1 { font-size: 1.4rem; }
@@ -425,7 +425,7 @@
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
       ctx.font = '24px Arial';
-      ctx.fillText('Hello BotCanvas', 10, 60);
+      ctx.fillText('Hello CanvasLab', 10, 60);
 
       ctx.beginPath();
       ctx.arc(170, 50, 20, 0, Math.PI * 2, false);
@@ -440,7 +440,7 @@
       const imgData = ctx.getImageData(0, 0, 200, 100);
       log(`getImageData: ${imgData.width}x${imgData.height}`);
 
-      const measure = ctx.measureText('Hello BotCanvas');
+      const measure = ctx.measureText('Hello CanvasLab');
       log(`measureText width: ${measure.width}`);
 
       const dataUrl = canvas.toDataURL('image/png');

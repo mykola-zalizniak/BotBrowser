@@ -100,6 +100,7 @@ To verify protection is active:
 
 ## Next Steps
 
+- [AudioLab](../getting-started/AUDIOLAB.md). Record and analyze Web Audio API calls for forensic inspection.
 - [Canvas Fingerprinting](CANVAS.md). Another rendering-based fingerprint surface.
 - [Performance Fingerprinting](PERFORMANCE.md). Timing as a tracking vector.
 - [Browser Fingerprinting Explained](BROWSER_OVERVIEW.md). The full fingerprinting landscape.
@@ -107,7 +108,7 @@ To verify protection is active:
 
 ---
 
-**Related documentation:** [Advanced Features: Multi-Layer Fingerprint Noise](../../../ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [CLI Flags Reference](../../../CLI_FLAGS.md)
+**Related documentation:** [Advanced Features: Multi-Layer Fingerprint Noise](../../../ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [AudioLab Forensics Tool](../../../tools/audiolab/) | [CLI Flags Reference](../../../CLI_FLAGS.md)
 
 ---
 

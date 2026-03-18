@@ -242,6 +242,25 @@ Records all Canvas 2D, WebGL, and WebGL2 API calls to a JSONL file for forensic 
 
 Learn more: [CanvasLab Documentation](tools/canvaslab/)
 
+<a id="--bot-audio-record-file"></a>
+### `--bot-audio-record-file`
+Web Audio forensics and tracking analysis.
+
+Records all Web Audio API calls to a JSONL file for forensic analysis of audio fingerprint collection.
+
+```bash
+--bot-audio-record-file="/tmp/audiolab.jsonl"
+```
+
+**Key Features:**
+- Complete Web Audio API recording: context creation, node creation, parameter setting, routing topology, data extraction
+- Automatic detection of common audio fingerprinting patterns
+- Sample previews (first/last 10 values, sums) for quick inspection
+- Codec support queries (canPlayType, MediaSource.isTypeSupported)
+- JSONL format for easy parsing with `jq` or the interactive Audio Viewer
+
+Learn more: [AudioLab Documentation](tools/audiolab/)
+
 <a id="--bot-script"></a>
 ### `--bot-script`
 Framework-less approach with a privileged JavaScript context.

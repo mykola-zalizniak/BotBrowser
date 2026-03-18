@@ -492,6 +492,7 @@ All commands live under the `BotBrowser` CDP domain. Send them through a CDP ses
 - [Validation Results](VALIDATION.md) - Research and testing data
 - [Mirror](tools/mirror/) - Distributed privacy consistency verification
 - [CanvasLab](tools/canvaslab/) - Canvas 2D / WebGL / WebGL2 forensics and tracking analysis tool
+- [AudioLab](tools/audiolab/) - Web Audio API forensics and audio fingerprint collection analysis tool
 - [Examples](examples/) - Playwright, Puppeteer, bot-script integration
 - [Main README](README.md) - Project overview and quick start
 
