@@ -279,6 +279,7 @@ export class BrowserLauncherService {
         if (opts?.behavior?.botDisableConsoleMessage) args.push('--bot-disable-console-message');
         if (opts?.behavior?.botPortProtection) args.push('--bot-port-protection');
         if (opts?.behavior?.botNetworkInfoOverride) args.push('--bot-network-info-override');
+        if (opts?.behavior?.botGpuEmulation) args.push('--bot-gpu-emulation');
 
         // Identity & Locale
         if (opts?.identityLocale?.botConfigBrowserBrand)
@@ -320,6 +321,8 @@ export class BrowserLauncherService {
             args.push(`--bot-config-keyboard=${opts.displayInput.botConfigKeyboard}`);
         if (opts?.displayInput?.botConfigFonts)
             args.push(`--bot-config-fonts=${opts.displayInput.botConfigFonts}`);
+        if (opts?.displayInput?.botConfigOrientation)
+            args.push(`--bot-config-orientation=${opts.displayInput.botConfigOrientation}`);
         if (opts?.displayInput?.botConfigColorScheme)
             args.push(`--bot-config-color-scheme=${opts.displayInput.botConfigColorScheme}`);
         if (opts?.displayInput?.botConfigDisableDeviceScaleFactor)

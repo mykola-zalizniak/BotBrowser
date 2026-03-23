@@ -67,6 +67,10 @@ export const MediaTypesOptions: MediaTypesOption[] = ['expand', 'profile', 'real
 export type ColorScheme = 'light' | 'dark';
 export const ColorSchemes: ColorScheme[] = ['light', 'dark'];
 
+// Orientation options
+export type OrientationOption = 'profile' | 'landscape' | 'portrait' | 'landscape-primary' | 'landscape-secondary' | 'portrait-primary' | 'portrait-secondary';
+export const OrientationOptions: OrientationOption[] = ['profile', 'landscape', 'portrait', 'landscape-primary', 'landscape-secondary', 'portrait-primary', 'portrait-secondary'];
+
 // Behavior toggles
 export interface BehaviorToggles {
     botLocalDns?: boolean;
@@ -77,6 +81,7 @@ export interface BehaviorToggles {
     botDisableConsoleMessage?: boolean;
     botPortProtection?: boolean;
     botNetworkInfoOverride?: boolean;
+    botGpuEmulation?: boolean;
 }
 
 // Identity & Locale config
@@ -107,6 +112,7 @@ export interface DisplayInputConfig {
     botConfigScreen?: ProfileReal;
     botConfigKeyboard?: ProfileReal;
     botConfigFonts?: FontOption;
+    botConfigOrientation?: OrientationOption;
     botConfigColorScheme?: ColorScheme;
     botConfigDisableDeviceScaleFactor?: boolean;
 }

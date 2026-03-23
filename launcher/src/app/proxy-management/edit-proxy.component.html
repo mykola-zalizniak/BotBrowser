@@ -17,6 +17,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button (click)="onCancel()">Cancel</button>
     <button mat-flat-button color="primary" (click)="onConfirmClick()">Confirm</button>
 </mat-dialog-actions>
