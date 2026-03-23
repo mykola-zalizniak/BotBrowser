@@ -3,6 +3,36 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-03-23]
+### Major
+- **Chromium Core → 146.0.7680.154**: Updated to Chrome 146 stable (146.0.7680.154). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **AudioLab (`--bot-audio-record-file`)**: New diagnostic tool that records all WebAudio API calls in real time, outputting structured JSONL logs to help understand how websites collect audio fingerprints.
+
+- **Screen Orientation Control (`--bot-config-orientation`)**: Control mobile profile screen orientation via `--bot-config-orientation=landscape|portrait|profile` without editing profile JSON. Covers `screen.orientation`, `window.orientation`, and CSS orientation media queries.
+
+- **WebView UA Reduction for Android 16+**: WebView profiles on Android 16+ now automatically apply Google's UA reduction policy, matching real WebView behavior with frozen values in the UA string and full values in Client Hints.
+
+### Improvements
+- **GPU Rendering Backend Selection** (ENT Tier2): Automatically selects the optimal GPU rendering backend on Linux, with shader caching enabled by default. Configurable via `--bot-gpu-emulation`.
+
+- **Per-Context Setup Performance**: Reduced per-context fingerprint initialization latency, improving throughput for high-concurrency workloads.
+
+- **sec-ch-ua GREASE Consistency**: GREASE brand strings and ordering in `sec-ch-ua` headers now remain consistent across all request types within the same session.
+
+- **CJK Page Rendering Stability**: Improved memory efficiency for CJK-heavy pages with cross-platform profiles on macOS, ensuring stable rendering on sites with dense Chinese, Japanese, or Korean content.
+
+- **Shader Compilation Efficiency**: Reduced CPU usage during WebGL shader compilation on software-rendered environments.
+
+- **Country Privacy Consistency**: Country identification now correctly uses proxy-based geolocation data, ensuring location privacy consistency with the target profile.
+
+- **Android `getInstalledRelatedApps` Consistency**: `navigator.getInstalledRelatedApps()` now returns results consistent with real Android Chrome behavior on Android profiles.
+
+### Fixes
+- **Container WebGL Availability**: Fixed WebGL becoming unavailable in certain container environments.
+
+
 ## [2026-03-12]
 ### Major
 - **Chromium Core → 146.0.7680.111**: Updated to Chrome 146 stable (146.0.7680.111). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
