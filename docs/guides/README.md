@@ -19,6 +19,7 @@ These guides cover everything from initial setup to advanced deployment scenario
 | [First Verification](getting-started/FIRST_VERIFICATION.md) | Validate fingerprint consistency with CreepJS, Iphey, BrowserScan, and Pixelscan. |
 | [Automation Consistency Practices](getting-started/AUTOMATION_CONSISTENCY.md) | Reduce framework-related inconsistency signals in Playwright/Puppeteer workflows. |
 | [CanvasLab](getting-started/CANVASLAB.md) | Record Canvas 2D, WebGL, and WebGL2 API calls to study tracking techniques and verify fingerprint protection. |
+| [AudioLab](getting-started/AUDIOLAB.md) | Record Web Audio API calls to study audio fingerprint collection and verify audio privacy protection. |
 
 <a id="network-proxy"></a>
 ## Network and Proxy

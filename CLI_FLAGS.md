@@ -242,6 +242,25 @@ Records all Canvas 2D, WebGL, and WebGL2 API calls to a JSONL file for forensic 
 
 Learn more: [CanvasLab Documentation](tools/canvaslab/)
 
+<a id="--bot-audio-record-file"></a>
+### `--bot-audio-record-file`
+Web Audio forensics and tracking analysis.
+
+Records all Web Audio API calls to a JSONL file for forensic analysis of audio fingerprint collection.
+
+```bash
+--bot-audio-record-file="/tmp/audiolab.jsonl"
+```
+
+**Key Features:**
+- Complete Web Audio API recording: context creation, node creation, parameter setting, routing topology, data extraction
+- Automatic detection of common audio fingerprinting patterns
+- Sample previews (first/last 10 values, sums) for quick inspection
+- Codec support queries (canPlayType, MediaSource.isTypeSupported)
+- JSONL format for easy parsing with `jq` or the interactive Audio Viewer
+
+Learn more: [AudioLab Documentation](tools/audiolab/)
+
 <a id="--bot-script"></a>
 ### `--bot-script`
 Framework-less approach with a privileged JavaScript context.
@@ -376,6 +395,11 @@ BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersio
 
 - `--bot-config-keyboard=profile`: Keyboard settings: profile (emulated), real (system keyboard)
 - `--bot-config-fonts=profile`: Font settings: profile (embedded), expand (profile + fallback), real (system fonts)
+- `--bot-config-orientation=<value>`: Screen orientation for mobile profiles (Android, iPhone, iPad). Desktop profiles ignore this flag.
+  - `profile` - Auto-detect from profile dimensions (default)
+  - `landscape` / `portrait` - Force orientation, automatically adjusting all related dimensions to match
+  - `landscape-primary`, `landscape-secondary`, `portrait-primary`, `portrait-secondary` - Explicit orientation with specific angle
+  - Covers `screen.orientation.type/angle`, `window.orientation`, CSS `@media (orientation)`, and all related dimension APIs
 - `--bot-config-color-scheme=light`: Color scheme: light, dark
 - `--bot-config-disable-device-scale-factor`: Disable device scale factor: true, false
 
@@ -409,6 +433,7 @@ Runtime toggles that don’t rely on profile `configs` but still override behavi
 - `--bot-time-seed` (ENT Tier2): Integer seed (1-UINT32_MAX) for deterministic execution timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, and more). `0` disables the feature (default). Each seed produces a unique, stable performance profile that protects against timing-based tracking. Also covers `performance.getEntries()`, `performance.getEntriesByType("navigation")`, and `performance.timing` with authentic per-session redistribution.
 - `--bot-stack-seed` (ENT Tier2): Controls JavaScript recursive call stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile’s exact depth), `real` (use native depth), or a positive integer seed (1-UINT32_MAX) for per-session depth variation. Guide: [Stack Depth Fingerprinting](docs/guides/fingerprint/STACK_DEPTH.md)
 - `--bot-network-info-override`: Enable profile-defined `navigator.connection` values (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers (`RTT`, `Downlink`, `ECT`, `Save-Data`). Disabled by default. Guide: [Navigator Properties](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md)
+- `--bot-gpu-emulation` (ENT Tier2, default true): Controls GPU rendering backend selection on Linux. Automatically detects and prefers system GPU/GL drivers when available for optimal performance. Set `--bot-gpu-emulation=false` to use your own GPU or GL driver directly.
 
 Example tracking probe BotBrowser avoids when console forwarding stays disabled:
 
@@ -530,7 +555,11 @@ chromium-browser \
   --bot-config-bitness=64
 ```
 
-Placeholders like `{platform-version}` and `{model}` get replaced from flags or fingerprint config. BotBrowser generates matching userAgentData and Client Hints automatically. Guide: [Android WebView](docs/guides/platform/ANDROID_WEBVIEW.md)
+Placeholders like `{platform-version}` and `{model}` get replaced from flags or fingerprint config. BotBrowser generates matching userAgentData and Client Hints automatically.
+
+**Android 16+ UA Reduction:** When `platform-version` is 16 or higher, BotBrowser automatically applies Google's [WebView UA reduction policy](https://developer.chrome.com/docs/privacy-security/user-agent-reduction). The UA string placeholders `{platform-version}`, `{model}`, and `{ua-full-version}` are frozen to reduced values (`10`, `K`, `Major.0.0.0`), while Client Hints continue to report the real values. The same `--user-agent` template works for both old and new Android versions without modification.
+
+Guide: [Android WebView](docs/guides/platform/ANDROID_WEBVIEW.md)
 
 ---
 

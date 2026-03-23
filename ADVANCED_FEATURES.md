@@ -137,6 +137,7 @@ Consistent behavior across execution modes.
 - Full GPU context simulation without physical GPU
 - WebGL and WebGPU rendering consistency
 - Hardware-accelerated video decoding simulation
+- Automatic GPU rendering backend selection on Linux via [`--bot-gpu-emulation`](CLI_FLAGS.md#behavior--protection-toggles). Detects and prefers system GPU/GL drivers when available, with shader caching enabled by default
 
 **Incognito-Mode Consistency:**
 - Fingerprint protection maintained in incognito mode
@@ -250,7 +251,7 @@ Comprehensive hardware emulation and fingerprint management.
 - Device pixel ratio emulation
 - Screen resolution and color depth control
 - Multi-monitor configuration simulation
-- Refresh rate and orientation control
+- Refresh rate and orientation control via [`--bot-config-orientation`](CLI_FLAGS.md#profile-configuration-override-flags) for mobile profiles, covering all orientation APIs and CSS media queries
 
 **Device-Behavior Simulation:**
 - Authentic device memory reporting
@@ -492,6 +493,7 @@ All commands live under the `BotBrowser` CDP domain. Send them through a CDP ses
 - [Validation Results](VALIDATION.md) - Research and testing data
 - [Mirror](tools/mirror/) - Distributed privacy consistency verification
 - [CanvasLab](tools/canvaslab/) - Canvas 2D / WebGL / WebGL2 forensics and tracking analysis tool
+- [AudioLab](tools/audiolab/) - Web Audio API forensics and audio fingerprint collection analysis tool
 - [Examples](examples/) - Playwright, Puppeteer, bot-script integration
 - [Main README](README.md) - Project overview and quick start
 

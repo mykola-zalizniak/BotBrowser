@@ -22,6 +22,9 @@
   <a href="https://github.com/botswin/BotBrowser">
     <img src="https://img.shields.io/github/stars/botswin/BotBrowser" alt="GitHub Stars">
   </a>
+  <a href="https://botbrowser.io">
+    <img src="https://img.shields.io/badge/Website-botbrowser.io-blue?style=flat-square" alt="Website">
+  </a>
 </p>
 
 <div align="center">
@@ -167,6 +170,7 @@ Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/
 | Headless / GUI parity | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) | [Guide](docs/guides/fingerprint/INCOGNITO.md) |
 | Mirror: distributed privacy consistency | [Mirror Documentation](tools/mirror/) | [Guide](docs/guides/deployment/MIRROR_DISTRIBUTED.md) |
 | CanvasLab: Canvas 2D / WebGL / WebGL2 recorder | [--bot-canvas-record-file](CLI_FLAGS.md#--bot-canvas-record-file) | [Guide](docs/guides/getting-started/CANVASLAB.md) |
+| AudioLab: Web Audio API recorder | [--bot-audio-record-file](CLI_FLAGS.md#--bot-audio-record-file) | [Guide](docs/guides/getting-started/AUDIOLAB.md) |
 
 ### Session & Behavior
 
@@ -181,6 +185,7 @@ Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/
 | Precision FPS simulation | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](docs/guides/fingerprint/FPS_CONTROL.md) |
 | Timing scale (performance.now compression) | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](docs/guides/fingerprint/PERFORMANCE.md) |
 | Window/screen dimension control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](docs/guides/platform/DEVICE_EMULATION.md) |
+| Mobile screen orientation control | [--bot-config-orientation](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](docs/guides/platform/DEVICE_EMULATION.md) |
 
 <details>
 <summary><strong>Fingerprint Protection Implementation: Privacy Controls → Technical Design → Validation</strong></summary>
@@ -280,6 +285,7 @@ BotBrowser's engine is built in-house on top of Chromium, with no forks or exter
 ### Support Channels
 
 <table>
+  <tr><td>Website</td><td>Documentation, guides, blog</td><td><a href="https://botbrowser.io">botbrowser.io</a></td></tr>
   <tr><td>Email</td><td>Technical questions, source code access</td><td><a href="mailto:support@botbrowser.io">support@botbrowser.io</a></td></tr>
   <tr><td>Telegram</td><td>Community support, quick questions</td><td><a href="https://t.me/botbrowser_support">@botbrowser_support</a></td></tr>
 </table>
