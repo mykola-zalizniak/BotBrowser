@@ -287,6 +287,31 @@ export class AppComponent implements AfterViewInit {
         }
     }
 
+    clearUserData(browserProfile: BrowserProfile): void {
+        this.#dialog
+            .open(ConfirmDialogComponent, {
+                data: {
+                    message: `Clear user data for "${browserProfile.basicInfo.profileName}"? This deletes cookies, cache, local storage, and all browsing data. The profile settings will be kept.`,
+                },
+            })
+            .afterClosed()
+            .subscribe(async (result: boolean) => {
+                if (!result) return;
+
+                try {
+                    const userDataDirPath = await this.#browserProfileService.getBrowserProfileUserDataDirPath(browserProfile);
+                    await Neutralino.filesystem.remove(userDataDirPath);
+                } catch (error) {
+                    // Directory may not exist yet, which is fine
+                    console.log('Clear user data:', error);
+                }
+
+                this.#dialog.open(AlertDialogComponent, {
+                    data: { message: 'User data cleared successfully.' },
+                });
+            });
+    }
+
     async refreshProfiles(): Promise<void> {
         this.loading = true;
         try {

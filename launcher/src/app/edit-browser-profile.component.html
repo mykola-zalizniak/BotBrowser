@@ -286,6 +286,17 @@
                             }
                         </mat-select>
                     </mat-form-field>
+
+                    <mat-form-field class="flex-1">
+                        <mat-label>Orientation</mat-label>
+                        <mat-select formControlName="botConfigOrientation">
+                            <mat-option value="">Default</mat-option>
+                            @for (opt of orientationOptions; track opt) {
+                                <mat-option [value]="opt">{{ opt }}</mat-option>
+                            }
+                        </mat-select>
+                        <mat-hint>Mobile profiles only (Android/iPhone/iPad)</mat-hint>
+                    </mat-form-field>
                 </div>
 
                 <mat-slide-toggle formControlName="botConfigDisableDeviceScaleFactor" class="standalone-toggle">
@@ -499,6 +510,11 @@
                     Network Info Override
                     <span class="toggle-hint">Use profile-defined navigator.connection values (default: off)</span>
                 </mat-slide-toggle>
+
+                <mat-slide-toggle formControlName="botGpuEmulation">
+                    GPU Emulation
+                    <span class="toggle-hint">Auto-select optimal GPU rendering backend (default: off)</span>
+                </mat-slide-toggle>
             </form>
         </div>
 
@@ -600,7 +616,12 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
+    @if (isEdit) {
+        <button mat-button color="warn" (click)="clearUserData()">
+            Clear User Data
+        </button>
+    }
+    <button mat-button (click)="onCancel()">Cancel</button>
     <button mat-button cdkFocusInitial (click)="onConfirmClick()">
         {{ isEdit ? 'Save' : 'Create' }}
     </button>

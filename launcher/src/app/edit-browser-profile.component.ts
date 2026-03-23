@@ -23,6 +23,7 @@ import {
     ColorSchemes,
     FontOptions,
     MediaTypesOptions,
+    OrientationOptions,
     Platforms,
     ProfileRealDisabledOptions,
     ProfileRealOptions,
@@ -109,6 +110,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     readonly fontOptions = FontOptions;
     readonly mediaTypesOptions = MediaTypesOptions;
     readonly colorSchemes = ColorSchemes;
+    readonly orientationOptions = OrientationOptions;
 
     readonly basicInfoFormGroup = this.#formBuilder.group<BasicInfo>({
         profileName: this.#injectedData?.basicInfo.profileName || 'New Profile',
@@ -155,6 +157,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botDisableConsoleMessage: this.#injectedData?.launchOptions?.behavior?.botDisableConsoleMessage ?? true,
         botPortProtection: this.#injectedData?.launchOptions?.behavior?.botPortProtection,
         botNetworkInfoOverride: this.#injectedData?.launchOptions?.behavior?.botNetworkInfoOverride,
+        botGpuEmulation: this.#injectedData?.launchOptions?.behavior?.botGpuEmulation,
     });
 
     // Identity & Locale - default: browserBrand=chrome
@@ -185,6 +188,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botConfigScreen: this.#injectedData?.launchOptions?.displayInput?.botConfigScreen ?? 'real',
         botConfigKeyboard: this.#injectedData?.launchOptions?.displayInput?.botConfigKeyboard ?? 'profile',
         botConfigFonts: this.#injectedData?.launchOptions?.displayInput?.botConfigFonts ?? 'profile',
+        botConfigOrientation: this.#injectedData?.launchOptions?.displayInput?.botConfigOrientation,
         botConfigColorScheme: this.#injectedData?.launchOptions?.displayInput?.botConfigColorScheme ?? 'light',
         botConfigDisableDeviceScaleFactor:
             this.#injectedData?.launchOptions?.displayInput?.botConfigDisableDeviceScaleFactor,
@@ -299,6 +303,13 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     async ngOnInit() {
         // Load proxies
         this.proxies = await this.#proxyService.getAllProxies();
+
+        // Unsaved changes guard
+        this.#dialogRef.disableClose = true;
+        this.#dialogRef.backdropClick().subscribe(() => this.#confirmClose());
+        this.#dialogRef.keydownEvents().subscribe((event) => {
+            if (event.key === 'Escape') this.#confirmClose();
+        });
     }
 
     ngAfterViewInit() {
@@ -533,6 +544,39 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         });
     }
 
+    onCancel(): void {
+        this.#confirmClose();
+    }
+
+    #isFormDirty(): boolean {
+        return (
+            this.basicInfoFormGroup.dirty ||
+            this.behaviorGroup.dirty ||
+            this.identityLocaleGroup.dirty ||
+            this.customUserAgentGroup.dirty ||
+            this.displayInputGroup.dirty ||
+            this.noiseGroup.dirty ||
+            this.renderingMediaGroup.dirty ||
+            this.proxyConfigGroup.dirty ||
+            this.advancedConfigGroup.dirty
+        );
+    }
+
+    #confirmClose(): void {
+        if (!this.#isFormDirty()) {
+            this.#dialogRef.close();
+            return;
+        }
+        this.#dialog
+            .open(ConfirmDialogComponent, {
+                data: { message: 'You have unsaved changes. Discard and close?' },
+            })
+            .afterClosed()
+            .subscribe((result: boolean) => {
+                if (result) this.#dialogRef.close();
+            });
+    }
+
     #handleFileSelection(filePath: string): void {
         Neutralino.filesystem
             .readFile(filePath)
@@ -581,6 +625,30 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         }
 
         return true;
+    }
+
+    clearUserData(): void {
+        if (!this.#injectedData) return;
+        const profile = this.#injectedData;
+        this.#dialog
+            .open(ConfirmDialogComponent, {
+                data: {
+                    message: `Clear user data for "${profile.basicInfo.profileName}"? This deletes cookies, cache, local storage, and all browsing data. The profile settings will be kept.`,
+                },
+            })
+            .afterClosed()
+            .subscribe(async (result: boolean) => {
+                if (!result) return;
+                try {
+                    const userDataDirPath = await this.#browserProfileService.getBrowserProfileUserDataDirPath(profile);
+                    await Neutralino.filesystem.remove(userDataDirPath);
+                } catch (error) {
+                    console.log('Clear user data:', error);
+                }
+                this.#dialog.open(AlertDialogComponent, {
+                    data: { message: 'User data cleared successfully.' },
+                });
+            });
     }
 
     async onConfirmClick(): Promise<void> {
