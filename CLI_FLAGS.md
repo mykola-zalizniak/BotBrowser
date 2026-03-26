@@ -395,11 +395,10 @@ BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersio
 
 - `--bot-config-keyboard=profile`: Keyboard settings: profile (emulated), real (system keyboard)
 - `--bot-config-fonts=profile`: Font settings: profile (embedded), expand (profile + fallback), real (system fonts)
-- `--bot-config-orientation=<value>`: Screen orientation for mobile profiles (Android, iPhone, iPad). Desktop profiles ignore this flag.
+- `--bot-config-orientation=<value>`: Screen orientation for mobile profiles. Desktop profiles ignore this flag.
   - `profile` - Auto-detect from profile dimensions (default)
   - `landscape` / `portrait` - Force orientation, automatically adjusting all related dimensions to match
   - `landscape-primary`, `landscape-secondary`, `portrait-primary`, `portrait-secondary` - Explicit orientation with specific angle
-  - Covers `screen.orientation.type/angle`, `window.orientation`, CSS `@media (orientation)`, and all related dimension APIs
 - `--bot-config-color-scheme=light`: Color scheme: light, dark
 - `--bot-config-disable-device-scale-factor`: Disable device scale factor: true, false
 
@@ -424,7 +423,8 @@ Runtime toggles that don’t rely on profile `configs` but still override behavi
 - `--bot-disable-debugger`: Ignore JavaScript `debugger` statements to avoid pauses
 - `--bot-mobile-force-touch`: Force touch events on/off for mobile device simulation
 - `--bot-disable-console-message` (ENT Tier1): Suppress console.* output from CDP logs (default true); prevents framework hooks from enabling `Console.enable`/`Runtime.enable`, which blocks fingerprint signals. Guide: [Console Suppression](docs/guides/fingerprint/CONSOLE_SUPPRESSION.md)
-- `--bot-inject-random-history` (PRO): Add synthetic browsing history for session authenticity. Guide: [History Seeding](docs/guides/identity/HISTORY_SEEDING.md)
+- `--bot-inject-random-history` (PRO): Add synthetic browsing history for session authenticity. Accepts `true` (random 2-7 entries), a number for precise control (e.g., `=15` for `history.length` of 16), or `false` to disable. Guide: [History Seeding](docs/guides/identity/HISTORY_SEEDING.md)
+- `--bot-enable-variations-in-context` (ENT Tier2): Include `X-Client-Data` headers in incognito browser contexts for Google domains, same as regular browsing. Disabled by default.
 - `--bot-always-active` (PRO, default true): Keep windows/tabs active even when unfocused. See [Active Window Emulation](ADVANCED_FEATURES.md#active-window-emulation)
 - `--bot-webrtc-ice=google` (ENT Tier1): Override STUN/TURN endpoints observed by JavaScript/WebRTC to control ICE signaling; accepts presets (`google`) or `custom:stun:...,turn:...`. See [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection). Guide: [WebRTC Leak Prevention](docs/guides/network/WEBRTC_LEAK_PREVENTION.md)
 - `--bot-noise-seed` (ENT Tier2): Integer seed (1-UINT32_MAX) for the deterministic noise RNG; each seed augments privacy variance across Canvas 2D/WebGL/WebGPU images, text metrics, text layout, ClientRect measurements, and offline audio hashes so you can treat a seed as a reproducible fingerprint ID per tenant while keeping runs stable. `0` keeps noise active with profile defaults. Guide: [Noise Seed Reproducibility](docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md)

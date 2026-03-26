@@ -3,6 +3,21 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-03-26]
+### Major
+- **Chromium Core → 146.0.7680.165**: Updated to Chrome 146 stable (146.0.7680.165). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **Incognito `X-Client-Data` Consistency (`--bot-enable-variations-in-context`)** (ENT Tier2): Incognito browser contexts now include `X-Client-Data` headers on Google domains when enabled, matching the behavior of normal browsing sessions.
+
+- **Custom History Depth (`--bot-inject-random-history={number}`)**: History injection now accepts a specific count (e.g., `--bot-inject-random-history=15`) for precise control over `history.length`, in addition to the existing random mode.
+
+### Improvements
+- **High-Concurrency Stability**: 100+ concurrent browser contexts now run without crashes or memory corruption.
+
+- **Emoji Rendering on Cross-Platform Profiles**: Emoji now renders in color when running macOS profiles on Linux hosts, producing correct Canvas toDataURL output.
+
+
 ## [2026-03-23]
 ### Major
 - **Chromium Core → 146.0.7680.154**: Updated to Chrome 146 stable (146.0.7680.154). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
@@ -10,7 +25,7 @@
 ### New
 - **AudioLab (`--bot-audio-record-file`)**: New diagnostic tool that records all WebAudio API calls in real time, outputting structured JSONL logs to help understand how websites collect audio fingerprints.
 
-- **Screen Orientation Control (`--bot-config-orientation`)**: Control mobile profile screen orientation via `--bot-config-orientation=landscape|portrait|profile` without editing profile JSON. Covers `screen.orientation`, `window.orientation`, and CSS orientation media queries.
+- **Screen Orientation Control (`--bot-config-orientation`)**: Control mobile profile screen orientation at launch via `--bot-config-orientation=landscape|portrait|profile`. All orientation-related APIs and CSS media queries stay consistent with the selected mode.
 
 - **WebView UA Reduction for Android 16+**: WebView profiles on Android 16+ now automatically apply Google's UA reduction policy, matching real WebView behavior with frozen values in the UA string and full values in Client Hints.
 
