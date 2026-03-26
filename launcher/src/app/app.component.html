@@ -247,6 +247,10 @@
                                                 <mat-icon>upgrade</mat-icon>
                                                 <span>Export</span>
                                             </button>
+                                            <button mat-menu-item (click)="copyCliCommand(element)">
+                                                <mat-icon>terminal</mat-icon>
+                                                <span>Copy CLI</span>
+                                            </button>
                                             @if (
                                                 browserLauncherService.getRunningStatus(element) ==
                                                 BrowserProfileStatus.Idle

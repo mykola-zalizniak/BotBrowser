@@ -268,18 +268,40 @@ export class BrowserLauncherService {
             `--bot-profile="${paths.botProfilePath}"`,
         ];
 
+        args.push(...BrowserLauncherService.buildProfileFlags(profile));
+
+        if (profile.basicInfo.profileName) args.push(`--bot-title="${profile.basicInfo.profileName}"`);
+
+        return args;
+    }
+
+    /**
+     * Build only the bot-specific CLI flags for a profile (no chrome startup args or paths).
+     * Useful for CLI preview / copy.
+     */
+    static buildProfileFlags(profile: BrowserProfile): string[] {
+        const args: string[] = [];
         const opts = profile.launchOptions;
 
         // Behavior
-        if (opts?.behavior?.botLocalDns) args.push('--bot-local-dns');
         if (opts?.behavior?.botDisableDebugger) args.push('--bot-disable-debugger');
         if (opts?.behavior?.botMobileForceTouch) args.push('--bot-mobile-force-touch');
         if (opts?.behavior?.botAlwaysActive) args.push('--bot-always-active');
-        if (opts?.behavior?.botInjectRandomHistory) args.push('--bot-inject-random-history');
         if (opts?.behavior?.botDisableConsoleMessage) args.push('--bot-disable-console-message');
-        if (opts?.behavior?.botPortProtection) args.push('--bot-port-protection');
-        if (opts?.behavior?.botNetworkInfoOverride) args.push('--bot-network-info-override');
-        if (opts?.behavior?.botGpuEmulation) args.push('--bot-gpu-emulation');
+
+        // Backward compat
+        const beh = opts?.behavior as any;
+        if (beh?.botLocalDns && !opts?.proxy?.botLocalDns) args.push('--bot-local-dns');
+        if (beh?.botPortProtection && !opts?.proxy?.botPortProtection) args.push('--bot-port-protection');
+        if (beh?.botNetworkInfoOverride && !opts?.proxy?.botNetworkInfoOverride) args.push('--bot-network-info-override');
+        if (beh?.botGpuEmulation && !opts?.renderingMedia?.botGpuEmulation) args.push('--bot-gpu-emulation');
+        if (beh?.botInjectRandomHistory && !opts?.identityLocale?.botInjectRandomHistory) {
+            if (typeof beh.botInjectRandomHistory === 'number') {
+                args.push(`--bot-inject-random-history=${beh.botInjectRandomHistory}`);
+            } else {
+                args.push('--bot-inject-random-history');
+            }
+        }
 
         // Identity & Locale
         if (opts?.identityLocale?.botConfigBrowserBrand)
@@ -296,6 +318,16 @@ export class BrowserLauncherService {
             args.push(`--bot-config-timezone=${opts.identityLocale.botConfigTimezone}`);
         if (opts?.identityLocale?.botConfigLocation)
             args.push(`--bot-config-location=${opts.identityLocale.botConfigLocation}`);
+        if (opts?.identityLocale?.botInjectRandomHistory != null) {
+            const v = opts.identityLocale.botInjectRandomHistory;
+            if (typeof v === 'number') {
+                args.push(`--bot-inject-random-history=${v}`);
+            } else if (v === true) {
+                args.push('--bot-inject-random-history');
+            }
+        }
+        if (opts?.identityLocale?.botEnableVariationsInContext)
+            args.push('--bot-enable-variations-in-context');
 
         // Custom User-Agent
         if (opts?.customUserAgent?.userAgent)
@@ -356,20 +388,22 @@ export class BrowserLauncherService {
             args.push(`--bot-config-webrtc=${opts.renderingMedia.botConfigWebrtc}`);
         if (opts?.renderingMedia?.botWebrtcIce)
             args.push(`--bot-webrtc-ice=${opts.renderingMedia.botWebrtcIce}`);
+        if (opts?.renderingMedia?.botGpuEmulation) args.push('--bot-gpu-emulation');
 
         // Proxy
         if (profile.proxyServer) args.push(`--proxy-server=${profile.proxyServer}`);
         if (opts?.proxy?.proxyIp) args.push(`--proxy-ip=${opts.proxy.proxyIp}`);
         if (opts?.proxy?.botIpService) args.push(`--bot-ip-service=${opts.proxy.botIpService}`);
         if (opts?.proxy?.proxyBypassRgx) args.push(`--proxy-bypass-rgx=${opts.proxy.proxyBypassRgx}`);
+        if (opts?.proxy?.botLocalDns) args.push('--bot-local-dns');
+        if (opts?.proxy?.botPortProtection) args.push('--bot-port-protection');
+        if (opts?.proxy?.botNetworkInfoOverride) args.push('--bot-network-info-override');
 
         // Advanced
         if (opts?.advanced?.botCookies) args.push(`--bot-cookies=${opts.advanced.botCookies}`);
         if (opts?.advanced?.botBookmarks) args.push(`--bot-bookmarks=${opts.advanced.botBookmarks}`);
         if (opts?.advanced?.botCustomHeaders)
             args.push(`--bot-custom-headers=${opts.advanced.botCustomHeaders}`);
-
-        if (profile.basicInfo.profileName) args.push(`--bot-title="${profile.basicInfo.profileName}"`);
 
         return args;
     }

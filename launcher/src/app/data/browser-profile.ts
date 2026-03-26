@@ -71,17 +71,12 @@ export const ColorSchemes: ColorScheme[] = ['light', 'dark'];
 export type OrientationOption = 'profile' | 'landscape' | 'portrait' | 'landscape-primary' | 'landscape-secondary' | 'portrait-primary' | 'portrait-secondary';
 export const OrientationOptions: OrientationOption[] = ['profile', 'landscape', 'portrait', 'landscape-primary', 'landscape-secondary', 'portrait-primary', 'portrait-secondary'];
 
-// Behavior toggles
+// Behavior toggles (pure browser UI/runtime behavior)
 export interface BehaviorToggles {
-    botLocalDns?: boolean;
     botDisableDebugger?: boolean;
     botMobileForceTouch?: boolean;
     botAlwaysActive?: boolean;
-    botInjectRandomHistory?: boolean;
     botDisableConsoleMessage?: boolean;
-    botPortProtection?: boolean;
-    botNetworkInfoOverride?: boolean;
-    botGpuEmulation?: boolean;
 }
 
 // Identity & Locale config
@@ -93,6 +88,8 @@ export interface IdentityLocaleConfig {
     botConfigLocale?: string;
     botConfigTimezone?: string;
     botConfigLocation?: string;
+    botInjectRandomHistory?: boolean | number;
+    botEnableVariationsInContext?: boolean;
 }
 
 // Custom User-Agent config
@@ -140,14 +137,19 @@ export interface RenderingMediaConfig {
     botConfigMediaTypes?: MediaTypesOption;
     botConfigWebrtc?: ProfileRealDisabled;
     botWebrtcIce?: string;
+    botGpuEmulation?: boolean;
 }
 
-// Proxy config
+// Proxy & Network config
 export interface ProxyConfig {
     proxyServer?: string;
     proxyIp?: string;
     botIpService?: string;
     proxyBypassRgx?: string;
+    // Network protection (moved from Behavior)
+    botLocalDns?: boolean;
+    botPortProtection?: boolean;
+    botNetworkInfoOverride?: boolean;
 }
 
 // Advanced config
