@@ -67,9 +67,9 @@
             </button>
         </div>
 
-        <!-- Proxy -->
+        <!-- Proxy & Network -->
         <div class="section" id="section-proxy">
-            <div class="section-header">Proxy</div>
+            <div class="section-header">Proxy & Network</div>
             @if (proxies.length > 0) {
                 <mat-form-field>
                     <mat-label>Select existing proxy</mat-label>
@@ -114,6 +114,24 @@
                     <input matInput placeholder="e.g. \.(js|css|png)(\?|$)" formControlName="proxyBypassRgx" />
                     <mat-hint>RE2 regex to bypass proxy for matching URLs</mat-hint>
                 </mat-form-field>
+
+                <div class="section-title">Network Protection</div>
+                <div class="toggle-grid">
+                    <mat-slide-toggle formControlName="botLocalDns">
+                        Local DNS Resolution
+                        <span class="toggle-hint">Resolve DNS locally instead of through proxy (default: off)</span>
+                    </mat-slide-toggle>
+
+                    <mat-slide-toggle formControlName="botPortProtection">
+                        Port Protection
+                        <span class="toggle-hint">Protect local ports from scanning (default: off)</span>
+                    </mat-slide-toggle>
+
+                    <mat-slide-toggle formControlName="botNetworkInfoOverride">
+                        Network Info Override
+                        <span class="toggle-hint">Use profile-defined navigator.connection values (default: off)</span>
+                    </mat-slide-toggle>
+                </div>
             </form>
         </div>
 
@@ -170,6 +188,34 @@
                     </mat-form-field>
                 </div>
                 <mat-hint class="section-hint">Leave empty or "auto" to derive from IP address</mat-hint>
+            </form>
+
+            <div class="section-title">Session Authenticity</div>
+            <form [formGroup]="identityLocaleGroup">
+                <div class="form-row">
+                    <mat-form-field class="flex-1">
+                        <mat-label>History Injection</mat-label>
+                        <mat-select [(value)]="historyMode" (selectionChange)="onHistoryModeChange()">
+                            <mat-option value="">Off</mat-option>
+                            <mat-option value="random">Random</mat-option>
+                            <mat-option value="number">Custom count</mat-option>
+                        </mat-select>
+                        <mat-hint>Inject browsing history entries</mat-hint>
+                    </mat-form-field>
+
+                    @if (historyMode === 'number') {
+                        <mat-form-field class="flex-1">
+                            <mat-label>History Count</mat-label>
+                            <input matInput type="number" placeholder="e.g. 15" [(ngModel)]="historyCount" [ngModelOptions]="{standalone: true}" (input)="onHistoryCountChange()" />
+                            <mat-hint>Exact number of history entries</mat-hint>
+                        </mat-form-field>
+                    }
+                </div>
+
+                <mat-slide-toggle formControlName="botEnableVariationsInContext" class="standalone-toggle">
+                    X-Client-Data in Incognito
+                    <span class="toggle-hint">Include Chrome variations headers in incognito contexts (default: off)</span>
+                </mat-slide-toggle>
             </form>
 
             <div class="section-title">Custom User-Agent Override</div>
@@ -464,6 +510,11 @@
                         <input matInput placeholder="Custom ICE candidates" formControlName="botWebrtcIce" />
                     </mat-form-field>
                 </div>
+
+                <mat-slide-toggle formControlName="botGpuEmulation" class="standalone-toggle">
+                    GPU Emulation
+                    <span class="toggle-hint">Auto-select optimal GPU rendering backend (default: off)</span>
+                </mat-slide-toggle>
             </form>
         </div>
 
@@ -486,34 +537,9 @@
                     <span class="toggle-hint">Suppress console output (default: on)</span>
                 </mat-slide-toggle>
 
-                <mat-slide-toggle formControlName="botLocalDns">
-                    Local DNS Resolution
-                    <span class="toggle-hint">Use local DNS (default: off)</span>
-                </mat-slide-toggle>
-
                 <mat-slide-toggle formControlName="botMobileForceTouch">
                     Force Touch (Mobile)
                     <span class="toggle-hint">Force touch events (default: off)</span>
-                </mat-slide-toggle>
-
-                <mat-slide-toggle formControlName="botInjectRandomHistory">
-                    Inject Random History
-                    <span class="toggle-hint">Add random history (default: off)</span>
-                </mat-slide-toggle>
-
-                <mat-slide-toggle formControlName="botPortProtection">
-                    Port Protection
-                    <span class="toggle-hint">Protect local ports from scanning (default: off)</span>
-                </mat-slide-toggle>
-
-                <mat-slide-toggle formControlName="botNetworkInfoOverride">
-                    Network Info Override
-                    <span class="toggle-hint">Use profile-defined navigator.connection values (default: off)</span>
-                </mat-slide-toggle>
-
-                <mat-slide-toggle formControlName="botGpuEmulation">
-                    GPU Emulation
-                    <span class="toggle-hint">Auto-select optimal GPU rendering backend (default: off)</span>
                 </mat-slide-toggle>
             </form>
         </div>
@@ -612,6 +638,22 @@
                     <mat-hint>JSON object with header name-value pairs</mat-hint>
                 </mat-form-field>
             </form>
+
+            <!-- CLI Preview -->
+            <div class="section-title">CLI Command Preview</div>
+            @if (getCliPreview(); as cli) {
+                <div class="cli-preview">
+                    <div class="cli-header">
+                        <span class="cli-label">Command</span>
+                        <button mat-icon-button class="copy-btn" (click)="copyCliToClipboard()">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                    </div>
+                    <code class="cli-code">{{ cli }}</code>
+                </div>
+            } @else {
+                <div class="cli-preview cli-empty">No flags configured</div>
+            }
         </div>
     </div>
 </mat-dialog-content>

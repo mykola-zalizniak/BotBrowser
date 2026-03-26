@@ -7,9 +7,11 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import * as Neutralino from '@neutralinojs/lib';
 import { compact } from 'lodash-es';
 import { BehaviorSubject, combineLatest, map, startWith } from 'rxjs';
@@ -58,6 +60,7 @@ import { ProxyService } from './shared/proxy.service';
         FormsModule,
         ReactiveFormsModule,
         MatFormFieldModule,
+        MatIconModule,
         MatInputModule,
         MatCheckboxModule,
         MatButtonModule,
@@ -65,6 +68,7 @@ import { ProxyService } from './shared/proxy.service';
         MatAutocompleteModule,
         MatSelectModule,
         MatSlideToggleModule,
+        MatSnackBarModule,
         AsyncPipe,
         ProxyInputComponent,
     ],
@@ -83,13 +87,14 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     readonly #dialog = inject(MatDialog);
     readonly #dialogRef = inject(MatDialogRef<EditBrowserProfileComponent>);
     readonly #ngZone = inject(NgZone);
+    readonly #snackBar = inject(MatSnackBar);
 
     // Section navigation
     @ViewChild('sectionContent') sectionContent!: ElementRef<HTMLElement>;
 
     readonly navItems = [
         { id: 'section-basic', label: 'Basic Info' },
-        { id: 'section-proxy', label: 'Proxy' },
+        { id: 'section-proxy', label: 'Proxy & Network' },
         { id: 'section-identity', label: 'Identity' },
         { id: 'section-display', label: 'Display' },
         { id: 'section-noise', label: 'Noise' },
@@ -149,18 +154,14 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     // Behavior toggles - defaults:
     // DisableDebugger=true, DisableConsoleMessage=true, AlwaysActive=true
     readonly behaviorGroup = this.#formBuilder.group<BehaviorToggles>({
-        botLocalDns: this.#injectedData?.launchOptions?.behavior?.botLocalDns,
         botDisableDebugger: this.#injectedData?.launchOptions?.behavior?.botDisableDebugger ?? true,
         botMobileForceTouch: this.#injectedData?.launchOptions?.behavior?.botMobileForceTouch,
         botAlwaysActive: this.#injectedData?.launchOptions?.behavior?.botAlwaysActive ?? true,
-        botInjectRandomHistory: this.#injectedData?.launchOptions?.behavior?.botInjectRandomHistory,
         botDisableConsoleMessage: this.#injectedData?.launchOptions?.behavior?.botDisableConsoleMessage ?? true,
-        botPortProtection: this.#injectedData?.launchOptions?.behavior?.botPortProtection,
-        botNetworkInfoOverride: this.#injectedData?.launchOptions?.behavior?.botNetworkInfoOverride,
-        botGpuEmulation: this.#injectedData?.launchOptions?.behavior?.botGpuEmulation,
     });
 
     // Identity & Locale - default: browserBrand=chrome
+    // botInjectRandomHistory: migrate from old behavior location
     readonly identityLocaleGroup = this.#formBuilder.group<IdentityLocaleConfig>({
         botConfigBrowserBrand: this.#injectedData?.launchOptions?.identityLocale?.botConfigBrowserBrand ?? 'chrome',
         botConfigBrandFullVersion: this.#injectedData?.launchOptions?.identityLocale?.botConfigBrandFullVersion,
@@ -169,7 +170,24 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botConfigLocale: this.#injectedData?.launchOptions?.identityLocale?.botConfigLocale,
         botConfigTimezone: this.#injectedData?.launchOptions?.identityLocale?.botConfigTimezone,
         botConfigLocation: this.#injectedData?.launchOptions?.identityLocale?.botConfigLocation,
+        botInjectRandomHistory: this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory
+            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory,
+        botEnableVariationsInContext: this.#injectedData?.launchOptions?.identityLocale?.botEnableVariationsInContext,
     });
+
+    // History injection mode: off / random / specific count
+    historyMode: '' | 'random' | 'number' = (() => {
+        const v = this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory
+            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory;
+        if (typeof v === 'number') return 'number' as const;
+        if (v === true) return 'random' as const;
+        return '' as const;
+    })();
+    historyCount: number | null = (() => {
+        const v = this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory
+            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory;
+        return typeof v === 'number' ? v : null;
+    })();
 
     // Custom User-Agent
     readonly customUserAgentGroup = this.#formBuilder.group<CustomUserAgentConfig>({
@@ -196,7 +214,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
 
     // Noise - defaults:
     // NoiseCanvas=true, NoiseWebglImage=true, NoiseAudioContext=true
-    // NoiseClientRects=false, NoiseTextRects=true
+    // NoiseClientRects=off, NoiseTextRects=off
     readonly noiseGroup = this.#formBuilder.group<NoiseConfig>({
         botConfigNoiseWebglImage: this.#injectedData?.launchOptions?.noise?.botConfigNoiseWebglImage ?? true,
         botConfigNoiseCanvas: this.#injectedData?.launchOptions?.noise?.botConfigNoiseCanvas ?? true,
@@ -227,6 +245,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     })();
 
     // Rendering & Media - defaults: webgl/webgpu/speechVoices/mediaDevices/webrtc=profile, mediaTypes=expand
+    // botGpuEmulation: migrate from old behavior location
     readonly renderingMediaGroup = this.#formBuilder.group<RenderingMediaConfig>({
         botConfigWebgl: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebgl ?? 'profile',
         botConfigWebgpu: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebgpu ?? 'profile',
@@ -235,14 +254,23 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botConfigMediaTypes: this.#injectedData?.launchOptions?.renderingMedia?.botConfigMediaTypes ?? 'expand',
         botConfigWebrtc: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebrtc ?? 'profile',
         botWebrtcIce: this.#injectedData?.launchOptions?.renderingMedia?.botWebrtcIce,
+        botGpuEmulation: this.#injectedData?.launchOptions?.renderingMedia?.botGpuEmulation
+            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botGpuEmulation,
     });
 
-    // Proxy config (advanced)
+    // Proxy & Network config
+    // Network flags: migrate from old behavior location
     readonly proxyConfigGroup = this.#formBuilder.group<ProxyConfig>({
         proxyServer: this.#injectedData?.launchOptions?.proxy?.proxyServer,
         proxyIp: this.#injectedData?.launchOptions?.proxy?.proxyIp,
         botIpService: this.#injectedData?.launchOptions?.proxy?.botIpService,
         proxyBypassRgx: this.#injectedData?.launchOptions?.proxy?.proxyBypassRgx,
+        botLocalDns: this.#injectedData?.launchOptions?.proxy?.botLocalDns
+            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns,
+        botPortProtection: this.#injectedData?.launchOptions?.proxy?.botPortProtection
+            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botPortProtection,
+        botNetworkInfoOverride: this.#injectedData?.launchOptions?.proxy?.botNetworkInfoOverride
+            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botNetworkInfoOverride,
     });
 
     // Advanced config
@@ -373,6 +401,25 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             this.noiseGroup.patchValue({ botStackSeed: '' });
         } else {
             this.noiseGroup.patchValue({ botStackSeed: '' });
+        }
+    }
+
+    onHistoryModeChange(): void {
+        if (this.historyMode === 'random') {
+            this.identityLocaleGroup.patchValue({ botInjectRandomHistory: true });
+            this.historyCount = null;
+        } else if (this.historyMode === 'number') {
+            this.historyCount = this.historyCount ?? 15;
+            this.identityLocaleGroup.patchValue({ botInjectRandomHistory: this.historyCount });
+        } else {
+            this.identityLocaleGroup.patchValue({ botInjectRandomHistory: undefined });
+            this.historyCount = null;
+        }
+    }
+
+    onHistoryCountChange(): void {
+        if (this.historyMode === 'number' && this.historyCount != null) {
+            this.identityLocaleGroup.patchValue({ botInjectRandomHistory: Number(this.historyCount) });
         }
     }
 
@@ -649,6 +696,37 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
                     data: { message: 'User data cleared successfully.' },
                 });
             });
+    }
+
+    getCliPreview(): string {
+        const tempProfile: BrowserProfile = {
+            id: this.#injectedData?.id || '',
+            basicInfo: this.basicInfoFormGroup.value,
+            botProfileInfo: this.botProfileInfoGroup.value,
+            proxyServer: this.proxyValue ? this.#proxyParser.toUrl(this.proxyValue) : undefined,
+            createdAt: 0,
+            updatedAt: 0,
+            launchOptions: {
+                behavior: this.#cleanObject(this.behaviorGroup.value) as BehaviorToggles | undefined,
+                identityLocale: this.#cleanObject(this.identityLocaleGroup.value) as IdentityLocaleConfig | undefined,
+                customUserAgent: this.#cleanObject(this.customUserAgentGroup.value) as CustomUserAgentConfig | undefined,
+                displayInput: this.#cleanObject(this.displayInputGroup.value) as DisplayInputConfig | undefined,
+                noise: this.#cleanObject(this.noiseGroup.value) as NoiseConfig | undefined,
+                renderingMedia: this.#cleanObject(this.renderingMediaGroup.value) as RenderingMediaConfig | undefined,
+                proxy: this.#cleanObject(this.proxyConfigGroup.value) as ProxyConfig | undefined,
+                advanced: this.#cleanObject(this.advancedConfigGroup.value) as AdvancedConfig | undefined,
+            },
+        };
+        const flags = BrowserLauncherService.buildProfileFlags(tempProfile);
+        if (!flags.length) return '';
+        return `chromium-browser \\\n  --bot-profile=<path-to-profile> \\\n  ${flags.join(' \\\n  ')}`;
+    }
+
+    async copyCliToClipboard(): Promise<void> {
+        const cli = this.getCliPreview();
+        if (!cli) return;
+        await Neutralino.clipboard.writeText(cli);
+        this.#snackBar.open('Copied to clipboard', '', { duration: 2000 });
     }
 
     async onConfirmClick(): Promise<void> {

@@ -212,3 +212,53 @@ mat-form-field {
     font-size: 13px;
     margin-top: 8px;
 }
+
+.cli-preview {
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.6;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+
+    .cli-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .cli-label {
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.6);
+    }
+
+    .copy-btn {
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        mat-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+            line-height: 14px;
+        }
+    }
+
+    .cli-code {
+        display: block;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.87);
+        white-space: pre-wrap;
+        word-break: break-all;
+        margin-top: 4px;
+    }
+
+    &.cli-empty {
+        color: rgba(0, 0, 0, 0.38);
+    }
+}

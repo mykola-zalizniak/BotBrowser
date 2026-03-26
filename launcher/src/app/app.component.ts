@@ -11,6 +11,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterOutlet } from '@angular/router';
@@ -54,6 +55,7 @@ export type NavItem = 'profiles' | 'proxies' | 'kernels';
         MatListModule,
         MatProgressBarModule,
         MatTooltipModule,
+        MatSnackBarModule,
         StopPropagationDirective,
         ProxyManagementComponent,
         KernelManagementComponent,
@@ -69,6 +71,7 @@ export class AppComponent implements AfterViewInit {
 
     readonly AppName = AppName;
     readonly #dialog = inject(MatDialog);
+    readonly #snackBar = inject(MatSnackBar);
     currentNav: NavItem = 'profiles';
     readonly formatDateTime = formatDateTime;
     readonly formatProxyDisplay = formatProxyDisplay;
@@ -310,6 +313,14 @@ export class AppComponent implements AfterViewInit {
                     data: { message: 'User data cleared successfully.' },
                 });
             });
+    }
+
+    async copyCliCommand(browserProfile: BrowserProfile): Promise<void> {
+        const flags = BrowserLauncherService.buildProfileFlags(browserProfile);
+        if (!flags.length) return;
+        const cli = `chromium-browser \\\n  --bot-profile=<path-to-profile> \\\n  ${flags.join(' \\\n  ')}`;
+        await Neutralino.clipboard.writeText(cli);
+        this.#snackBar.open('Copied to clipboard', '', { duration: 2000 });
     }
 
     async refreshProfiles(): Promise<void> {
