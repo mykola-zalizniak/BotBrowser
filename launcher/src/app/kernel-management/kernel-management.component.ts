@@ -7,7 +7,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import * as Neutralino from '@neutralinojs/lib';
 import type { InstalledKernel, KernelRelease } from '../data/kernel';
+import { AlertDialogComponent } from '../shared/alert-dialog.component';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
 import { KernelService } from '../shared/kernel.service';
 
@@ -28,7 +30,7 @@ import { KernelService } from '../shared/kernel.service';
     styleUrl: './kernel-management.component.scss',
 })
 export class KernelManagementComponent implements OnInit {
-    readonly #kernelService = inject(KernelService);
+    readonly kernelService = inject(KernelService);
     readonly #dialog = inject(MatDialog);
 
     readonly displayedColumns = ['version', 'platform', 'installedAt', 'actions'];
@@ -41,28 +43,28 @@ export class KernelManagementComponent implements OnInit {
 
     constructor() {
         effect(() => {
-            const version = this.#kernelService.installedKernelsVersion();
+            const version = this.kernelService.installedKernelsVersion();
             if (version > 0) this.refresh();
         });
     }
 
     // Check if a specific release is being downloaded
     isDownloading(tagName: string): boolean {
-        return this.#kernelService.isDownloading(tagName);
+        return this.kernelService.isDownloading(tagName);
     }
 
     // Check if there are any active downloads
     get hasActiveDownloads(): boolean {
-        return this.#kernelService.hasActiveDownloads();
+        return this.kernelService.hasActiveDownloads();
     }
 
     // Get all download progresses for display
     get downloadProgresses() {
-        return this.#kernelService.downloadProgresses();
+        return this.kernelService.downloadProgresses();
     }
 
     async ngOnInit(): Promise<void> {
-        await this.#kernelService.initialize();
+        await this.kernelService.initialize();
         await this.refresh();
         await this.loadAvailableReleases();
     }
@@ -70,7 +72,7 @@ export class KernelManagementComponent implements OnInit {
     async refresh(): Promise<void> {
         this.loading = true;
         try {
-            const kernels = await this.#kernelService.getInstalledKernels();
+            const kernels = await this.kernelService.getInstalledKernels();
             this.dataSource.data = kernels;
         } finally {
             this.loading = false;
@@ -81,7 +83,7 @@ export class KernelManagementComponent implements OnInit {
         this.loadingReleases = true;
         this.error = null;
         try {
-            this.availableReleases = await this.#kernelService.fetchAvailableReleases();
+            this.availableReleases = await this.kernelService.fetchAvailableReleases();
         } catch (e) {
             this.error = e instanceof Error ? e.message : 'Failed to load releases';
         } finally {
@@ -93,7 +95,7 @@ export class KernelManagementComponent implements OnInit {
         // Filter by majorVersion - if a major version is installed, don't show it
         // (auto-update will handle upgrades to newer releases within the same major version)
         const installedMajorVersions = new Set(this.dataSource.data.map((k) => k.majorVersion));
-        const platform = this.#kernelService.getCurrentPlatform();
+        const platform = this.kernelService.getCurrentPlatform();
         return this.availableReleases.filter(
             (r) => !installedMajorVersions.has(r.majorVersion) && r.assets.some((a) => a.platform === platform)
         );
@@ -101,10 +103,18 @@ export class KernelManagementComponent implements OnInit {
 
     async downloadKernel(release: KernelRelease): Promise<void> {
         try {
-            await this.#kernelService.downloadAndInstall(release);
+            await this.kernelService.downloadAndInstall(release);
             await this.refresh();
         } catch (e) {
             this.error = e instanceof Error ? e.message : 'Download failed';
+        }
+    }
+
+    async openInstallDir(kernel: InstalledKernel): Promise<void> {
+        try {
+            await Neutralino.os.open(kernel.installPath);
+        } catch (error) {
+            console.error('Failed to open directory:', error);
         }
     }
 
@@ -116,8 +126,14 @@ export class KernelManagementComponent implements OnInit {
             .afterClosed()
             .subscribe(async (result: boolean) => {
                 if (!result) return;
-                await this.#kernelService.deleteKernel(kernel.id);
-                await this.refresh();
+                try {
+                    await this.kernelService.deleteKernel(kernel.id);
+                    await this.refresh();
+                } catch (error) {
+                    this.#dialog.open(AlertDialogComponent, {
+                        data: { message: error instanceof Error ? error.message : 'Failed to delete kernel.' },
+                    });
+                }
             });
     }
 
@@ -134,7 +150,7 @@ export class KernelManagementComponent implements OnInit {
     }
 
     getReleaseAssetDate(release: KernelRelease): string | null {
-        const platform = this.#kernelService.getCurrentPlatform();
+        const platform = this.kernelService.getCurrentPlatform();
         const asset = release.assets.find((a) => a.platform === platform);
         return this.formatAssetDate(asset?.assetDate);
     }

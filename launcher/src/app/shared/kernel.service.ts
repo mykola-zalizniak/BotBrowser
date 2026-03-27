@@ -23,6 +23,7 @@ interface GitHubRelease {
     name: string;
     published_at: string;
     assets: {
+        id: number;
         name: string;
         browser_download_url: string;
         size: number;
@@ -40,6 +41,7 @@ export class KernelService {
     #currentPlatform: KernelPlatform = 'win_x86_64';
     #allReleases: KernelRelease[] = [];
     #initialized = false;
+    #extractorAvailable: boolean | null = null; // null = not checked yet
 
     async initialize(): Promise<void> {
         if (this.#initialized) return;
@@ -48,7 +50,76 @@ export class KernelService {
         const arch = await this.#getArchitecture();
         this.#currentPlatform = getCurrentPlatform(osInfo.name, arch);
         await this.#loadInstalledKernels();
+        await this.#checkExtractorAvailable();
         this.#initialized = true;
+    }
+
+    isExtractorAvailable(): boolean {
+        return this.#extractorAvailable === true;
+    }
+
+    isExtractorChecked(): boolean {
+        return this.#extractorAvailable !== null;
+    }
+
+    async #checkExtractorAvailable(): Promise<void> {
+        if (this.#extractorAvailable !== null) return;
+
+        if (this.#currentPlatform === 'win_x86_64') {
+            // Check 7z on Windows
+            const paths = [
+                '7z',
+                'C:\\Program Files\\7-Zip\\7z.exe',
+                'C:\\Program Files (x86)\\7-Zip\\7z.exe',
+            ];
+            // Also check registry
+            try {
+                const reg = await Neutralino.os.execCommand(
+                    'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\7-Zip" /v Path 2>nul'
+                );
+                const match = reg.stdOut.match(/Path\s+REG_SZ\s+(.+)/);
+                if (match?.[1]) paths.unshift(`${match[1].trim()}\\7z.exe`);
+            } catch { /* ignore */ }
+            try {
+                const reg = await Neutralino.os.execCommand(
+                    'reg query "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\7-Zip" /v Path 2>nul'
+                );
+                const match = reg.stdOut.match(/Path\s+REG_SZ\s+(.+)/);
+                if (match?.[1]) paths.unshift(`${match[1].trim()}\\7z.exe`);
+            } catch { /* ignore */ }
+
+            for (const p of paths) {
+                try {
+                    const r = await Neutralino.os.execCommand(`"${p}" i 2>nul`);
+                    if (r.stdOut.includes('7-Zip')) {
+                        this.#extractorAvailable = true;
+                        return;
+                    }
+                } catch { /* try next */ }
+            }
+            this.#extractorAvailable = false;
+        } else if (this.#currentPlatform.startsWith('mac')) {
+            // macOS: hdiutil is always available (system tool)
+            this.#extractorAvailable = true;
+        } else {
+            // Linux: need dpkg-deb or (ar + tar) for .deb extraction
+            try {
+                const r = await Neutralino.os.execCommand('command -v dpkg-deb 2>/dev/null');
+                if (r.stdOut.trim()) {
+                    this.#extractorAvailable = true;
+                    return;
+                }
+            } catch { /* not found */ }
+            try {
+                const rAr = await Neutralino.os.execCommand('command -v ar 2>/dev/null');
+                const rTar = await Neutralino.os.execCommand('command -v tar 2>/dev/null');
+                if (rAr.stdOut.trim() && rTar.stdOut.trim()) {
+                    this.#extractorAvailable = true;
+                    return;
+                }
+            } catch { /* not found */ }
+            this.#extractorAvailable = false;
+        }
     }
 
     // Called on app startup to perform auto-update tasks
@@ -115,6 +186,7 @@ export class KernelService {
                 const platform = getPlatformFromAssetName(asset.name);
                 if (platform) {
                     assets.push({
+                        id: asset.id,
                         name: asset.name,
                         platform,
                         downloadUrl: asset.browser_download_url,
@@ -229,6 +301,26 @@ export class KernelService {
         });
     }
 
+    /**
+     * Called when a browser using this kernel exits.
+     * If this kernel is not the latest for its major version, delete it.
+     */
+    async cleanupOldKernelIfOutdated(kernelId: string): Promise<void> {
+        const kernel = this.#installedKernels.find((k) => k.id === kernelId);
+        if (!kernel) return;
+
+        const latest = await this.getInstalledKernelByMajorVersion(kernel.majorVersion);
+        if (!latest || latest.id === kernel.id) return; // this IS the latest, nothing to clean
+
+        console.log(`Runtime cleanup: removing outdated kernel ${kernel.fullVersion} (${kernel.assetDate})`);
+        const deleted = await this.#deleteDirectory(kernel.installPath);
+        if (deleted) {
+            this.#installedKernels = this.#installedKernels.filter((k) => k.id !== kernel.id);
+            await this.#saveInstalledKernels();
+            this.installedKernelsVersion.update((v) => v + 1);
+        }
+    }
+
     // Clean up old kernel versions, keeping only the latest per major version
     async #cleanupOldKernels(): Promise<void> {
         const kernelsByMajor = new Map<number, InstalledKernel[]>();
@@ -263,8 +355,21 @@ export class KernelService {
                     `Cleaning up old kernel: ${kernel.fullVersion} (${kernel.assetDate}) (major ${majorVersion})`
                 );
                 try {
-                    await this.#deleteDirectory(kernel.installPath);
-                    this.#installedKernels = this.#installedKernels.filter((k) => k.id !== kernel.id);
+                    // Safety: only delete directory if no other kernel shares it
+                    const normPath = (p: string) => p.replace(/[\\/]+$/, '').toLowerCase();
+                    const pathShared = this.#installedKernels.some(
+                        (k) => k.id !== kernel.id && normPath(k.installPath) === normPath(kernel.installPath)
+                    );
+                    let deleted = true;
+                    if (!pathShared) {
+                        deleted = await this.#deleteDirectory(kernel.installPath);
+                    }
+                    if (deleted || pathShared) {
+                        // Only remove record if directory is gone or shared with another kernel
+                        this.#installedKernels = this.#installedKernels.filter((k) => k.id !== kernel.id);
+                    } else {
+                        console.log(`Directory still locked, keeping kernel record: ${kernel.installPath}`);
+                    }
                 } catch (error) {
                     console.error(`Failed to delete old kernel ${kernel.fullVersion}:`, error);
                 }
@@ -348,6 +453,16 @@ export class KernelService {
     }
 
     async downloadAndInstall(release: KernelRelease): Promise<InstalledKernel> {
+        // Check extractor availability before attempting download
+        await this.#checkExtractorAvailable();
+        if (!this.#extractorAvailable) {
+            if (this.#currentPlatform === 'win_x86_64') {
+                throw new Error('7-Zip is required to extract kernels. Please install it from https://7-zip.org/');
+            } else {
+                throw new Error('dpkg-deb (or ar + tar) is required to extract kernels. Please install dpkg or binutils.');
+            }
+        }
+
         // Check if this specific release is already being downloaded
         if (this.isDownloading(release.tagName)) {
             throw new Error(`${release.tagName} is already being downloaded.`);
@@ -375,10 +490,11 @@ export class KernelService {
             // Download the file
             await this.#downloadFile(asset.downloadUrl, downloadPath, asset.size, release.tagName);
 
-            // Extract
+            // Extract to a unique directory using GitHub asset ID to avoid collisions
             this.#updateProgress(release.tagName, { status: 'extracting' });
 
-            const installDir = await Neutralino.filesystem.getJoinedPath(kernelsDir, release.tagName);
+            const installDirName = `${release.tagName}_${asset.id}`;
+            const installDir = await Neutralino.filesystem.getJoinedPath(kernelsDir, installDirName);
             await this.#extract(downloadPath, installDir);
 
             // Clean up download file
@@ -440,7 +556,10 @@ export class KernelService {
         const kernel = this.#installedKernels.find((k) => k.id === id);
         if (!kernel) return;
 
-        await this.#deleteDirectory(kernel.installPath);
+        const deleted = await this.#deleteDirectory(kernel.installPath);
+        if (!deleted) {
+            throw new Error('Cannot delete kernel: files may be in use. Please close all browsers using this kernel first.');
+        }
 
         this.#installedKernels = this.#installedKernels.filter((k) => k.id !== id);
         await this.#saveInstalledKernels();
@@ -485,7 +604,7 @@ export class KernelService {
         }
     }
 
-    async #deleteDirectory(dirPath: string): Promise<void> {
+    async #deleteDirectory(dirPath: string): Promise<boolean> {
         try {
             const osInfo = await Neutralino.computer.getOSInfo();
             if (osInfo.name.includes('Windows')) {
@@ -493,8 +612,15 @@ export class KernelService {
             } else {
                 await Neutralino.os.execCommand(`rm -rf "${dirPath}"`);
             }
+            // Verify directory is actually gone
+            try {
+                await Neutralino.filesystem.getStats(dirPath);
+                return false; // still exists (locked files on Windows)
+            } catch {
+                return true; // gone
+            }
         } catch {
-            // Ignore cleanup errors
+            return false;
         }
     }
 
@@ -593,37 +719,40 @@ export class KernelService {
                 await this.#extract7z(archivePath, destDir);
 
                 // Check for nested .7z files inside (7z may contain another 7z)
-                const result7z = await Neutralino.os.execCommand(`dir /b "${destDir}\\*.7z" 2>nul`);
-                const nested7zFiles = result7z.stdOut
-                    .trim()
-                    .split('\n')
-                    .filter((f) => f.endsWith('.7z'));
+                // Use /s for recursive search, /b for bare format
+                let nested7zFiles: string[] = [];
+                try {
+                    const result7z = await Neutralino.os.execCommand(`dir /s /b "${destDir}\\*.7z" 2>nul`);
+                    nested7zFiles = result7z.stdOut
+                        .trim()
+                        .split('\n')
+                        .map((f) => f.trim())
+                        .filter((f) => f.endsWith('.7z'));
+                } catch { /* no nested 7z files found */ }
 
-                for (const nested7z of nested7zFiles) {
-                    const nested7zPath = await Neutralino.filesystem.getJoinedPath(destDir, nested7z);
-                    console.log(`Extracting nested 7z: ${nested7zPath}`);
-                    // Extract the nested 7z to the same directory
-                    await this.#extract7z(nested7zPath, destDir);
-                    // Delete the nested 7z after extraction
-                    await this.#deleteFile(nested7zPath);
+                for (const nested7zFullPath of nested7zFiles) {
+                    console.log(`Extracting nested 7z: ${nested7zFullPath}`);
+                    await this.#extract7z(nested7zFullPath, destDir);
+                    await this.#deleteFile(nested7zFullPath);
                 }
 
                 // Check for nested .zip files inside (7z may contain a zip)
-                const result = await Neutralino.os.execCommand(`dir /b "${destDir}\\*.zip" 2>nul`);
-                const zipFiles = result.stdOut
-                    .trim()
-                    .split('\n')
-                    .filter((f) => f.endsWith('.zip'));
+                let zipFiles: string[] = [];
+                try {
+                    const result = await Neutralino.os.execCommand(`dir /s /b "${destDir}\\*.zip" 2>nul`);
+                    zipFiles = result.stdOut
+                        .trim()
+                        .split('\n')
+                        .map((f) => f.trim())
+                        .filter((f) => f.endsWith('.zip'));
+                } catch { /* no nested zip files found */ }
 
-                for (const zipFile of zipFiles) {
-                    const nestedZipPath = await Neutralino.filesystem.getJoinedPath(destDir, zipFile);
-                    console.log(`Extracting nested zip: ${nestedZipPath}`);
-                    // Extract the nested zip to the same directory
+                for (const nestedZipFullPath of zipFiles) {
+                    console.log(`Extracting nested zip: ${nestedZipFullPath}`);
                     await Neutralino.os.execCommand(
-                        `powershell -Command "Expand-Archive -Path '${nestedZipPath}' -DestinationPath '${destDir}' -Force"`
+                        `powershell -Command "Expand-Archive -Path '${nestedZipFullPath}' -DestinationPath '${destDir}' -Force"`
                     );
-                    // Delete the nested zip after extraction
-                    await this.#deleteFile(nestedZipPath);
+                    await this.#deleteFile(nestedZipFullPath);
                 }
             } else if (archivePath.endsWith('.zip')) {
                 await Neutralino.os.execCommand(

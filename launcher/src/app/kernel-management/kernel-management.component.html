@@ -7,6 +7,18 @@
     </button>
 </mat-toolbar>
 
+@if (kernelService.isExtractorChecked() && !kernelService.isExtractorAvailable()) {
+    <div class="error-banner">
+        <mat-icon>warning</mat-icon>
+        @if (kernelService.getCurrentPlatform() === 'win_x86_64') {
+            7-Zip is required to extract kernels. Please install it from
+            <a href="https://7-zip.org/" target="_blank">7-zip.org</a>
+        } @else {
+            dpkg-deb (or ar + tar) is required to extract kernels. Please install dpkg or binutils.
+        }
+    </div>
+}
+
 @if (error) {
     <div class="error-banner">
         <mat-icon>error</mat-icon>
@@ -67,6 +79,9 @@
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element">
+                            <button mat-icon-button (click)="openInstallDir(element)" matTooltip="Open folder">
+                                <mat-icon>folder_open</mat-icon>
+                            </button>
                             <button mat-icon-button color="warn" (click)="deleteKernel(element)" matTooltip="Delete">
                                 <mat-icon>delete</mat-icon>
                             </button>
