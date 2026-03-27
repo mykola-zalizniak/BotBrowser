@@ -1,6 +1,7 @@
 export type KernelPlatform = 'win_x86_64' | 'mac_arm64' | 'mac_x86_64' | 'linux_x86_64' | 'linux_arm64';
 
 export interface KernelAsset {
+    id: number; // GitHub asset ID, globally unique
     name: string;
     platform: KernelPlatform;
     downloadUrl: string;

@@ -18,6 +18,7 @@ export interface RunningInfo {
     spawnProcessInfo?: Neutralino.SpawnedProcess;
     resolver?: any;
     startTime?: number;
+    kernelId?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -53,6 +54,7 @@ export class BrowserLauncherService {
                         if (!runningInfo) break; // System process (7z, curl, etc.) — not a browser
 
                         const uptime = runningInfo.startTime ? Date.now() - runningInfo.startTime : Infinity;
+                        const exitedKernelId = runningInfo.kernelId;
                         runningInfo.status = BrowserProfileStatus.Idle;
                         runningInfo.spawnProcessInfo = undefined;
 
@@ -62,6 +64,11 @@ export class BrowserLauncherService {
                                     message: `Browser failed to start (exit code ${exitCode}). This can happen right after a kernel update while files are being indexed. Please wait a few seconds and try again.`,
                                 },
                             });
+                        }
+
+                        // Try to clean up old kernels now that this browser exited
+                        if (exitedKernelId) {
+                            this.#tryCleanupOldKernel(exitedKernelId);
                         }
                     }
                     break;
@@ -205,7 +212,7 @@ export class BrowserLauncherService {
 
         const args = this.#buildCliArgs(browserProfile, { botProfilePath, userDataDirPath, diskCacheDirPath });
 
-        const runningInfo: RunningInfo = { browserProfileId: browserProfile.id, status: BrowserProfileStatus.Running, startTime: Date.now() };
+        const runningInfo: RunningInfo = { browserProfileId: browserProfile.id, status: BrowserProfileStatus.Running, startTime: Date.now(), kernelId: kernel?.id };
 
         const warmupUrls = (browserProfile.warmupUrls ?? '').split('\n');
         if (!warmupUrls.length) warmup = false;
@@ -406,6 +413,17 @@ export class BrowserLauncherService {
             args.push(`--bot-custom-headers=${opts.advanced.botCustomHeaders}`);
 
         return args;
+    }
+
+    #tryCleanupOldKernel(kernelId: string): void {
+        // Check if any other running browser is still using this kernel
+        const stillInUse = Array.from(this.#runningStatuses.values()).some(
+            (info) => info.kernelId === kernelId && info.status === BrowserProfileStatus.Running
+        );
+        if (stillInUse) return;
+
+        // Ask kernel service to clean up old versions if this one is outdated
+        this.#kernelService.cleanupOldKernelIfOutdated(kernelId).catch(console.error);
     }
 
     async stop(browserProfile: BrowserProfile): Promise<void> {
