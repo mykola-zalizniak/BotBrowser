@@ -3,6 +3,19 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-04-02]
+### Major
+- **Chromium Core → 146.0.7680.178**: Updated to Chrome 146 stable (146.0.7680.178). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **Per-Context Privacy Consistency**: Non-default browser contexts now behave consistently with the main context across all privacy-related checks.
+
+- **GeoIP Bootstrap with Local DNS**: Internal geolocation requests now work correctly when `--bot-local-dns` is enabled, ensuring accurate proxy-based location data.
+
+### Fixes
+- **Cookie Consent Navigation Stability**: Resolved a crash that could occur when accepting cookie consent banners triggered a page reload.
+
+
 ## [2026-03-26]
 ### Major
 - **Chromium Core → 146.0.7680.165**: Updated to Chrome 146 stable (146.0.7680.165). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
