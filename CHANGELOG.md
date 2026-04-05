@@ -3,6 +3,11 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-04-05]
+### Major
+- **Chromium Core → 147.0.7727.24**: Updated to Chrome 147 early stable (147.0.7727.24) to stay ahead with the latest Chrome development. This maintains Web Platform parity, rendering consistency, and security patches with upstream.
+
+
 ## [2026-04-02]
 ### Major
 - **Chromium Core → 146.0.7680.178**: Updated to Chrome 146 stable (146.0.7680.178). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
