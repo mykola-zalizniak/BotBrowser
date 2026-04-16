@@ -3,6 +3,14 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-04-16]
+### Major
+- **Chromium Core → 147.0.7727.102**: Updated to Chrome 147 stable (147.0.7727.102). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Fixes
+- **WebGL Availability on Minimal Linux Servers**: WebGL fingerprint protection now stays available on Linux server environments that lack desktop GPU driver packages.
+
+
 ## [2026-04-09]
 ### Major
 - **Chromium Core → 147.0.7727.56**: Updated to Chrome 147 stable (147.0.7727.56). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
