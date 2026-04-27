@@ -3,6 +3,17 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-04-27]
+### Major
+- **Chromium Core → 147.0.7727.117**: Updated to Chrome 147 stable (147.0.7727.117). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **Device Posture Consistency**: `navigator.devicePosture` and the `device-posture` CSS media query now return profile-defined values for foldable and standard device profiles.
+
+### Improvements
+- **Non-Chrome Brand Background Traffic**: Edge, Opera, Brave, and other non-Chrome brand profiles no longer emit Chrome-specific background requests, keeping HTTP-layer behavior consistent with the chosen brand.
+
+
 ## [2026-04-16]
 ### Major
 - **Chromium Core → 147.0.7727.102**: Updated to Chrome 147 stable (147.0.7727.102). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
