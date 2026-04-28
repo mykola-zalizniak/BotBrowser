@@ -3,6 +3,14 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-04-28]
+### Major
+- **Chromium Core → 147.0.7727.118**: Updated to Chrome 147 stable (147.0.7727.118). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **GeoIP Database Refresh**: Updated geolocation database with refined country-timezone mappings for improved location accuracy.
+
+
 ## [2026-04-27]
 ### Major
 - **Chromium Core → 147.0.7727.117**: Updated to Chrome 147 stable (147.0.7727.117). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
