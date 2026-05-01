@@ -3,6 +3,16 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-05-01]
+### Major
+- **Chromium Core → 147.0.7727.138**: Updated to Chrome 147 stable (147.0.7727.138). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **Internal Stability Hardening**: Strengthened resilience for rare edge cases across custom header validation, WebGL canvas readback, and network context recovery paths.
+
+- **Timezone Auto-Detection Resilience**: Improved `Intl` timezone fallback under unstable proxy networks, ensuring auto-detection more reliably reflects the proxy exit location.
+
+
 ## [2026-04-28]
 ### Major
 - **Chromium Core → 147.0.7727.118**: Updated to Chrome 147 stable (147.0.7727.118). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
