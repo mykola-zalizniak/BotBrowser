@@ -1381,7 +1381,7 @@
         <div class="form-section-title">${I.cookie} Cookies & Bookmarks</div>
         <div class="form-group full">
           <label class="form-label">Cookies ${badge('PRO')}</label>
-          <textarea class="form-textarea" id="f-cookies" rows="4" placeholder='[{"name":"session","value":"abc","domain":".example.com"}] or @/path/to/cookies.json'>${esc(d.cookies||'')}</textarea>
+          <textarea class="form-textarea" id="f-cookies" rows="4" placeholder='[{"url":"https://example.com","name":"session","value":"abc","domain":".example.com"}] or @/path/to/cookies.json'>${esc(d.cookies||'')}</textarea>
         </div>
         <div class="form-group full">
           <label class="form-label">Bookmarks</label>

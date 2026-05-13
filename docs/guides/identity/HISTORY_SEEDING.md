@@ -111,7 +111,7 @@ const browser = await chromium.launch({
     "--proxy-server=socks5://user:pass@proxy.example.com:1080",
     "--bot-inject-random-history",
     `--bot-cookies=${JSON.stringify([
-      { name: "consent", value: "accepted", domain: ".example.com" },
+      { url: "https://example.com", name: "consent", value: "accepted", domain: ".example.com" },
     ])}`,
     `--bot-bookmarks=${JSON.stringify([
       { title: "Google", type: "url", url: "https://www.google.com" },

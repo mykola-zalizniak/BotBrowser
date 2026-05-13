@@ -202,7 +202,7 @@ Accepts cookie data as either inline JSON or from a file.
 
 **Inline JSON:**
 ```bash
---bot-cookies='[{"name":"session","value":"abc123","domain":".example.com"}]'
+--bot-cookies='[{"url":"https://example.com","name":"session","value":"abc123","domain":".example.com"}]'
 ```
 
 **From JSON file:**
@@ -210,7 +210,7 @@ Accepts cookie data as either inline JSON or from a file.
 --bot-cookies="@/path/to/cookies.json"
 ```
 
-The file should contain a JSON array of cookie objects with name, value, and domain fields. Guide: [Cookie Management](https://botbrowser.io/docs/identity/cookie-management/)
+Each cookie object must include a `url` field. Cookies without `url` are silently skipped. Guide: [Cookie Management](https://botbrowser.io/docs/identity/cookie-management/)
 
 <a id="--bot-bookmarks"></a>
 ### `--bot-bookmarks`
@@ -512,7 +512,7 @@ chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
   --bot-config-browser-brand="chrome" \  # ENT Tier2 feature
   --bot-config-window="profile" \
-  --bot-cookies='[{"name":"sessionid","value":"abc123","domain":".example.com"}]' \
+  --bot-cookies='[{"url":"https://example.com","name":"sessionid","value":"abc123","domain":".example.com"}]' \
   --bot-bookmarks='[{"title":"Work Site","url":"https://work.example.com","type":"url"}]' \
   --user-data-dir="/tmp/instance1" &
 
