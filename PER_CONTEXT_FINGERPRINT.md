@@ -2,6 +2,8 @@
 
 Run multiple independent fingerprint identities within a single browser instance. Shared GPU/Network/Browser processes. Reduced resource overhead.
 
+> **Pairs with Trimmed Build (ENT Tier3).** Per-Context Fingerprint and [Trimmed Build](TRIMMED_BUILD.md) compose. Per-Context Fingerprint cuts memory and process count at scale; Trimmed Build cuts per-context spin-up by 85% and CPU peak by 68% on Linux x64. Together they form the densest deployment shape BotBrowser ships.
+
 ## The Problem
 
 Traditional approaches require launching a separate browser instance for each fingerprint profile. This architecture has significant overhead due to Chromium's multi-process design.

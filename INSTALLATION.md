@@ -2,13 +2,24 @@
 
 This guide provides step-by-step installation, troubleshooting, and deployment options across operating systems. Usage remains subject to the project [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md).
 
+<a id="choosing-a-build"></a>
+
+## Choosing a Build
+
+BotBrowser ships in two builds. Both share the same fingerprint protection model, profile format, CLI flag surface, and CDP commands.
+
+- **Standard Build** is the default public release. Use this build for long-running sessions, interactive workflows, and scenarios that exercise the full browser feature surface. Available on the [Releases](https://github.com/botswin/BotBrowser/releases) page; the instructions on this page describe Standard Build installation.
+- **Trimmed Build** (ENT Tier3) is a separately built distribution tuned for short-session, high-concurrency automation. Linux x64 benchmark: **62% lower wall time**, **85% faster per-context creation**, **68% lower CPU peak** versus Standard. Trimmed Build is not on the public Releases page; it is distributed through the enterprise channel. Product overview: [TRIMMED_BUILD.md](TRIMMED_BUILD.md). Full performance table: [BENCHMARK.md#trimmed-build](BENCHMARK.md#trimmed-build). Access: [Enterprise](https://botbrowser.io/enterprise/) or [Pricing](https://botbrowser.io/pricing/).
+
+Profiles, automation code, and CLI flags from Standard Build work unchanged on Trimmed Build, so you can build against Standard locally and switch to Trimmed in production.
+
 <a id="download--installation"></a>
 
 ## Download & Installation
 
 ### 1. Download Installer
 
-Get the installer for your OS from the [Releases](https://github.com/botswin/BotBrowser/releases) page.
+Get the Standard Build installer for your OS from the [Releases](https://github.com/botswin/BotBrowser/releases) page. (Trimmed Build is distributed through the enterprise channel; see [Choosing a Build](#choosing-a-build).)
 
 ### 2. Windows Installation
 

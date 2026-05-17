@@ -55,7 +55,7 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
   </tr>
   <tr>
     <td width="50%"><strong>Per-Context Fingerprint</strong> enables <a href="PER_CONTEXT_FINGERPRINT.md">independent fingerprint bundles per BrowserContext</a> without spawning new processes, with millisecond-level switching and reduced memory overhead</td>
-    <td width="50%"><strong>Zero-Overhead Performance</strong> adds <a href="BENCHMARK.md">no measurable latency</a>: Speedometer 3.0 within &lt;1% of stock Chrome, zero fingerprint API overhead across macOS/Linux/Windows, and 29% memory savings at scale with Per-Context Fingerprint</td>
+    <td width="50%"><strong>Zero-Overhead Performance</strong> adds <a href="BENCHMARK.md">no measurable latency</a>: Speedometer 3.0 within &lt;1% of stock Chrome, zero fingerprint API overhead across macOS/Linux/Windows, 29% memory savings at scale with Per-Context Fingerprint, and a <a href="BENCHMARK.md#trimmed-build">Trimmed Build</a> (ENT Tier3) delivering 62% lower wall time and 85% faster per-context spin-up on Linux x64</td>
   </tr>
 </table>
 
@@ -115,6 +115,26 @@ Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/
 - Framework-less approach: [`--bot-script`](CLI_FLAGS.md#--bot-script) + [CDP](examples/bot-script/) (privileged context, earlier hook, fewer artifacts)
 - Docker: [docker/README.md](docker/)
 - Full flags: [CLI_FLAGS.md](CLI_FLAGS.md)
+
+<a id="builds"></a>
+## Builds
+
+BotBrowser ships in two builds. Both share the same fingerprint protection model, the same profile format, the same CLI flag surface, and the same CDP commands.
+
+| | Standard Build | Trimmed Build (ENT Tier3) |
+|---|---|---|
+| **Distribution** | Public [releases](https://github.com/botswin/BotBrowser/releases) | Enterprise channel only |
+| **Built for** | Long-running and interactive sessions | Short-session, high-concurrency automation |
+| **Browser feature surface** | Full | Tuned for short-session workloads |
+| **Fingerprint protection** | Same | Same |
+| **Per-Context Fingerprint** | Same | Same |
+| **Profile compatibility** | Same | Same |
+
+**Linux x64 benchmark (400 official samples, `1..20 contexts × 10 repeats × 2 builds`)**: Trimmed Build cuts wall time by **62%**, per-context creation by **85%**, first navigation by **38%**, CPU peak by **68%**, PSS peak by **31%** versus Standard, with **100% success rate** and **0 residual processes** for both builds.
+
+Trimmed Build is the right choice when context spin-up dominates total wall time, when CPU peak per context limits density, or when shared memory is the binding constraint. Standard Build remains the right choice for interactive workflows and scenarios that exercise the full browser feature surface.
+
+Product overview, engineering design, FAQ: [TRIMMED_BUILD.md](TRIMMED_BUILD.md). Full performance table: [BENCHMARK.md#trimmed-build](BENCHMARK.md#trimmed-build). Access: [Enterprise](https://botbrowser.io/enterprise/) or [Pricing](https://botbrowser.io/pricing/).
 
 ## Feature Reference
 

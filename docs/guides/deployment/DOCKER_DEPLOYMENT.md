@@ -10,10 +10,12 @@
 
 - **Docker** 20.10 or later.
 - **Docker Compose** v2 (optional, for multi-instance setups).
-- **BotBrowser Ubuntu `.deb` package** from [GitHub Releases](https://github.com/botswin/BotBrowser/releases).
+- **BotBrowser Ubuntu `.deb` package** from [GitHub Releases](https://github.com/botswin/BotBrowser/releases) for the **Standard Build**, or from the enterprise distribution for **Trimmed Build** (ENT Tier3).
 - **A profile file** (`.enc` for production).
 
 > **Note:** Ubuntu/Linux binaries require an ENT Plan Tier 1 or higher subscription.
+>
+> **Trimmed Build for container fleets**: For container farms running short-session, high-concurrency automation, Trimmed Build cuts per-context spin-up by 85% and CPU peak by 68% versus Standard Build on Linux x64, returning headroom directly to the container's CPU and memory budgets. Profile, CLI, and CDP behavior are identical; you can build images against Standard Build locally and swap in the Trimmed `.deb` in production. Product overview: [TRIMMED_BUILD.md](../../../TRIMMED_BUILD.md). See [Choosing a Build](../../../INSTALLATION.md#choosing-a-build).
 
 ---
 
