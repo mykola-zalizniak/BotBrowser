@@ -20,6 +20,7 @@ import { cloneDeep } from 'lodash-es';
 import { v4 as uuidv4 } from 'uuid';
 import { CloneBrowserProfileComponent } from './clone-browser-profile.component';
 import { AppName } from './const';
+import { extractMajorVersion } from './data/bot-profile';
 import { BrowserProfileStatus, type BrowserProfile } from './data/browser-profile';
 import { EditBrowserProfileComponent } from './edit-browser-profile.component';
 import { KernelManagementComponent } from './kernel-management/kernel-management.component';
@@ -78,7 +79,7 @@ export class AppComponent implements AfterViewInit {
     readonly formatDateTime = formatDateTime;
     readonly formatProxyDisplay = formatProxyDisplay;
     readonly BrowserProfileStatus = BrowserProfileStatus;
-    readonly displayedColumns = ['select', 'status', 'name', 'group', 'proxy', 'lastUsedAt'];
+    readonly displayedColumns = ['select', 'status', 'name', 'group', 'proxy', 'kernel', 'lastUsedAt'];
     readonly dataSource = new MatTableDataSource<BrowserProfile>([]);
     readonly selection = new SelectionModel<BrowserProfile>(true, []);
 
@@ -100,12 +101,27 @@ export class AppComponent implements AfterViewInit {
                     return data.basicInfo.groupName ?? '';
                 case 'status':
                     return this.browserLauncherService.getRunningStatus(data);
+                case 'kernel':
+                    return this.getKernelVersion(data) ?? 0;
                 case 'lastUsedAt':
                     return data.lastUsedAt ?? 0;
                 default:
                     return '';
             }
         };
+    }
+
+    getKernelVersion(profile: BrowserProfile): number | null {
+        const content = profile.botProfileInfo?.content;
+        if (!content) return null;
+        try {
+            const info = JSON.parse(content);
+            const userAgent = info.userAgent || '';
+            const version = info.version || '';
+            return extractMajorVersion(userAgent) ?? extractMajorVersion(version);
+        } catch {
+            return null;
+        }
     }
 
     newProfile(): void {

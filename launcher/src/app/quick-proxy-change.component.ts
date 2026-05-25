@@ -39,8 +39,10 @@ import { ProxyService } from './shared/proxy.service';
                 [showQuickParse]="true"
                 [showCheckButton]="true"
                 [showSaveButton]="!selectedProxyId"
+                [showClearButton]="true"
                 (valueChange)="onProxyValueChange($event)"
                 (saveToList)="onSaveProxyToList($event)"
+                (clearProxy)="onClearProxy()"
             />
         </mat-dialog-content>
         <mat-dialog-actions align="end">
@@ -91,6 +93,11 @@ export class QuickProxyChangeComponent implements OnInit {
 
     onProxyValueChange(value: ParsedProxy | null): void {
         this.proxyValue = value;
+        this.selectedProxyId = '';
+    }
+
+    onClearProxy(): void {
+        this.proxyValue = null;
         this.selectedProxyId = '';
     }
 

@@ -7,6 +7,7 @@ import {
     compareVersions,
     getAssetDate,
     getCurrentPlatform,
+    getLatestAssetForPlatform,
     getPlatformFromAssetName,
     parseVersion,
     type DownloadProgress,
@@ -390,8 +391,8 @@ export class KernelService {
             const installedKernel = await this.getInstalledKernelByMajorVersion(release.majorVersion);
 
             if (installedKernel) {
-                // Get the asset for current platform
-                const latestAsset = release.assets.find((a) => a.platform === this.#currentPlatform);
+                // Get the latest asset for current platform (highest assetDate within the release)
+                const latestAsset = getLatestAssetForPlatform(release.assets, this.#currentPlatform);
                 if (!latestAsset) continue;
 
                 // Check if there's a newer version OR newer asset date
@@ -471,7 +472,8 @@ export class KernelService {
             throw new Error(`${release.tagName} is already being downloaded.`);
         }
 
-        const asset = release.assets.find((a) => a.platform === this.#currentPlatform);
+        // Pick the latest asset by assetDate so we install the freshest build within the release
+        const asset = getLatestAssetForPlatform(release.assets, this.#currentPlatform);
         if (!asset) {
             throw new Error(`No binary available for platform: ${this.#currentPlatform}`);
         }

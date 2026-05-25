@@ -8,7 +8,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import * as Neutralino from '@neutralinojs/lib';
-import type { InstalledKernel, KernelRelease } from '../data/kernel';
+import { getLatestAssetForPlatform, type InstalledKernel, type KernelRelease } from '../data/kernel';
 import { AlertDialogComponent } from '../shared/alert-dialog.component';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
 import { KernelService } from '../shared/kernel.service';
@@ -151,7 +151,7 @@ export class KernelManagementComponent implements OnInit {
 
     getReleaseAssetDate(release: KernelRelease): string | null {
         const platform = this.kernelService.getCurrentPlatform();
-        const asset = release.assets.find((a) => a.platform === platform);
+        const asset = getLatestAssetForPlatform(release.assets, platform);
         return this.formatAssetDate(asset?.assetDate);
     }
 

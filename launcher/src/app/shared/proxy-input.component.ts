@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, NgZone, Output } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProxyTypes } from '../data/proxy';
 import type { ProxyType } from '../data/proxy';
 import * as Neutralino from '@neutralinojs/lib';
+import { ConfirmDialogComponent } from './confirm-dialog.component';
 import { ProxyCheckService, type ProxyCheckResult } from './proxy-check.service';
 import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
 
@@ -93,6 +95,11 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
         @if (showCheckButton || showSaveButton || showClearButton) {
             <div class="check-ip-section">
                 <div class="button-row">
+                    @if (showClearButton && getValue()) {
+                        <button mat-stroked-button color="warn" (click)="onClearProxy()">
+                            Clear proxy
+                        </button>
+                    }
                     @if (showCheckButton) {
                         <button mat-stroked-button (click)="onCheckIp()" [disabled]="checking || !getValue()">
                             @if (checking) {
@@ -106,11 +113,6 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
                     @if (showSaveButton && getValue()) {
                         <button mat-stroked-button (click)="onSaveToList()">
                             Save to proxy list
-                        </button>
-                    }
-                    @if (showClearButton && getValue()) {
-                        <button mat-stroked-button color="warn" (click)="onClearProxy()">
-                            Clear proxy
                         </button>
                     }
                     @if (getValue()) {
@@ -307,6 +309,7 @@ export class ProxyInputComponent {
     readonly #formBuilder = inject(FormBuilder);
     readonly #snackBar = inject(MatSnackBar);
     readonly #ngZone = inject(NgZone);
+    readonly #dialog = inject(MatDialog);
 
     readonly proxyTypes = ProxyTypes;
 
@@ -436,11 +439,23 @@ export class ProxyInputComponent {
     }
 
     onClearProxy(): void {
-        this.formGroup.reset({ type: 'http', host: '', port: 8080, username: '', password: '' });
-        this.checkResult = null;
-        this.checkError = '';
-        this.#emitValue();
-        this.clearProxy.emit();
+        this.#dialog
+            .open(ConfirmDialogComponent, {
+                data: {
+                    message: 'Clear the proxy?',
+                    okButtonText: 'Clear',
+                    defaultCancel: true,
+                },
+            })
+            .afterClosed()
+            .subscribe((confirmed: boolean) => {
+                if (!confirmed) return;
+                this.formGroup.reset({ type: 'http', host: '', port: 8080, username: '', password: '' });
+                this.checkResult = null;
+                this.checkError = '';
+                this.#emitValue();
+                this.clearProxy.emit();
+            });
     }
 
     getValue(): ParsedProxy | null {
