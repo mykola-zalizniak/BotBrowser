@@ -283,6 +283,11 @@
                                 </td>
                             </ng-container>
 
+                            <ng-container matColumnDef="kernel">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Kernel</th>
+                                <td mat-cell *matCellDef="let element">{{ getKernelVersion(element) || '-' }}</td>
+                            </ng-container>
+
                             <ng-container matColumnDef="status">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let element">

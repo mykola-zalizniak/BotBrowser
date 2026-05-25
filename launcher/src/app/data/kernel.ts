@@ -88,6 +88,19 @@ export function getPlatformFromAssetName(name: string): KernelPlatform | null {
     return null;
 }
 
+// Pick the latest asset for a given platform within a release.
+// Among assets matching the platform, prefers the one with the highest assetDate (YYYYMMDD).
+export function getLatestAssetForPlatform(
+    assets: KernelAsset[],
+    platform: KernelPlatform
+): KernelAsset | undefined {
+    const candidates = assets.filter((a) => a.platform === platform);
+    if (candidates.length === 0) return undefined;
+    return candidates.reduce((latest, a) =>
+        (a.assetDate || '') > (latest.assetDate || '') ? a : latest
+    );
+}
+
 export function getCurrentPlatform(osName: string, arch?: string): KernelPlatform {
     const osLower = osName.toLowerCase();
 
