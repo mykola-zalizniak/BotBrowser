@@ -1,6 +1,8 @@
-# BotBrowser Canary Profiles (v148)
+# BotBrowser Canary Profiles
 
-Canary profiles for Chrome 148 will be available here once the early development build is released.
+No public canary profile bundle is currently published in this repository.
+
+Chrome 147 and Chrome 148 public demo profiles are published under [stable](../stable/). Chrome Early Stable builds are treated as part of the current stable profile line when BotBrowser publishes a matching public build.
 
 > **Usage:** Run demo profiles via [CLI](../../INSTALLATION.md#download--installation) or [Launcher](../../launcher/). Automation framework integration (Puppeteer, Playwright) requires [premium profiles](../README.md#premium-profiles).
 

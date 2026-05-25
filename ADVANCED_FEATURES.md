@@ -46,7 +46,7 @@ Smart auto-configuration: timezone, locale, and languages derive from your proxy
 
 For proxy configuration syntax and examples, see [CLI Flags: Enhanced Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration).
 
-**Related guides:** [Proxy Configuration](docs/guides/network/PROXY_CONFIGURATION.md) · [DNS Leak Prevention](docs/guides/network/DNS_LEAK_PREVENTION.md) · [UDP over SOCKS5](docs/guides/network/UDP_OVER_SOCKS5.md) · [WebRTC Leak Prevention](docs/guides/network/WEBRTC_LEAK_PREVENTION.md) · [Port Protection](docs/guides/network/PORT_PROTECTION.md) · [Dynamic Proxy Switching](docs/guides/network/DYNAMIC_PROXY_SWITCHING.md)
+**Related guides:** [Proxy Configuration](https://botbrowser.io/docs/network/proxy-configuration/) · [DNS Leak Prevention](https://botbrowser.io/docs/network/dns-leak-prevention/) · [UDP over SOCKS5](https://botbrowser.io/docs/network/udp-over-socks5/) · [WebRTC Leak Prevention](https://botbrowser.io/docs/network/webrtc-leak-prevention/) · [Port Protection](https://botbrowser.io/docs/network/port-protection/) · [Dynamic Proxy Switching](https://botbrowser.io/docs/network/dynamic-proxy-switching/)
 
 <a id="port-protection"></a>
 ### Port Protection (PRO)
@@ -118,7 +118,7 @@ Protection model:
 
 For noise configuration flags, see [CLI Flags: Rendering, Noise & Media/RTC](CLI_FLAGS.md#profile-configuration-override-flags).
 
-**Related guides:** [Canvas](docs/guides/fingerprint/CANVAS.md) · [WebGL](docs/guides/fingerprint/WEBGL.md) · [Audio](docs/guides/fingerprint/AUDIO.md) · [Noise Seed Reproducibility](docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md) · [Font](docs/guides/fingerprint/FONT.md)
+**Related guides:** [Canvas](https://botbrowser.io/docs/fingerprint/canvas/) · [WebGL](https://botbrowser.io/docs/fingerprint/webgl/) · [Audio](https://botbrowser.io/docs/fingerprint/audio/) · [Noise Seed Reproducibility](https://botbrowser.io/docs/fingerprint/noise-seed-reproducibility/) · [Font](https://botbrowser.io/docs/fingerprint/font/)
 
 <a id="active-window-emulation"></a>
 ### Active Window Emulation
@@ -137,7 +137,7 @@ Consistent behavior across execution modes.
 - Full GPU context simulation without physical GPU
 - WebGL and WebGPU rendering consistency
 - Hardware-accelerated video decoding simulation
-- Automatic GPU rendering backend selection on Linux via [`--bot-gpu-emulation`](CLI_FLAGS.md#behavior--protection-toggles). Detects and prefers system GPU/GL drivers when available, with shader caching enabled by default
+- Automatic GPU rendering backend selection on Linux via [`--bot-gpu-emulation`](CLI_FLAGS.md#--bot-gpu-emulation). Detects and prefers system GPU/GL drivers when available, with shader caching enabled by default. Optional `--bot-gpu-emulation=priority` adds prioritized GPU/WebGPU command-buffer scheduling for high-concurrency BrowserContext workloads. For backend choice and flag migration on Linux servers, see [Linux GPU Backend Selection](https://botbrowser.io/docs/deployment/linux-gpu-backend/)
 
 **Incognito-Mode Consistency:**
 - Fingerprint protection maintained in incognito mode
@@ -161,7 +161,7 @@ Complete WebRTC fingerprint protection and network privacy.
 - ICE server presets and custom lists via [`--bot-webrtc-ice`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier1) to standardize STUN and TURN endpoints observed by page JavaScript
 - Combined with [UDP-over-SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) (ENT Tier3) for Chromium-level QUIC and STUN tunneling
 
-**Related guides:** [WebRTC Leak Prevention](docs/guides/network/WEBRTC_LEAK_PREVENTION.md) · [Incognito Fingerprinting](docs/guides/fingerprint/INCOGNITO.md)
+**Related guides:** [WebRTC Leak Prevention](https://botbrowser.io/docs/network/webrtc-leak-prevention/) · [Incognito Fingerprinting](https://botbrowser.io/docs/fingerprint/incognito/)
 
 <a id="chrome-behavior-emulation"></a>
 ### Chrome Behavior Emulation
@@ -213,7 +213,7 @@ Advanced font rendering with consistent results across hosts.
 
 > **Implementation Detail:** Low-level rendering paths in Skia (2D/Canvas) and HarfBuzz (text shaping) are tuned to align metrics and glyph shaping across OS targets. Targeted WebGL/WebGPU parameter controls keep visual output stable across contexts.
 
-**Related guides:** [Font Fingerprinting](docs/guides/fingerprint/FONT.md) · [CJK Font Rendering](docs/guides/platform/CJK_FONT_RENDERING.md)
+**Related guides:** [Font Fingerprinting](https://botbrowser.io/docs/fingerprint/font/) · [CJK Font Rendering](https://botbrowser.io/docs/platform/cjk-font-rendering/)
 
 ### Cross-Platform Consistency
 
@@ -231,7 +231,7 @@ Maintains fingerprint and behavior consistency across different host systems.
 - Maintains identical touch and mouse event patterns
 - Emulates authentic device behavior across platforms
 
-**Related guides:** [Cross-Platform Profiles](docs/guides/platform/CROSS_PLATFORM_PROFILES.md) · [Windows on Mac/Linux](docs/guides/platform/WINDOWS_ON_MAC_LINUX.md) · [Android Emulation](docs/guides/platform/ANDROID_EMULATION.md) · [Device Emulation](docs/guides/platform/DEVICE_EMULATION.md)
+**Related guides:** [Cross-Platform Profiles](https://botbrowser.io/docs/platform/cross-platform-profiles/) · [Windows on Mac/Linux](https://botbrowser.io/docs/platform/windows-on-mac-linux/) · [Android Emulation](https://botbrowser.io/docs/platform/android-emulation/) · [Device Emulation](https://botbrowser.io/docs/platform/device-emulation/)
 
 ### Touch & Input Reliability
 
@@ -284,7 +284,7 @@ Comprehensive hardware emulation and fingerprint management.
 
 **CPU Core Scaling Protection**: When `navigator.hardwareConcurrency` is set by the profile, Worker threads are automatically constrained to match the claimed core count via CPU affinity on Linux and Windows. This ensures parallel computation scaling curves align with the claimed value.
 
-**Related guides:** [Performance](docs/guides/fingerprint/PERFORMANCE.md) · [Stack Depth](docs/guides/fingerprint/STACK_DEPTH.md) · [FPS Control](docs/guides/fingerprint/FPS_CONTROL.md) · [Navigator Properties](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md)
+**Related guides:** [Performance](https://botbrowser.io/docs/fingerprint/performance/) · [Stack Depth](https://botbrowser.io/docs/fingerprint/stack-depth/) · [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/) · [Navigator Properties](https://botbrowser.io/docs/fingerprint/navigator-properties/)
 
 <details>
 <summary><strong>Full details: Deep System Integration</strong></summary>
@@ -426,7 +426,7 @@ Execute JavaScript with privileged `chrome.debugger` access, with no framework d
 - **Privileged context.** Full `chrome.debugger` API access.
 - **Isolated execution.** Framework artifacts do not appear in page context.
 
-Documentation: [Bot Script Examples](examples/bot-script) · [Guide](docs/guides/getting-started/BOT_SCRIPT.md)
+Documentation: [Bot Script Examples](examples/bot-script) · [Guide](https://botbrowser.io/docs/getting-started/bot-script/)
 
 <a id="playwright-puppeteer-integration"></a>
 ### Playwright/Puppeteer Integration
@@ -438,7 +438,7 @@ Privacy-preserving integration with popular frameworks.
 - Eliminates framework-specific fingerprint signatures
 - ChromeDriver compatibility and Selenium Grid integration support
 
-**Related guides:** [Playwright](docs/guides/getting-started/PLAYWRIGHT.md) · [Puppeteer](docs/guides/getting-started/PUPPETEER.md) · [Automation Consistency](docs/guides/getting-started/AUTOMATION_CONSISTENCY.md)
+**Related guides:** [Playwright](https://botbrowser.io/docs/getting-started/playwright/) · [Puppeteer](https://botbrowser.io/docs/getting-started/puppeteer/) · [Automation Consistency](https://botbrowser.io/docs/reference/automation-consistency/)
 
 ---
 
@@ -447,7 +447,7 @@ Privacy-preserving integration with popular frameworks.
 
 Verify that privacy protection works consistently across platforms and networks. Run a controller instance and multiple clients to ensure all instances maintain identical privacy defenses.
 
-**[Complete Mirror documentation](tools/mirror/)** including setup, CLI flags, CDP examples, and troubleshooting. See also the [deployment guide](docs/guides/deployment/MIRROR_DISTRIBUTED.md).
+**[Complete Mirror documentation](tools/mirror/)** including setup, CLI flags, CDP examples, and troubleshooting. See also the [deployment guide](https://botbrowser.io/docs/deployment/mirror-distributed/).
 
 ---
 
@@ -489,7 +489,7 @@ All commands live under the `BotBrowser` CDP domain. Send them through a **brows
 - [CLI Flags Reference](CLI_FLAGS.md) - Complete command-line options and usage examples
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md) - Profile JSON field reference
 - [Installation Guide](INSTALLATION.md) - Platform-specific setup
-- [Guides](docs/guides/) - Step-by-step guides for proxy, fingerprint, identity, platform emulation, and deployment
+- [Guides](https://botbrowser.io/docs/) - Step-by-step guides for proxy, fingerprint, identity, platform emulation, and deployment
 - [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) - Independent fingerprint per BrowserContext
 - [Validation Results](VALIDATION.md) - Research and testing data
 - [Mirror](tools/mirror/) - Distributed privacy consistency verification

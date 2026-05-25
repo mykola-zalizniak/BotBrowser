@@ -36,9 +36,8 @@ CanvasLab records every Canvas 2D, WebGL, and WebGL2 API call so you can see exa
 |-----------|--------|
 | **Canvas 2D Recording** | **Shipped** - full API coverage with call stack tracking |
 | **WebGL / WebGL2 Recording** | **Shipped** - full API coverage including shaders, textures, buffers, uniforms |
+| **WebGPU Recording** | **Shipped** - full API coverage including adapters, devices, pipelines, render/compute passes, and readback |
 | **Replay Viewer** | **Shipped** - HTML-based event viewer with Canvas 2D and WebGL support |
-| **Canvas 2D Browser Replay** | **In Development** - reconstruct canvas operations from JSONL |
-| **WebGL Browser Replay** | **Planned** |
 
 ---
 
@@ -53,10 +52,10 @@ chromium \
 ```
 
 **Step 2: Visit a site and let tracking happen**
-Go to the website you want to study. Let it load normally. CanvasLab will record every Canvas 2D, WebGL, and WebGL2 API call the tracking code makes.
+Go to the website you want to study. Let it load normally. CanvasLab will record every Canvas 2D, WebGL, WebGL2, and WebGPU API call the tracking code makes.
 
 **Step 3: Look at what was recorded**
-Close BotBrowser. Your recording is saved to `/tmp/canvaslab.jsonl`. You can now see exactly what Canvas and WebGL calls the tracking code tried to make.
+Close BotBrowser. Your recording is saved to `/tmp/canvaslab.jsonl`. You can now see exactly what Canvas, WebGL, and WebGPU calls the tracking code tried to make.
 
 ---
 
@@ -131,14 +130,11 @@ Close BotBrowser. Your recording is saved to `/tmp/canvaslab.jsonl`. You can now
 
 ---
 
-## What's Next
+## Canvas Fingerprint Replay
 
-### Canvas 2D Browser Replay (In Development)
-Load your JSONL recordings back into BotBrowser to test privacy protections:
-- **Verify privacy protection** - replay tracking code's Canvas calls and check if BotBrowser handles them correctly
-- **Cross-platform testing** - check that privacy works the same on Windows, macOS, and Linux
-- **Ongoing validation** - make sure each BotBrowser update keeps privacy protections working
+BotBrowser supports exact canvas fingerprint replay: when a profile contains canvas data for a specific site, BotBrowser returns those recorded values at runtime instead of performing live GPU/CPU rendering. This makes canvas fingerprints deterministic and site-specific.
 
+Canvas data is embedded in the profile, not controlled by a CLI flag. To get a profile with replay support for a specific site or antibot system, contact us at [support@botbrowser.io](mailto:support@botbrowser.io). We analyze the target's canvas fingerprinting approach and provide a profile with the corresponding canvas data.
 
 ---
 

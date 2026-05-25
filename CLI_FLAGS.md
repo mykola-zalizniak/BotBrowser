@@ -72,7 +72,7 @@ BotBrowser extends the standard `--proxy-server` flag to accept embedded credent
 --proxy-server=socks5h://username:password@proxy.example.com:1080
 ```
 
-**Supported Protocols:** HTTP, HTTPS, SOCKS5, SOCKS5H. Guide: [Proxy Configuration](docs/guides/network/PROXY_CONFIGURATION.md)
+**Supported Protocols:** HTTP, HTTPS, SOCKS5, SOCKS5H. Guide: [Proxy Configuration](https://botbrowser.io/docs/network/proxy-configuration/)
 
 **Proxy auth usernames:** Structured proxy usernames can include additional separators such as `,` and `|`. This is useful for providers that encode routing hints inside the username, for example:
 
@@ -82,7 +82,7 @@ BotBrowser extends the standard `--proxy-server` flag to accept embedded credent
 
 <a id="udp-over-socks5-ent-tier3"></a>
 ### UDP over SOCKS5 (ENT Tier3)
-ENT Tier3 adds built-in SOCKS5 UDP ASSOCIATE support with no extra flag required. When the proxy supports UDP, BotBrowser will tunnel QUIC traffic and STUN probes over the proxy to harden proxy checks. Guide: [UDP over SOCKS5](docs/guides/network/UDP_OVER_SOCKS5.md)
+ENT Tier3 adds built-in SOCKS5 UDP ASSOCIATE support with no extra flag required. When the proxy supports UDP, BotBrowser will tunnel QUIC traffic and STUN probes over the proxy to harden proxy checks. Guide: [UDP over SOCKS5](https://botbrowser.io/docs/network/udp-over-socks5/)
 
 ```bash
 # UDP (QUIC/STUN) auto-tunneled when the SOCKS5 proxy supports UDP associate
@@ -106,7 +106,7 @@ This skips per-page IP lookups and speeds up navigation.
 
 ⚠️ Important:
 - Browser-level proxy: use `--proxy-server` for protected geo-detection across contexts
-- [Per-context proxy](PER_CONTEXT_FINGERPRINT.md) (ENT Tier1): set different proxies via `createBrowserContext({ proxy })`; BotBrowser auto-derives geo info in both cases. Guide: [Per-Context Proxy](docs/guides/network/PER_CONTEXT_PROXY.md)
+- [Per-context proxy](PER_CONTEXT_FINGERPRINT.md) (ENT Tier1): set different proxies via `createBrowserContext({ proxyServer })` or `BotBrowser.setBrowserContextFlags` with `--proxy-server`; BotBrowser auto-derives geo info in both cases. Guide: [Per-Context Proxy](https://botbrowser.io/docs/network/per-context-proxy/)
 - Avoid: framework-specific options like `page.authenticate()` that disable BotBrowser's geo-detection, which may leak location information
 
 <a id="--proxy-bypass-rgx"></a>
@@ -135,7 +135,7 @@ launchArgs.push('--proxy-bypass-rgx=example\\.com.*\\.js($|\\?)');
 
 In JavaScript strings: `\\.` becomes `\.`, `\\?` becomes `\?`
 
-Guide: [Proxy Selective Routing](docs/guides/network/PROXY_SELECTIVE_ROUTING.md)
+Guide: [Proxy Selective Routing](https://botbrowser.io/docs/network/proxy-selective-routing/)
 
 <a id="--bot-port-protection-pro"></a>
 ### `--bot-port-protection` (PRO)
@@ -145,7 +145,7 @@ Protect local service ports (VNC, RDP, development servers, etc.) from being sca
 --bot-port-protection
 ```
 
-Covers 30 commonly-probed ports across IPv4 (`127.0.0.0/8`), IPv6 (`::1`), and `localhost`. Can also be enabled via profile JSON (`configs.portProtection`). See [Port Protection](ADVANCED_FEATURES.md#port-protection) for details. Guide: [Port Protection](docs/guides/network/PORT_PROTECTION.md)
+Covers 30 commonly-probed ports across IPv4 (`127.0.0.0/8`), IPv6 (`::1`), and `localhost`. Can also be enabled via profile JSON (`configs.portProtection`). See [Port Protection](ADVANCED_FEATURES.md#port-protection) for details. Guide: [Port Protection](https://botbrowser.io/docs/network/port-protection/)
 
 <a id="--bot-local-dns-ent-tier1"></a>
 ### `--bot-local-dns` (ENT Tier1)
@@ -153,13 +153,25 @@ Enable the local DNS solver. This keeps DNS resolution local instead of relying 
 
 ```bash
 --bot-local-dns
+--bot-local-dns=true
+--bot-local-dns=false
+--bot-local-dns=8.8.8.8
+--bot-local-dns=127.0.0.1:5353
 ```
+
+Accepted values:
+- bare flag or `true`: resolve proxy targets locally using the browser's built-in resolver
+- `false`: disable LocalDNS and let the proxy resolve names
+- `IP` or `IP:port`: resolve proxy targets through the specified DNS server only. Port defaults to `53`. Invalid values are treated as `false`.
+
+When a custom DNS server is configured, BotBrowser does not use the system resolver if the chosen DNS returns no answer.
 
 Practical notes:
 - Helps when a proxy provider blocks or rewrites DNS lookups
 - Useful when you want to avoid provider-side DNS policies and keep resolution behavior protected across runs
+- `IP[:port]` is recommended for deterministic environments where the upstream DNS must be explicit
 
-Guide: [DNS Leak Prevention](docs/guides/network/DNS_LEAK_PREVENTION.md)
+Guide: [DNS Leak Prevention](https://botbrowser.io/docs/network/dns-leak-prevention/)
 
 ### `--bot-ip-service`
 Customize the public IP service used to discover your egress IP (and derive geo settings when auto-detection is enabled).
@@ -168,7 +180,7 @@ Customize the public IP service used to discover your egress IP (and derive geo 
 --bot-ip-service="https://ip.example.com"
 ```
 
-You can provide multiple endpoints as a comma-separated list. BotBrowser will race them and use the fastest successful response.
+You can provide multiple endpoints as a comma-separated list. For each navigation, BotBrowser uses a single endpoint at a time and only moves to the next one when the previous one is unavailable, keeping the public-IP source stable across the request lifecycle.
 
 ```bash
 --bot-ip-service="https://ip1.example.com,https://ip2.example.com"
@@ -202,7 +214,7 @@ Accepts cookie data as either inline JSON or from a file.
 
 **Inline JSON:**
 ```bash
---bot-cookies='[{"name":"session","value":"abc123","domain":".example.com"}]'
+--bot-cookies='[{"url":"https://example.com","name":"session","value":"abc123","domain":".example.com"}]'
 ```
 
 **From JSON file:**
@@ -210,7 +222,7 @@ Accepts cookie data as either inline JSON or from a file.
 --bot-cookies="@/path/to/cookies.json"
 ```
 
-The file should contain a JSON array of cookie objects with name, value, and domain fields. Guide: [Cookie Management](docs/guides/identity/COOKIE_MANAGEMENT.md)
+Each cookie object must include a `url` field. Cookies without `url` are silently skipped. Guide: [Cookie Management](https://botbrowser.io/docs/identity/cookie-management/)
 
 <a id="--bot-bookmarks"></a>
 ### `--bot-bookmarks`
@@ -222,20 +234,20 @@ Accepts a JSON string containing bookmark data for startup.
 --bot-bookmarks='[{"title":"Example","type":"url","url":"https://example.com"},{"title":"Folder","type":"folder","children":[{"title":"Example","type":"url","url":"https://example.com"}]}]'
 ```
 
-Guide: [Bookmark Seeding](docs/guides/identity/BOOKMARK_SEEDING.md)
+Guide: [Bookmark Seeding](https://botbrowser.io/docs/identity/bookmark-seeding/)
 
 <a id="--bot-canvas-record-file"></a>
 ### `--bot-canvas-record-file`
 Canvas forensics and tracking analysis.
 
-Records all Canvas 2D, WebGL, and WebGL2 API calls to a JSONL file for forensic analysis and replay.
+Records all Canvas 2D, WebGL, WebGL2, and WebGPU API calls to a JSONL file for forensic analysis and replay.
 
 ```bash
 --bot-canvas-record-file="/tmp/canvaslab.jsonl"
 ```
 
 **Key Features:**
-- Complete Canvas 2D, WebGL, and WebGL2 API call recording with full parameter serialization
+- Complete Canvas 2D, WebGL, WebGL2, and WebGPU API call recording with full parameter serialization
 - Deterministic capture (noise variance disabled during recording)
 - JSONL format for easy parsing and analysis
 - HTML replay viewer with WebGL enum reverse-lookup and source location mapping
@@ -279,7 +291,7 @@ Execute a JavaScript file right after BotBrowser starts in a privileged, non-ext
 
 Documentation: Chrome `chrome.debugger` API - <https://developer.chrome.com/docs/extensions/reference/api/debugger/>
 
-Examples: [Bot Script](examples/bot-script). Guide: [Bot Script](docs/guides/getting-started/BOT_SCRIPT.md)
+Examples: [Bot Script](examples/bot-script). Guide: [Bot Script](https://botbrowser.io/docs/getting-started/bot-script/)
 
 <a id="--bot-custom-headers-pro"></a>
 ### `--bot-custom-headers` (PRO)
@@ -332,7 +344,7 @@ await cdpSession.send('BotBrowser.setCustomHeaders', {
 - Useful for API authentication, session management, or request routing
 - JSON format with string key-value pairs
 
-Guide: [Custom HTTP Headers](docs/guides/network/CUSTOM_HTTP_HEADERS.md)
+Guide: [Custom HTTP Headers](https://botbrowser.io/docs/network/custom-http-headers/)
 
 ---
 
@@ -349,7 +361,7 @@ BotBrowser supports command-line flags that override profile configuration value
 
 Flags that directly map to profile `configs` and override them at runtime.
 
-**Identity & Locale** - Guides: [Browser Brand Alignment](docs/guides/identity/BROWSER_BRAND_ALIGNMENT.md), [Custom User-Agent](docs/guides/identity/CUSTOM_USER_AGENT.md), [Timezone, Locale, and Language](docs/guides/identity/TIMEZONE_LOCALE_LANGUAGE.md)
+**Identity & Locale** - Guides: [Browser Brand Alignment](https://botbrowser.io/docs/identity/browser-brand-alignment/), [Custom User-Agent](https://botbrowser.io/docs/identity/custom-user-agent/), [Timezone, Locale, and Language](https://botbrowser.io/docs/identity/timezone-locale-language/)
 - `--bot-config-browser-brand=chrome` (ENT Tier2, webview requires ENT Tier3): Browser brand: chrome, chromium, edge, brave, opera, webview
 - `--bot-config-brand-full-version=142.0.3595.65` (ENT Tier2): Brand-specific full version (Edge/Opera cadence) for UA-CH congruence
 - `--bot-config-ua-full-version=142.0.7444.60` (ENT Tier2): User agent version: full version string matching Chromium major
@@ -358,7 +370,7 @@ Flags that directly map to profile `configs` and override them at runtime.
 - `--bot-config-timezone=auto`: Timezone: `auto` (IP-based, default), `real` (system), or IANA timezone name like `America/New_York`, `Europe/Berlin` (ENT Tier1)
 - `--bot-config-location=auto`: Location: `auto` (IP-based, default), `real` (system GPS), or custom coordinates like `40.7128,-74.0060` (ENT Tier1)
 
-**Custom User-Agent (ENT Tier3)** - Guide: [Custom User-Agent](docs/guides/identity/CUSTOM_USER_AGENT.md)
+**Custom User-Agent (ENT Tier3)** - Guide: [Custom User-Agent](https://botbrowser.io/docs/identity/custom-user-agent/)
 
 Build any browser identity with full userAgentData control. These flags work together with `--user-agent` to construct a complete, internally consistent browser identity.
 
@@ -379,7 +391,7 @@ BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersio
 
 > **Note: UA/Engine Congruence:** Keep `--bot-config-ua-full-version` aligned with your Chromium major version, and use `--bot-config-brand-full-version` when a vendor's cadence (Edge, Opera, Brave) diverges so UA-CH metadata stays internally protected.
 
-**Display & Input** - Guides: [Screen and Window](docs/guides/fingerprint/SCREEN_WINDOW.md), [Font Fingerprinting](docs/guides/fingerprint/FONT.md), [Device Emulation](docs/guides/platform/DEVICE_EMULATION.md)
+**Display & Input** - Guides: [Screen and Window](https://botbrowser.io/docs/fingerprint/screen-window/), [Font Fingerprinting](https://botbrowser.io/docs/fingerprint/font/), [Device Emulation](https://botbrowser.io/docs/platform/device-emulation/)
 - `--bot-config-window=<value>`: Window dimensions with multiple formats:
   - `profile` - Use profile's window settings (default for headless and Android profiles)
   - `real` - Use actual system window dimensions (default for desktop headful)
@@ -402,7 +414,7 @@ BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersio
 - `--bot-config-color-scheme=light`: Color scheme: light, dark
 - `--bot-config-disable-device-scale-factor`: Disable device scale factor: true, false
 
-**Rendering, Noise & Media/RTC** - Guides: [Canvas](docs/guides/fingerprint/CANVAS.md), [WebGL](docs/guides/fingerprint/WEBGL.md), [Audio](docs/guides/fingerprint/AUDIO.md), [Speech Synthesis](docs/guides/fingerprint/SPEECH_SYNTHESIS.md), [Noise Seed](docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md)
+**Rendering, Noise & Media/RTC** - Guides: [Canvas](https://botbrowser.io/docs/fingerprint/canvas/), [WebGL](https://botbrowser.io/docs/fingerprint/webgl/), [Audio](https://botbrowser.io/docs/fingerprint/audio/), [Speech Synthesis](https://botbrowser.io/docs/fingerprint/speech-synthesis/), [Noise Seed](https://botbrowser.io/docs/fingerprint/noise-seed-reproducibility/)
 - `--bot-config-webgl=profile`: WebGL: profile (use profile), real (system), disabled (off)
 - `--bot-config-webgpu=profile`: WebGPU: profile (use profile), real (system), disabled (off)
 - `--bot-config-noise-webgl-image`: WebGL image noise: true, false
@@ -422,18 +434,20 @@ Runtime toggles that don’t rely on profile `configs` but still override behavi
 
 - `--bot-disable-debugger`: Ignore JavaScript `debugger` statements to avoid pauses
 - `--bot-mobile-force-touch`: Force touch events on/off for mobile device simulation
-- `--bot-disable-console-message` (ENT Tier1): Suppress console.* output from CDP logs (default true); prevents framework hooks from enabling `Console.enable`/`Runtime.enable`, which blocks fingerprint signals. Guide: [Console Suppression](docs/guides/fingerprint/CONSOLE_SUPPRESSION.md)
-- `--bot-inject-random-history` (PRO): Add synthetic browsing history for session authenticity. Accepts `true` (random 2-7 entries), a number for precise control (e.g., `=15` for `history.length` of 16), or `false` to disable. Guide: [History Seeding](docs/guides/identity/HISTORY_SEEDING.md)
+- `--bot-disable-console-message` (ENT Tier1): Suppress console.* output from CDP logs (default true); prevents framework hooks from enabling `Console.enable`/`Runtime.enable`, which blocks fingerprint signals. Guide: [Console Suppression](https://botbrowser.io/docs/fingerprint/console-suppression/)
+- `--bot-inject-random-history` (PRO): Add synthetic browsing history for session authenticity. Accepts `true` (random 2-7 entries), a number for precise control (e.g., `=15` for `history.length` of 16), or `false` to disable. Guide: [History Seeding](https://botbrowser.io/docs/identity/history-seeding/)
 - `--bot-enable-variations-in-context` (ENT Tier2): Include `X-Client-Data` headers in incognito browser contexts for Google domains, same as regular browsing. Disabled by default.
 - `--bot-always-active` (PRO, default true): Keep windows/tabs active even when unfocused. See [Active Window Emulation](ADVANCED_FEATURES.md#active-window-emulation)
-- `--bot-webrtc-ice=google` (ENT Tier1): Override STUN/TURN endpoints observed by JavaScript/WebRTC to control ICE signaling; accepts presets (`google`) or `custom:stun:...,turn:...`. See [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection). Guide: [WebRTC Leak Prevention](docs/guides/network/WEBRTC_LEAK_PREVENTION.md)
-- `--bot-noise-seed` (ENT Tier2): Integer seed (1-UINT32_MAX) for the deterministic noise RNG; each seed augments privacy variance across Canvas 2D/WebGL/WebGPU images, text metrics, text layout, ClientRect measurements, and offline audio hashes so you can treat a seed as a reproducible fingerprint ID per tenant while keeping runs stable. `0` keeps noise active with profile defaults. Guide: [Noise Seed Reproducibility](docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md)
-- `--bot-fps` (ENT Tier2): Control frame rate behavior at runtime. Accepts `profile` (use profile data, default when capable), `real` (use native frame rate), or a number (e.g., `60`). Guide: [FPS Control](docs/guides/fingerprint/FPS_CONTROL.md)
-- `--bot-time-scale` (ENT Tier2): Float < 1.0; scales down `performance.now()` intervals to emulate lower load and reduce timing skew signals (typical range 0.80-0.99). Guide: [Performance Fingerprinting](docs/guides/fingerprint/PERFORMANCE.md)
+- `--bot-webrtc-ice=google` (ENT Tier1): Override STUN/TURN endpoints observed by JavaScript/WebRTC to control ICE signaling; accepts presets (`google`) or `custom:stun:...,turn:...`. See [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection). Guide: [WebRTC Leak Prevention](https://botbrowser.io/docs/network/webrtc-leak-prevention/)
+<a id="--bot-noise-seed"></a>
+- `--bot-noise-seed` (ENT Tier2): Integer seed (1-UINT32_MAX) for the deterministic noise RNG; each seed augments privacy variance across Canvas 2D/WebGL/WebGPU images, text metrics, text layout, ClientRect measurements, and offline audio hashes so you can treat a seed as a reproducible fingerprint ID per tenant while keeping runs stable. `0` keeps noise active with profile defaults. Guide: [Noise Seed Reproducibility](https://botbrowser.io/docs/fingerprint/noise-seed-reproducibility/)
+- `--bot-fps` (ENT Tier2): Control frame rate behavior at runtime. Accepts `profile` (use profile data, default when capable), `real` (use native frame rate), or a number (e.g., `60`). Guide: [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/)
+- `--bot-time-scale` (ENT Tier2): Float < 1.0; scales down `performance.now()` intervals to emulate lower load and reduce timing skew signals (typical range 0.80-0.99). Guide: [Performance Fingerprinting](https://botbrowser.io/docs/fingerprint/performance/)
 - `--bot-time-seed` (ENT Tier2): Integer seed (1-UINT32_MAX) for deterministic execution timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, and more). `0` disables the feature (default). Each seed produces a unique, stable performance profile that protects against timing-based tracking. Also covers `performance.getEntries()`, `performance.getEntriesByType("navigation")`, and `performance.timing` with authentic per-session redistribution.
-- `--bot-stack-seed` (ENT Tier2): Controls JavaScript recursive call stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile’s exact depth), `real` (use native depth), or a positive integer seed (1-UINT32_MAX) for per-session depth variation. Guide: [Stack Depth Fingerprinting](docs/guides/fingerprint/STACK_DEPTH.md)
-- `--bot-network-info-override`: Enable profile-defined `navigator.connection` values (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers (`RTT`, `Downlink`, `ECT`, `Save-Data`). Disabled by default. Guide: [Navigator Properties](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md)
-- `--bot-gpu-emulation` (ENT Tier2, default true): Controls GPU rendering backend selection on Linux. Automatically detects and prefers system GPU/GL drivers when available for optimal performance. Set `--bot-gpu-emulation=false` to use your own GPU or GL driver directly.
+- `--bot-stack-seed` (ENT Tier2): Controls JavaScript recursive call stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile’s exact depth), `real` (use native depth), or a positive integer seed (1-UINT32_MAX) for per-session depth variation. Guide: [Stack Depth Fingerprinting](https://botbrowser.io/docs/fingerprint/stack-depth/)
+- `--bot-network-info-override`: Enable profile-defined `navigator.connection` values (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers (`RTT`, `Downlink`, `ECT`, `Save-Data`). Disabled by default. Guide: [Navigator Properties](https://botbrowser.io/docs/fingerprint/navigator-properties/)
+<a id="--bot-gpu-emulation"></a>
+- `--bot-gpu-emulation` (ENT Tier2, default `true`): Controls GPU emulation mode. Accepts `false` (disabled), `true` (standard mode, historical default), or `priority` (opt-in mode that adds prioritized GPU/WebGPU scheduling for high-concurrency workloads). Set `--bot-gpu-emulation=false` to use your own GPU or GL driver directly. Guide: [Linux GPU Backend Selection](https://botbrowser.io/docs/deployment/linux-gpu-backend/)
 
 Example tracking probe BotBrowser avoids when console forwarding stays disabled:
 
@@ -472,7 +486,7 @@ Verify that your privacy protection works effectively across platforms and netwo
 - `--bot-mirror-controller-endpoint=host:port` - Launch as controller (captures your actions)
 - `--bot-mirror-client-endpoint=host:port` - Launch as client (receives controller actions)
 
-**For complete setup instructions, examples, and troubleshooting, see the [Mirror documentation](tools/mirror/).** Guide: [Mirror Distributed](docs/guides/deployment/MIRROR_DISTRIBUTED.md)
+**For complete setup instructions, examples, and troubleshooting, see the [Mirror documentation](tools/mirror/).** Guide: [Mirror Distributed](https://botbrowser.io/docs/deployment/mirror-distributed/)
 
 ---
 
@@ -510,7 +524,7 @@ chromium-browser \
   --bot-profile="/absolute/path/to/profile.enc" \
   --bot-config-browser-brand="chrome" \  # ENT Tier2 feature
   --bot-config-window="profile" \
-  --bot-cookies='[{"name":"sessionid","value":"abc123","domain":".example.com"}]' \
+  --bot-cookies='[{"url":"https://example.com","name":"sessionid","value":"abc123","domain":".example.com"}]' \
   --bot-bookmarks='[{"title":"Work Site","url":"https://work.example.com","type":"url"}]' \
   --user-data-dir="/tmp/instance1" &
 
@@ -559,14 +573,14 @@ Placeholders like `{platform-version}` and `{model}` get replaced from flags or 
 
 **Android 16+ UA Reduction:** When `platform-version` is 16 or higher, BotBrowser automatically applies Google's [WebView UA reduction policy](https://developer.chrome.com/docs/privacy-security/user-agent-reduction). The UA string placeholders `{platform-version}`, `{model}`, and `{ua-full-version}` are frozen to reduced values (`10`, `K`, `Major.0.0.0`), while Client Hints continue to report the real values. The same `--user-agent` template works for both old and new Android versions without modification.
 
-Guide: [Android WebView](docs/guides/platform/ANDROID_WEBVIEW.md)
+Guide: [Android WebView](https://botbrowser.io/docs/platform/android-webview/)
 
 ---
 
 ## Related Documentation
 Quick links to supporting materials.
 
-- [Guides](docs/guides/) - Comprehensive guides for all BotBrowser features
+- [Guides](https://botbrowser.io/docs/) - Comprehensive guides for all BotBrowser features
 - [Profile Configuration Guide](profiles/PROFILE_CONFIGS.md) - Configure browser behavior via profiles
 - [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) - Independent fingerprint per BrowserContext
 - [Main README](README.md) - General usage and standard Chromium flags

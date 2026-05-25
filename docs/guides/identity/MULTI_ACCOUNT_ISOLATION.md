@@ -8,7 +8,7 @@
 
 ## Prerequisites
 
-- **BotBrowser binary** installed. See [INSTALLATION.md](../../../INSTALLATION.md).
+- **BotBrowser binary** installed. See [INSTALLATION.md](../../../INSTALLATION.md). Standard Build works for development and most workloads; **Trimmed Build** (ENT Tier3, enterprise channel) is recommended for high-density per-context fleets (62% lower wall time, 85% faster per-context creation on Linux x64). See [Trimmed Build](../../../TRIMMED_BUILD.md).
 - **Node.js** 18 or later with Playwright or Puppeteer.
 - **Multiple profile files** (`.enc` or `.json`). Download from [GitHub Releases](https://github.com/botswin/BotBrowser/releases).
 - **ENT Tier3 license** for full per-context fingerprint support.

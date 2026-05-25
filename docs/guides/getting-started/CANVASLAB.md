@@ -1,6 +1,6 @@
 # CanvasLab: Canvas Forensics and Tracking Analysis
 
-> Record Canvas 2D, WebGL, and WebGL2 API calls to study tracking techniques and verify fingerprint protection.
+> Record Canvas 2D, WebGL, WebGL2, and WebGPU API calls to study tracking techniques and verify fingerprint protection.
 
 ---
 
@@ -27,7 +27,7 @@ chromium-browser \
     "https://example.com"
 ```
 
-After the session, `/tmp/canvaslab.jsonl` contains every Canvas 2D, WebGL, and WebGL2 API call the page made. Open it in the [Replay Viewer](https://botswin.github.io/BotBrowser/tools/canvaslab/canvas_replay_viewer.html) to inspect calls interactively.
+After the session, `/tmp/canvaslab.jsonl` contains every Canvas 2D, WebGL, WebGL2, and WebGPU API call the page made. Open it in the [Replay Viewer](https://botswin.github.io/BotBrowser/tools/canvaslab/canvas_replay_viewer.html) to inspect calls interactively.
 
 ---
 
@@ -35,7 +35,7 @@ After the session, `/tmp/canvaslab.jsonl` contains every Canvas 2D, WebGL, and W
 
 ## How It Works
 
-When `--bot-canvas-record-file` is set, BotBrowser intercepts every Canvas API call at the browser engine level and writes it to a JSONL file. Each line is a JSON object representing one API call, including:
+When `--bot-canvas-record-file` is set, BotBrowser intercepts every Canvas API call at the browser engine level and writes it to a JSONL file. This covers Canvas 2D, WebGL, WebGL2, and WebGPU. Each line is a JSON object representing one API call, including:
 
 - **Event type**: `canvas_init`, `context_create`, `state`, `draw`, `read`, `resize`
 - **Full parameters**: all arguments serialized (ImageData as base64, Path2D as command arrays, gradients as color stops)
@@ -136,7 +136,7 @@ diff /tmp/canvaslab-linux.jsonl /tmp/canvaslab-macos.jsonl
 
 ## Next Steps
 
-- [CanvasLab Documentation](../../../tools/canvaslab/). Complete reference including recording format, event types, and replay viewer usage.
+- [CanvasLab Documentation](../../../tools/canvaslab/). Complete reference including recording format, event types, replay viewer usage, and canvas fingerprint replay.
 - [Canvas Fingerprinting](../fingerprint/CANVAS.md). Configure Canvas noise and rendering consistency.
 - [WebGL Fingerprinting](../fingerprint/WEBGL.md). Manage WebGL parameter control.
 - [CLI Flags Reference](../../../CLI_FLAGS.md#--bot-canvas-record-file). Flag documentation.

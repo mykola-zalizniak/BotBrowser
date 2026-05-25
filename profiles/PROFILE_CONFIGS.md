@@ -362,7 +362,7 @@ These fields work together with `--user-agent` CLI flag. BotBrowser auto-generat
 
 ## Best Practices
 
-Related guides: [Profile Management](../docs/guides/getting-started/PROFILE_MANAGEMENT.md), [Browser Brand Alignment](../docs/guides/identity/BROWSER_BRAND_ALIGNMENT.md), [Noise Seed Reproducibility](../docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md), [Proxy Configuration](../docs/guides/network/PROXY_CONFIGURATION.md)
+Related guides: [Profile Management](https://botbrowser.io/docs/getting-started/profile-management/), [Browser Brand Alignment](https://botbrowser.io/docs/identity/browser-brand-alignment/), [Noise Seed Reproducibility](https://botbrowser.io/docs/fingerprint/noise-seed-reproducibility/), [Proxy Configuration](https://botbrowser.io/docs/network/proxy-configuration/)
 
 ### Fingerprint Protection
 - **Screen coordination:** Always adjust **window size** and **screen size** together to avoid suspicious fingerprint gaps

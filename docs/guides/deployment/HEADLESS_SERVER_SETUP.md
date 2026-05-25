@@ -88,7 +88,7 @@ On a headless server, BotBrowser needs a few components that are normally presen
 
 2. **Virtual display (Xvfb).** Even in `--headless` mode, BotBrowser requires an X11 display server. Xvfb provides a virtual framebuffer that satisfies this requirement without a physical monitor. The `DISPLAY=:10.0` environment variable must be set for every BotBrowser process.
 
-3. **GPU rendering.** Servers typically lack a physical GPU. BotBrowser uses SwiftShader (a software-based GPU renderer bundled with the browser) automatically when no hardware GPU is available. This provides consistent WebGL and WebGPU output across server environments.
+3. **GPU rendering.** Servers typically lack a physical GPU, so BotBrowser relies on a software rendering backend for WebGL and WebGPU output. On current Chromium there are multiple software backends with different trade-offs: Mesa llvmpipe via ANGLE GL (recommended, keeps WebGL1/WebGL2/WebGPU available without unsafe-gated flags), SwiftShader (still functional but requires `--enable-unsafe-swiftshader` on current Chromium and is on a deprecation path), and Mesa lavapipe (Vulkan software rasterizer, not production-viable on Ubuntu 22.04 or inside Docker). Backend selection and flag migration are covered in [Linux GPU Backend Selection](LINUX_GPU_BACKEND.md).
 
 4. **Profile-based fingerprinting.** All fingerprint properties (screen resolution, fonts, GPU info, etc.) come from the profile file, not from the server hardware. This means a Windows profile running on an Ubuntu server produces identical fingerprint output.
 
@@ -206,7 +206,7 @@ Add to cron for periodic checks:
 |---------|----------|
 | Crash on startup with missing `.so` files | Install all required packages listed above. Run `ldd chromium-browser` to identify missing libraries. |
 | "Cannot open display" error | Ensure Xvfb is running and `DISPLAY=:10.0` is set. Verify with `echo $DISPLAY`. |
-| GPU process crashes in logs | Expected on servers without a GPU. BotBrowser falls back to SwiftShader automatically. Add `--disable-gpu` only if SwiftShader also fails. |
+| GPU process crashes in logs | Expected on servers without a GPU. Switch to the Mesa llvmpipe backend (`--use-angle=gl --bot-gpu-emulation=false`) for stable WebGL/WebGPU. Do **not** add `--disable-gpu` on current Chromium: it disables WebGPU adapter discovery and both WebGL contexts. See [Linux GPU Backend Selection](LINUX_GPU_BACKEND.md). |
 | Screenshot timeouts | Confirm the virtual display is running. Increase the Xvfb resolution if the profile's screen dimensions exceed 1920x1080. |
 | High memory usage with many instances | Each instance uses 200-500 MB. Use `--bot-profile-dir` for random profile selection instead of launching extra instances. |
 | "Operation not permitted" with `--no-sandbox` | Run as a non-root user, or use `--no-sandbox` when running as root inside containers. |
@@ -219,6 +219,7 @@ Add to cron for periodic checks:
 ## Next Steps
 
 - [Docker Deployment](DOCKER_DEPLOYMENT.md). Containerized setup with orchestration and scaling.
+- [Linux GPU Backend Selection](LINUX_GPU_BACKEND.md). Choose and migrate between Mesa llvmpipe, SwiftShader, and lavapipe software rendering backends on Linux.
 - [Performance Optimization](PERFORMANCE_OPTIMIZATION.md). Reduce resource usage and improve speed.
 - [Screenshot Best Practices](SCREENSHOT_BEST_PRACTICES.md). Capture screenshots correctly on headless servers.
 - [CLI Flags Reference](../../../CLI_FLAGS.md). Complete list of all available flags.

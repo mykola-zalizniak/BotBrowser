@@ -116,9 +116,9 @@ chromium-browser \
 
 | Problem | Solution |
 |---------|----------|
-| `requestAdapter()` returns `null` | On headless servers without a GPU, ensure GPU emulation is active (default). If you set `--bot-gpu-emulation=false`, the system needs Vulkan support (e.g., `mesa-vulkan-drivers`). |
+| `requestAdapter()` returns `null` | On headless Linux servers, ensure GPU emulation is active (default). If you set `--bot-gpu-emulation=false`, use `--use-angle=gl` with `libgl1-mesa-dri` installed so ANGLE picks up Mesa llvmpipe. Do not add `--disable-gpu`: it disables WebGPU adapter discovery on current Chromium. Full backend matrix in [Linux GPU Backend Selection](../deployment/LINUX_GPU_BACKEND.md). |
 | WebGPU shows host GPU info | Check that `--bot-config-webgpu` is set to `profile` (default) and not `real`. |
-| High CPU during WebGPU operations | Expected on software-rendered environments. See [Performance Optimization](../deployment/PERFORMANCE_OPTIMIZATION.md#gpu-rendering-backend-on-linux). |
+| High CPU during WebGPU operations | Expected on software-rendered environments. See [Linux GPU Backend Selection](../deployment/LINUX_GPU_BACKEND.md#cpu-profile) for CPU behavior across SwiftShader, Mesa llvmpipe, and lavapipe. |
 
 ---
 
@@ -128,7 +128,8 @@ chromium-browser \
 
 - [WebGL Fingerprint Protection](WEBGL.md). Control WebGL parameters and rendering consistency.
 - [Canvas Fingerprint Protection](CANVAS.md). Deterministic noise for Canvas 2D rendering.
-- [Performance Optimization](../deployment/PERFORMANCE_OPTIMIZATION.md). GPU backend selection on Linux servers.
+- [Linux GPU Backend Selection](../deployment/LINUX_GPU_BACKEND.md). Pick and migrate between Mesa llvmpipe, SwiftShader, and lavapipe software rendering backends on Linux servers.
+- [Performance Optimization](../deployment/PERFORMANCE_OPTIMIZATION.md). General performance tuning for production workloads.
 - [CLI Flags Reference](../../../CLI_FLAGS.md#profile-configuration-override-flags). Complete flag documentation.
 
 ---

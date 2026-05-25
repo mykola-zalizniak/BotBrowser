@@ -135,7 +135,7 @@ services:
 | Port conflict          | Change port mapping in `docker-compose.yml` |
 | Data persistence issue | Ensure `user-data-dir` is writable          |
 
-For other issues, see the main README or open a GitHub issue. Guide: [Docker Deployment](../docs/guides/deployment/DOCKER_DEPLOYMENT.md), [Headless Server Setup](../docs/guides/deployment/HEADLESS_SERVER_SETUP.md)
+For other issues, see the main README or open a GitHub issue. Guide: [Docker Deployment](https://botbrowser.io/docs/deployment/docker-deployment/), [Headless Server Setup](https://botbrowser.io/docs/deployment/headless-server-setup/)
 
 ---
 

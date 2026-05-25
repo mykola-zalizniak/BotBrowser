@@ -3,6 +3,94 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-05-25]
+### Major
+- **Chromium Core → 148.0.7778.180**: Updated to Chrome 148 stable (148.0.7778.180). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **Custom DNS Server for LocalDNS**: `--bot-local-dns` now accepts an explicit DNS server address (for example `--bot-local-dns=8.8.8.8` or `--bot-local-dns=127.0.0.1:5353`) so per-context name resolution can be pointed at a chosen DNS server.
+
+### Improvements
+- **WebRTC Proxy Exit Consistency**: WebRTC public candidates now consistently reflect the per-context proxy exit IP across HTTP and SOCKS proxies, keeping `icecandidate` events and SDP aligned with the proxy identity.
+- **WebRTC TURN Connectivity**: TURN relay candidates are now serialized with their original relay address, improving compatibility with sites that rely on TURN-only WebRTC paths.
+- **Per-Context History Parity**: `--bot-inject-random-history` behaves identically through the main launch path and per-context `BotBrowser.setBrowserContextFlags`, producing the same `history.length` regardless of how the context is created.
+- **High-Concurrency Context Creation**: `Target.createBrowserContext` scales consistently under high-concurrency workloads where many contexts are created back to back.
+
+### Fixes
+- **`navigator.mediaDevices` Stability**: Resolved unexpected behavior on certain Windows profiles when sites enumerated `navigator.mediaDevices`.
+
+
+## [2026-05-17]
+### Improvements
+- **Cross-Origin Frame Consistency**: Permission state in cross-origin frames now aligns with real Chrome behavior.
+- **Canvas Replay Stability**: Canvas fingerprint replay is now stable across text rendering paths.
+- **Trimmed Build Performance**: Trimmed Build on Linux x64 delivers further reductions in context creation time and CPU usage.
+
+
+## [2026-05-15]
+### Major
+- **Chromium Core → 148.0.7778.168**: Updated to Chrome 148 stable (148.0.7778.168). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **Per-Context Proxy Stability**: `setBrowserContextFlags` now preserves the context proxy route when a later call only supplies `--proxy-ip`. Existing proxies configured via `Target.createBrowserContext` stay active, and explicit `--proxy-server` overrides still replace the route for new targets.
+- **Canvas Fingerprint Replay**: Full WebGPU canvas recording and kernel-side replay are now production-ready. Canvas operations across 2D, WebGL, and WebGPU are recorded, matched by operation hash at runtime, and returned from profile data rather than live GPU execution.
+
+
+## [2026-05-09]
+### Major
+- **Chromium Core → 148.0.7778.120**: Updated to Chrome 148 stable (148.0.7778.120). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **WebGPU Profile Consistency**: Corrected `device.features` enumeration, feature ordering, WGSL language feature ordering, and experimental feature isolation in `--bot-config-webgpu=profile` and `real` modes to match current Chrome behavior.
+
+
+## [2026-05-07]
+### New
+- **GPU Emulation Priority Mode (`--bot-gpu-emulation=priority`)**: New opt-in `priority` mode for `--bot-gpu-emulation` that prioritizes GPU and WebGPU scheduling, keeping workloads responsive when running many concurrent browser contexts. Default behavior remains unchanged; opt in with `--bot-gpu-emulation=priority`.
+
+
+## [2026-05-05]
+### Major
+- **Chromium Core → 148.0.7778.97**: Updated to Chrome 148 Early Stable Release (148.0.7778.97). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+
+## [2026-05-02]
+### Major
+- **Chromium Core → 147.0.7727.139**: Updated to Chrome 147 stable (147.0.7727.139). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **GeoIP Database Upgrade**: Geolocation database now uses multi-source fusion for improved coverage and accuracy across residential, mobile, and datacenter IP ranges.
+
+
+## [2026-05-01]
+### Major
+- **Chromium Core → 147.0.7727.138**: Updated to Chrome 147 stable (147.0.7727.138). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **Internal Stability Hardening**: Strengthened resilience for rare edge cases across custom header validation, WebGL canvas readback, and network context recovery paths.
+
+- **Timezone Auto-Detection Resilience**: Improved `Intl` timezone fallback under unstable proxy networks, ensuring auto-detection more reliably reflects the proxy exit location.
+
+
+## [2026-04-28]
+### Major
+- **Chromium Core → 147.0.7727.118**: Updated to Chrome 147 stable (147.0.7727.118). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **GeoIP Database Refresh**: Updated geolocation database with refined country-timezone mappings for improved location accuracy.
+
+
+## [2026-04-27]
+### Major
+- **Chromium Core → 147.0.7727.117**: Updated to Chrome 147 stable (147.0.7727.117). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **Device Posture Consistency**: `navigator.devicePosture` and the `device-posture` CSS media query now return profile-defined values for foldable and standard device profiles.
+
+### Improvements
+- **Non-Chrome Brand Background Traffic**: Edge, Opera, Brave, and other non-Chrome brand profiles no longer emit Chrome-specific background requests, keeping HTTP-layer behavior consistent with the chosen brand.
+
+
 ## [2026-04-16]
 ### Major
 - **Chromium Core → 147.0.7727.102**: Updated to Chrome 147 stable (147.0.7727.102). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.

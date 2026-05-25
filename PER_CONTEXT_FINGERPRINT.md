@@ -2,6 +2,8 @@
 
 Run multiple independent fingerprint identities within a single browser instance. Shared GPU/Network/Browser processes. Reduced resource overhead.
 
+> **Pairs with Trimmed Build (ENT Tier3).** Per-Context Fingerprint and [Trimmed Build](TRIMMED_BUILD.md) compose. Per-Context Fingerprint cuts memory and process count at scale; Trimmed Build cuts per-context spin-up by 85% and CPU peak by 68% on Linux x64. Together they form the densest deployment shape BotBrowser ships.
+
 ## The Problem
 
 Traditional approaches require launching a separate browser instance for each fingerprint profile. This architecture has significant overhead due to Chromium's multi-process design.
@@ -204,7 +206,7 @@ await Promise.all([
 
 Pass the proxy via context creation options, and set `--proxy-ip` via CDP to skip IP lookups.
 
-> **Note**: Puppeteer uses `proxyServer`, Playwright uses `proxy: { server }`. See [examples/](examples/) for framework-specific syntax.
+> **Note**: Puppeteer uses `proxyServer`, Playwright uses `proxy: { server }`. See [examples/](examples/) for framework-specific syntax. `--proxy-ip` only updates the exit IP for geo-detection. When calling `setBrowserContextFlags` with only `--proxy-ip` (no `--proxy-server`), the proxy routing set via `createBrowserContext({ proxyServer })` is preserved.
 
 ```javascript
 // Puppeteer example
@@ -339,9 +341,15 @@ See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
 
 ⚠️ Each context can load a completely different profile (`--bot-profile`), or use `--bot-config-*` flags to override specific settings from the browser's base profile.
 
+⚠️ Proxy merge semantics are explicit: `--proxy-server` in `botbrowserFlags` sets or replaces the context proxy route, while `--proxy-ip` only supplies the exit IP for geo-detection. If a context was created with `createBrowserContext({ proxyServer })`, a later `setBrowserContextFlags` call with only `--proxy-ip` preserves that proxy route.
+
+## High-Concurrency Tuning
+
+When running many per-context fingerprints under one browser instance (for example, 20+ concurrent BrowserContexts), launch with [`--bot-gpu-emulation=priority`](CLI_FLAGS.md#--bot-gpu-emulation) to prioritize GPU and WebGPU command-buffer scheduling across sibling contexts. Default behavior is unchanged; this is an opt-in mode for high-concurrency workloads. See [`--bot-gpu-emulation` modes](docs/guides/deployment/LINUX_GPU_BACKEND.md#gpu-emulation-modes).
+
 ## Related Documentation
 
-- [Guides](docs/guides/) - Comprehensive guides for all BotBrowser features
+- [Guides](https://botbrowser.io/docs/) - Comprehensive guides for all BotBrowser features
 - [CLI Flags Reference](CLI_FLAGS.md)
 - [Advanced Features](ADVANCED_FEATURES.md)
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md)
@@ -350,7 +358,7 @@ See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
 - [Per-Context Proxy Example (Puppeteer)](examples/puppeteer/per_context_proxy.js)
 - [Per-Context Proxy Example (Playwright)](examples/playwright/nodejs/per_context_proxy.js)
 
-Related guides: [Multi-Account Isolation](docs/guides/identity/MULTI_ACCOUNT_ISOLATION.md), [Per-Context Proxy](docs/guides/network/PER_CONTEXT_PROXY.md), [Dynamic Proxy Switching](docs/guides/network/DYNAMIC_PROXY_SWITCHING.md)
+Related guides: [Multi-Account Isolation](https://botbrowser.io/docs/identity/multi-account-isolation/), [Per-Context Proxy](https://botbrowser.io/docs/network/per-context-proxy/), [Dynamic Proxy Switching](https://botbrowser.io/docs/network/dynamic-proxy-switching/)
 
 ---
 

@@ -92,7 +92,7 @@ for (let i = 0; i < 20; i++) {
 
 **Chrome DevTools Protocol:** https://chromedevtools.github.io/devtools-protocol/
 
-Guide: [Bot Script](../../docs/guides/getting-started/BOT_SCRIPT.md)
+Guide: [Bot Script](https://botbrowser.io/docs/getting-started/bot-script/)
 
 ---
 

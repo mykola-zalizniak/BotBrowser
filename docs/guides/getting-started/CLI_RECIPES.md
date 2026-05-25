@@ -297,7 +297,7 @@ chromium-browser \
 ```bash
 chromium-browser \
   --bot-profile="/path/to/profile.enc" \
-  --bot-cookies='[{"name":"session","value":"abc123","domain":".example.com"}]' \
+  --bot-cookies='[{"url":"https://example.com","name":"session","value":"abc123","domain":".example.com"}]' \
   --user-data-dir="$(mktemp -d)"
 ```
 

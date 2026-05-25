@@ -33,7 +33,7 @@ You can provide cookies as inline JSON directly in the flag value, or load them 
 ```bash
 chromium-browser \
   --bot-profile="/path/to/profile.enc" \
-  --bot-cookies='[{"name":"session_id","value":"abc123","domain":".example.com"}]'
+  --bot-cookies='[{"url":"https://example.com","name":"session_id","value":"abc123","domain":".example.com"}]'
 ```
 
 ### From a file
@@ -56,7 +56,7 @@ The file should contain a JSON array of cookie objects.
 
 2. **Cookie injection.** Cookies are injected into the browser's cookie store before any page navigation occurs. This means the first HTTP request already includes the injected cookies.
 
-3. **Domain matching.** Each cookie must include a `domain` field. The browser only sends cookies to matching domains, following standard cookie rules.
+3. **Domain matching.** Each cookie must include a `url` field. The browser uses it to set the cookie origin and only sends cookies to matching domains, following standard cookie rules.
 
 ### Cookie Format
 
@@ -64,14 +64,15 @@ Each cookie object supports these fields:
 
 | Field | Required | Description |
 |-------|----------|-------------|
+| `url` | Yes | Full URL used to set the cookie (e.g., `https://example.com`). Required for the cookie to be accepted. |
 | `name` | Yes | Cookie name. |
 | `value` | Yes | Cookie value. |
-| `domain` | Yes | Domain the cookie belongs to. Prefix with `.` for subdomains (e.g., `.example.com`). |
+| `domain` | No | Domain the cookie belongs to. Prefix with `.` for subdomains (e.g., `.example.com`). |
 | `path` | No | Cookie path. Defaults to `/`. |
-| `secure` | No | Whether the cookie requires HTTPS. Defaults to `false`. |
+| `secure` | No | Whether the cookie requires HTTPS. Defaults to `true`. |
 | `httpOnly` | No | Whether the cookie is HTTP-only (not accessible via JavaScript). Defaults to `false`. |
-| `sameSite` | No | SameSite attribute: `Strict`, `Lax`, or `None`. |
-| `expires` | No | Expiration time as a Unix timestamp (seconds since epoch). |
+| `sameSite` | No | SameSite attribute: `strict`, `lax`, or `none`. |
+| `expirationDate` | No | Expiration time as a Unix timestamp (seconds since epoch). |
 
 ---
 
@@ -79,13 +80,14 @@ Each cookie object supports these fields:
 
 ## Common Scenarios
 
-### Pre-authenticated session
+### Pre-authenticated session (Playwright)
 
 ```javascript
 import { chromium } from "playwright-core";
 
 const cookies = JSON.stringify([
   {
+    url: "https://example.com",
     name: "session_id",
     value: "abc123def456",
     domain: ".example.com",
@@ -94,6 +96,7 @@ const cookies = JSON.stringify([
     httpOnly: true,
   },
   {
+    url: "https://example.com",
     name: "user_prefs",
     value: "theme=dark",
     domain: ".example.com",
@@ -115,16 +118,55 @@ await page.goto("https://example.com/dashboard"); // Loads as authenticated user
 await browser.close();
 ```
 
+### Pre-authenticated session (Puppeteer)
+
+With Puppeteer, use `browser.defaultBrowserContext()` to access the context that `--bot-cookies` injects into. `context.cookies()` returns all cookies for the context without a URL argument.
+
+```javascript
+import puppeteer from "puppeteer-core";
+
+const cookies = JSON.stringify([
+  {
+    url: "https://example.com",
+    name: "session_id",
+    value: "abc123def456",
+    domain: ".example.com",
+    path: "/",
+    secure: true,
+    httpOnly: true,
+  },
+]);
+
+const browser = await puppeteer.launch({
+  executablePath: process.env.BOTBROWSER_EXEC_PATH,
+  headless: true,
+  args: [
+    "--bot-profile=/path/to/profile.enc",
+    `--bot-cookies=${cookies}`,
+  ],
+});
+
+const context = browser.defaultBrowserContext();
+const page = await context.newPage();
+await page.goto("https://example.com/dashboard");
+
+const injectedCookies = await context.cookies();
+console.log(injectedCookies);
+
+await browser.close();
+```
+
 ### Cookie consent pre-set
 
 ```javascript
 const consentCookies = JSON.stringify([
   {
+    url: "https://example.com",
     name: "cookie_consent",
     value: "accepted",
     domain: ".example.com",
     path: "/",
-    expires: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
+    expirationDate: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
   },
 ]);
 
@@ -145,6 +187,7 @@ Create a `cookies.json` file:
 ```json
 [
   {
+    "url": "https://example.com",
     "name": "session_id",
     "value": "abc123",
     "domain": ".example.com",
@@ -153,6 +196,7 @@ Create a `cookies.json` file:
     "httpOnly": true
   },
   {
+    "url": "https://example.com",
     "name": "locale",
     "value": "en-US",
     "domain": ".example.com",
@@ -175,7 +219,7 @@ When building the `--bot-cookies` flag in JavaScript, do not wrap the JSON value
 
 ```javascript
 // Correct
-const cookies = [{ name: "sid", value: "abc", domain: ".example.com" }];
+const cookies = [{ url: "https://example.com", name: "sid", value: "abc", domain: ".example.com" }];
 args.push("--bot-cookies=" + JSON.stringify(cookies));
 
 // Wrong - extra quotes become part of the value
@@ -190,6 +234,8 @@ args.push(`--bot-cookies='${JSON.stringify(cookies)}'`);
 
 | Problem | Solution |
 |---------|----------|
+| Cookies not injected (silently skipped) | Each cookie object must include a `url` field (e.g., `"url": "https://example.com"`). Without it, the cookie is silently dropped. |
+| Puppeteer: `context.cookies()` returns empty | Use `browser.defaultBrowserContext()`. Cookies from `--bot-cookies` are injected into the default context only, not into contexts created with `browser.createBrowserContext()`. |
 | Cookies not sent with requests | Verify the `domain` field matches the target site. Use `.example.com` (with leading dot) to include subdomains. |
 | "Invalid JSON" error | Check that the cookie value is a valid JSON array. Use a JSON validator if needed. |
 | File not found | When using `@/path/to/file.json`, ensure the path is absolute. |

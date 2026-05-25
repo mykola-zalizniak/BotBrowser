@@ -49,9 +49,41 @@ BotBrowser performance is influenced by several factors:
 
 2. **Profile loading.** Each profile contains fingerprint data (fonts, GPU info, screen properties) that controls the browser's protected identity. Loading happens once at startup. Keeping profiles on fast local storage (SSD) reduces startup time.
 
-3. **GPU rendering.** On servers without a physical GPU, BotBrowser automatically selects the best available software rendering backend. If your system has GPU or GL drivers installed (e.g., Mesa on Linux), BotBrowser will use them for better performance. Otherwise it falls back to its built-in software renderer. You can control this with [`--bot-gpu-emulation`](../../../CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2).
+3. **GPU rendering.** On servers without a physical GPU, BotBrowser automatically selects the best available software rendering backend. If your system has GPU or GL drivers installed (e.g., Mesa on Linux), BotBrowser will use them for better performance. Otherwise it falls back to its built-in software renderer. You can control this with [`--bot-gpu-emulation`](../../../CLI_FLAGS.md#--bot-gpu-emulation) (ENT Tier2). For Linux-specific backend selection (Mesa llvmpipe vs SwiftShader vs lavapipe) and the flags to remove when migrating off `--disable-gpu`, see [Linux GPU Backend Selection](LINUX_GPU_BACKEND.md).
 
-4. **Browser contexts.** Creating multiple BrowserContexts within a single browser process is more efficient than launching separate browser instances. Each context can have its own fingerprint via Per-Context Fingerprint (ENT Tier3).
+4. **Browser contexts.** Creating multiple BrowserContexts within a single browser process is more efficient than launching separate browser instances. Each context can have its own fingerprint via Per-Context Fingerprint (ENT Tier3). For workloads running many concurrent BrowserContexts under one browser, opt in to `--bot-gpu-emulation=priority` to prioritize GPU and WebGPU command-buffer scheduling across sibling contexts. See [`--bot-gpu-emulation` modes](LINUX_GPU_BACKEND.md#gpu-emulation-modes).
+
+5. **Build selection.** For short-session, high-concurrency automation, **Trimmed Build** (ENT Tier3) reduces context startup latency, first navigation, CPU peak, and shared memory pressure compared to Standard Build, while preserving the same fingerprint protection model. See [When to Consider Trimmed Build](#when-to-consider-trimmed-build).
+
+---
+
+<a id="when-to-consider-trimmed-build"></a>
+
+## When to Consider Trimmed Build
+
+BotBrowser ships two builds. **Standard Build** is the default public release and stays the right choice for long-running, interactive workflows. **Trimmed Build** is an ENT Tier3 distribution tuned for short-session, high-concurrency automation. Both share the same fingerprint protection model, profile format, CLI flag surface, and CDP commands; you do not change automation code when you switch.
+
+The Linux x64 benchmark (400 official samples, `1..20 contexts × 10 repeats × 2 builds`) shows Trimmed Build versus Standard Build:
+
+| Dimension | Trimmed delta | What it drives |
+|---|---:|---|
+| Wall time | **-61.85%** mean, **-67.79%** p95 | Total throughput per shift |
+| Per-context creation | **-85.32%** mean, **-87.51%** p95 | How fast a fleet can rotate contexts |
+| Per-context first nav | **-38.71%** mean | Time to first useful work in each context |
+| CPU peak | **-67.81%** mean | How many concurrent contexts a host can sustain |
+| PSS peak | **-31.25%** mean | Shared memory headroom under bursty load |
+| Success rate | unchanged at 100% | Stability and cleanup are not regressed |
+
+Choose Trimmed Build when at least one of the following is true:
+
+- **Context spin-up dominates wall time.** Short-session privacy testing, single-page consistency checks, and high-rotation per-context fleets. The `-85%` creation delta is the headline.
+- **CPU peak per context is the bottleneck.** Hosts already at high CPU utilization recover headroom directly.
+- **Shared memory (PSS/USS) is the binding constraint.** Memory-pressured hosts see `-31%` to `-38%` peak headroom returned.
+- **Workloads rotate through many identities per hour.** Each context lives seconds to minutes before the next identity takes over.
+
+Stay on Standard Build when sessions are long-running and interactive, when the workload exercises the full browser feature surface, or when the host has plenty of CPU and memory headroom and per-context spin-up is not the bottleneck.
+
+Trimmed Build is not on the public [Releases](https://github.com/botswin/BotBrowser/releases) page; it ships through the enterprise distribution channel. Product overview, engineering design, and FAQ: [TRIMMED_BUILD.md](../../../TRIMMED_BUILD.md). Full benchmark table and per-context matrix: [BENCHMARK.md#trimmed-build](../../../BENCHMARK.md#trimmed-build). Access: [Enterprise](https://botbrowser.io/enterprise/) or [Pricing](https://botbrowser.io/pricing/).
 
 ---
 

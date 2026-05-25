@@ -10,10 +10,12 @@
 
 - **Docker** 20.10 or later.
 - **Docker Compose** v2 (optional, for multi-instance setups).
-- **BotBrowser Ubuntu `.deb` package** from [GitHub Releases](https://github.com/botswin/BotBrowser/releases).
+- **BotBrowser Ubuntu `.deb` package** from [GitHub Releases](https://github.com/botswin/BotBrowser/releases) for the **Standard Build**, or from the enterprise distribution for **Trimmed Build** (ENT Tier3).
 - **A profile file** (`.enc` for production).
 
 > **Note:** Ubuntu/Linux binaries require an ENT Plan Tier 1 or higher subscription.
+>
+> **Trimmed Build for container fleets**: For container farms running short-session, high-concurrency automation, Trimmed Build cuts per-context spin-up by 85% and CPU peak by 68% versus Standard Build on Linux x64, returning headroom directly to the container's CPU and memory budgets. Profile, CLI, and CDP behavior are identical; you can build images against Standard Build locally and swap in the Trimmed `.deb` in production. Product overview: [TRIMMED_BUILD.md](../../../TRIMMED_BUILD.md). See [Choosing a Build](../../../INSTALLATION.md#choosing-a-build).
 
 ---
 
@@ -274,6 +276,7 @@ docker run -d --shm-size=2g botbrowser:latest ...
 ## Next Steps
 
 - [Headless Server Setup](HEADLESS_SERVER_SETUP.md). Bare-metal Ubuntu deployment without Docker.
+- [Linux GPU Backend Selection](LINUX_GPU_BACKEND.md). Choose the right Mesa or SwiftShader path inside containers, with a Dockerfile fragment for Mesa llvmpipe.
 - [Performance Optimization](PERFORMANCE_OPTIMIZATION.md). Tune resource usage for production workloads.
 - [Playwright Guide](../getting-started/PLAYWRIGHT.md). Integrate with Playwright for automation.
 - [CLI Flags Reference](../../../CLI_FLAGS.md). Complete list of all available flags.

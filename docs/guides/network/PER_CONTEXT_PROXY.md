@@ -120,18 +120,22 @@ const ctxB = await browser.createBrowserContext({
 
 ### Using --proxy-ip to Skip Detection
 
-When you know the exit IP for each proxy, pass it via `--proxy-ip` to skip the auto-detection step. This eliminates the one-time IP lookup overhead per context:
+When you know the exit IP for each proxy, pass it via `--proxy-ip` to skip the auto-detection step. This eliminates the one-time IP lookup overhead per context. The proxy routing set via `createBrowserContext({ proxyServer })` is preserved:
 
 ```javascript
+const ctx = await browser.createBrowserContext({
+  proxyServer: "socks5://user:pass@proxy.example.com:1080",
+});
 await client.send("BotBrowser.setBrowserContextFlags", {
   browserContextId: ctx._contextId,
   botbrowserFlags: [
     "--bot-profile=/path/to/profile.enc",
-    "--proxy-server=socks5://user:pass@proxy.example.com:1080",
     "--proxy-ip=203.0.113.1",
   ],
 });
 ```
+
+> **Note**: `--proxy-ip` only updates the exit IP used for geo-detection. Omitting `--proxy-server` in `setBrowserContextFlags` does not clear proxy routing already set via `createBrowserContext({ proxyServer })`. If the context was created without `proxyServer`, pass `--proxy-server` in `botbrowserFlags` to set the per-context proxy route.
 
 ---
 
@@ -222,6 +226,7 @@ await client.send("BotBrowser.setBrowserContextFlags", {
 | Geo signals identical across contexts | Each context needs a different proxy. Verify proxies resolve to different IPs. |
 | `setBrowserContextFlags` not found | Send CDP commands to the browser-level session, not a page-level session. |
 | Flags not taking effect | Call `setBrowserContextFlags` before creating any page in the context. |
+| Proxy seems lost after calling `setBrowserContextFlags` with `--proxy-ip` | Passing only `--proxy-ip` does not clear the proxy set via `createBrowserContext`. If no proxy was set during context creation, pass `--proxy-server` in `botbrowserFlags`; if the proxy still disappears, ensure you are on a current binary. |
 | Need to change proxy after context creation | Use `BotBrowser.setBrowserContextProxy` (ENT Tier3) for runtime switching. See [Dynamic Proxy Switching](DYNAMIC_PROXY_SWITCHING.md). |
 
 ---

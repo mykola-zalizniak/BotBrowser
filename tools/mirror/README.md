@@ -160,7 +160,7 @@ All coordinates transmitted over the network are relative to the browser window'
 
 ---
 
-Guide: [Mirror Distributed](../../docs/guides/deployment/MIRROR_DISTRIBUTED.md)
+Guide: [Mirror Distributed](https://botbrowser.io/docs/deployment/mirror-distributed/)
 
 ---
 

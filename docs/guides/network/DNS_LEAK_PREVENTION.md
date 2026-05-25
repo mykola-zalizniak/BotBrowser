@@ -63,7 +63,18 @@ BotBrowser provides two layers of DNS leak protection:
 
 ```bash
 --bot-local-dns
+--bot-local-dns=true
+--bot-local-dns=8.8.8.8
+--bot-local-dns=127.0.0.1:5353
 ```
+
+Accepted values:
+
+- Bare flag or `true`: resolve proxy targets through the browser's built-in resolver.
+- `false`: disable LocalDNS and let the proxy resolve names.
+- `IP` or `IP:port`: resolve proxy targets through the specified DNS server only. Port defaults to `53`. Invalid values are treated as `false`.
+
+When a custom DNS server is configured, BotBrowser does not use the system resolver if the chosen DNS returns no answer.
 
 **DNS prefetch protection.** BotBrowser routes DNS prefetch queries through the same proxy tunnel to prevent leaking outside the configured path.
 

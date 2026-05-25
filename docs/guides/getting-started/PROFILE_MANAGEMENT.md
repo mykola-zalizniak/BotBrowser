@@ -204,7 +204,7 @@ Use one profile with different session settings to create distinct user sessions
 chromium-browser \
   --bot-profile="/path/to/profile.enc" \
   --proxy-server=socks5://user:pass@us-proxy.example.com:1080 \
-  --bot-cookies='[{"name":"session","value":"us-user","domain":".example.com"}]' \
+  --bot-cookies='[{"url":"https://example.com","name":"session","value":"us-user","domain":".example.com"}]' \
   --user-data-dir="$(mktemp -d)" &
 
 # Session 2: German user
@@ -213,7 +213,7 @@ chromium-browser \
   --proxy-server=socks5://user:pass@de-proxy.example.com:1080 \
   --bot-config-timezone=Europe/Berlin \
   --bot-config-locale=de-DE \
-  --bot-cookies='[{"name":"session","value":"de-user","domain":".example.com"}]' \
+  --bot-cookies='[{"url":"https://example.com","name":"session","value":"de-user","domain":".example.com"}]' \
   --user-data-dir="$(mktemp -d)" &
 ```
 
