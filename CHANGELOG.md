@@ -3,6 +3,23 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-05-25]
+### Major
+- **Chromium Core → 148.0.7778.180**: Updated to Chrome 148 stable (148.0.7778.180). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **Custom DNS Server for LocalDNS**: `--bot-local-dns` now accepts an explicit DNS server address (for example `--bot-local-dns=8.8.8.8` or `--bot-local-dns=127.0.0.1:5353`) so per-context name resolution can be pointed at a chosen DNS server.
+
+### Improvements
+- **WebRTC Proxy Exit Consistency**: WebRTC public candidates now consistently reflect the per-context proxy exit IP across HTTP and SOCKS proxies, keeping `icecandidate` events and SDP aligned with the proxy identity.
+- **WebRTC TURN Connectivity**: TURN relay candidates are now serialized with their original relay address, improving compatibility with sites that rely on TURN-only WebRTC paths.
+- **Per-Context History Parity**: `--bot-inject-random-history` behaves identically through the main launch path and per-context `BotBrowser.setBrowserContextFlags`, producing the same `history.length` regardless of how the context is created.
+- **High-Concurrency Context Creation**: `Target.createBrowserContext` scales consistently under high-concurrency workloads where many contexts are created back to back.
+
+### Fixes
+- **`navigator.mediaDevices` Stability**: Resolved unexpected behavior on certain Windows profiles when sites enumerated `navigator.mediaDevices`.
+
+
 ## [2026-05-17]
 ### Improvements
 - **Cross-Origin Frame Consistency**: Permission state in cross-origin frames now aligns with real Chrome behavior.

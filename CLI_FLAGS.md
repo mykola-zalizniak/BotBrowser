@@ -153,11 +153,23 @@ Enable the local DNS solver. This keeps DNS resolution local instead of relying 
 
 ```bash
 --bot-local-dns
+--bot-local-dns=true
+--bot-local-dns=false
+--bot-local-dns=8.8.8.8
+--bot-local-dns=127.0.0.1:5353
 ```
+
+Accepted values:
+- bare flag or `true`: resolve proxy targets locally using the browser's built-in resolver
+- `false`: disable LocalDNS and let the proxy resolve names
+- `IP` or `IP:port`: resolve proxy targets through the specified DNS server only. Port defaults to `53`. Invalid values are treated as `false`.
+
+When a custom DNS server is configured, BotBrowser does not use the system resolver if the chosen DNS returns no answer.
 
 Practical notes:
 - Helps when a proxy provider blocks or rewrites DNS lookups
 - Useful when you want to avoid provider-side DNS policies and keep resolution behavior protected across runs
+- `IP[:port]` is recommended for deterministic environments where the upstream DNS must be explicit
 
 Guide: [DNS Leak Prevention](https://botbrowser.io/docs/network/dns-leak-prevention/)
 
@@ -168,7 +180,7 @@ Customize the public IP service used to discover your egress IP (and derive geo 
 --bot-ip-service="https://ip.example.com"
 ```
 
-You can provide multiple endpoints as a comma-separated list. BotBrowser will race them and use the fastest successful response.
+You can provide multiple endpoints as a comma-separated list. For each navigation, BotBrowser uses a single endpoint at a time and only moves to the next one when the previous one is unavailable, keeping the public-IP source stable across the request lifecycle.
 
 ```bash
 --bot-ip-service="https://ip1.example.com,https://ip2.example.com"
