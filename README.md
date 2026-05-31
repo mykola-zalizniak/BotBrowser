@@ -191,6 +191,7 @@ Product overview, engineering design, FAQ: [TRIMMED_BUILD.md](TRIMMED_BUILD.md).
 | Mirror: distributed privacy consistency | [Mirror Documentation](tools/mirror/) | [Guide](https://botbrowser.io/docs/deployment/mirror-distributed/) |
 | CanvasLab: Canvas 2D / WebGL / WebGL2 recorder | [--bot-canvas-record-file](CLI_FLAGS.md#--bot-canvas-record-file) | [Guide](https://botbrowser.io/docs/proof/canvaslab/) |
 | AudioLab: Web Audio API recorder | [--bot-audio-record-file](CLI_FLAGS.md#--bot-audio-record-file) | [Guide](https://botbrowser.io/docs/proof/audiolab/) |
+| V8Log Forensics | [--bot-v8-log](CLI_FLAGS.md#--bot-v8-log) | [Guide](docs/guides/getting-started/V8LOG.md) · [Tool](tools/v8log/) |
 
 ### Session & Behavior
 

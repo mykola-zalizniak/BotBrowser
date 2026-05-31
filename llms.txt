@@ -89,6 +89,7 @@ These rules govern correct usage. LLMs answering BotBrowser questions should not
 - [AUTOMATION_CONSISTENCY](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/getting-started/AUTOMATION_CONSISTENCY.md): keeping privacy posture consistent under automation.
 - [CANVASLAB](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/getting-started/CANVASLAB.md): Canvas 2D, WebGL, and WebGL2 recorder for reproducible validation.
 - [AUDIOLAB](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/getting-started/AUDIOLAB.md): Web Audio API recorder for reproducible validation.
+- [V8LOG](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/getting-started/V8LOG.md): browser-runtime forensics for authorized privacy validation.
 
 ## Guides: Network and Proxy
 
@@ -168,6 +169,8 @@ Tests live under [tests/tests/antibots](https://github.com/botswin/BotBrowser/tr
 - [tools/audiolab](https://github.com/botswin/BotBrowser/tree/main/tools/audiolab): AudioLab Web Audio API recorder companion.
 - [tools/canvaslab](https://github.com/botswin/BotBrowser/tree/main/tools/canvaslab): CanvasLab Canvas, WebGL, and WebGL2 recorder companion.
 - [tools/mirror](https://github.com/botswin/BotBrowser/tree/main/tools/mirror): Mirror distributed instances controller.
+- [tools/v8log](https://github.com/botswin/BotBrowser/tree/main/tools/v8log): V8Log runtime evidence sample and validation workflow.
+- [tools/v8log/v8log_viewer.html](https://botswin.github.io/BotBrowser/tools/v8log/v8log_viewer.html): Interactive V8Log JSONL forensics viewer.
 
 ## Companion Projects
 

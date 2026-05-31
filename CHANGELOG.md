@@ -3,6 +3,23 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-05-31]
+### Major
+- **Chromium Core -> 148.0.7778.217**: Updated to Chrome 148 stable (148.0.7778.217). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **V8Log Forensics (`--bot-v8-log`, `--bot-v8-log-dir`)**: Added gated browser-runtime forensics for authorized privacy validation, helping teams review runtime signal collection without changing normal browsing behavior.
+
+### Improvements
+- **Cross-Platform Profile Consistency**: Improved profile fidelity across desktop and mobile profiles so the same profile behaves more consistently across macOS, Windows, and Linux hosts.
+- **Per-Context Isolation**: Strengthened per-context behavior for profile-specific capabilities, storage, permissions, browser identity, theme preference, and proxy settings.
+- **Speech and Device Capability Consistency**: Improved profile-backed speech, device, and network capability behavior across main sessions and per-context sessions.
+- **Rendering and Media Stability**: Improved font, canvas, WebGL, media capability, and browser-engine compatibility coverage for profile-backed sessions.
+- **Mobile Profile Parity**: Improved Android profile behavior across target-platform policy, device capability, storage, focus, sensor, and locale-related surfaces.
+- **Network and Proxy Reliability**: Improved proxy-authenticated navigation reliability across redirects and tunnel setup while keeping credentials scoped to the proxy layer.
+- **Release Validation Coverage**: Expanded deterministic release gates and focused validation for profile replay, browser-context isolation, and engine-specific network behavior.
+
+
 ## [2026-05-25]
 ### Major
 - **Chromium Core → 148.0.7778.180**: Updated to Chrome 148 stable (148.0.7778.180). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.

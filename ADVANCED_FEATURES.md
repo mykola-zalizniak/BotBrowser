@@ -495,6 +495,7 @@ All commands live under the `BotBrowser` CDP domain. Send them through a **brows
 - [Mirror](tools/mirror/) - Distributed privacy consistency verification
 - [CanvasLab](tools/canvaslab/) - Canvas 2D / WebGL / WebGL2 forensics and tracking analysis tool
 - [AudioLab](tools/audiolab/) - Web Audio API forensics and audio fingerprint collection analysis tool
+- [V8Log Forensics](tools/v8log/) - Browser-runtime evidence for authorized fingerprint protection sessions
 - [Examples](examples/) - Playwright, Puppeteer, bot-script integration
 - [Main README](README.md) - Project overview and quick start
 

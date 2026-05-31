@@ -27,7 +27,7 @@ chromium-browser \
     "https://example.com"
 ```
 
-After the session, `/tmp/audiolab.jsonl` contains every Web Audio API call the page made. Open it in the [Audio Viewer](https://botswin.github.io/BotBrowser/docs/tools/audiolab/audio_viewer.html) to inspect events interactively.
+After the session, `/tmp/audiolab.jsonl` contains every Web Audio API call the page made. Open it in the [Audio Viewer](https://botswin.github.io/BotBrowser/tools/audiolab/audio_viewer.html) to inspect events interactively.
 
 ---
 
@@ -76,7 +76,7 @@ await browser.close();
 
 Open the HTML-based viewer to inspect recordings interactively:
 
-1. Navigate to the [Audio Viewer](https://botswin.github.io/BotBrowser/docs/tools/audiolab/audio_viewer.html)
+1. Navigate to the [Audio Viewer](https://botswin.github.io/BotBrowser/tools/audiolab/audio_viewer.html)
 2. Load your `.jsonl` file
 3. Browse events, view the audio graph topology, and inspect extracted data
 

@@ -273,6 +273,33 @@ Records all Web Audio API calls to a JSONL file for forensic analysis of audio f
 
 Learn more: [AudioLab Documentation](tools/audiolab/)
 
+<a id="--bot-v8-log"></a>
+### `--bot-v8-log`
+V8Log browser-runtime forensics for authorized privacy validation sessions.
+
+```bash
+--bot-v8-log=sample
+--bot-v8-log=full
+--bot-v8-log=none
+```
+
+Use `sample` for the normal validation trace, `full` only when requested, and pair it with `--bot-v8-log-dir`.
+
+Learn more: [V8Log Guide](docs/guides/getting-started/V8LOG.md) | [V8Log Tool](tools/v8log/)
+
+<a id="--bot-v8-log-dir"></a>
+### `--bot-v8-log-dir`
+Output directory for V8Log evidence files.
+
+```bash
+--bot-v8-log=sample
+--bot-v8-log-dir="/tmp/botbrowser-v8log"
+```
+
+Use an absolute directory path that already exists and is writable by the browser process.
+
+Learn more: [V8Log Guide](docs/guides/getting-started/V8LOG.md) | [V8Log Tool](tools/v8log/)
+
 <a id="--bot-script"></a>
 ### `--bot-script`
 Framework-less approach with a privileged JavaScript context.
