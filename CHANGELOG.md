@@ -3,6 +3,12 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-06-02]
+### Improvements
+- **Graphics Capability Consistency**: Improved profile-backed WebGL behavior across host environments, keeping graphics fingerprint protection more consistent during validation and production runs.
+- **V8Log Forensics**: Improved runtime evidence readability and review workflow, making authorized privacy validation easier to compare, triage, and document.
+
+
 ## [2026-05-31]
 ### Major
 - **Chromium Core -> 148.0.7778.217**: Updated to Chrome 148 stable (148.0.7778.217). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
