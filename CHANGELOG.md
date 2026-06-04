@@ -3,6 +3,11 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-06-04]
+### Major
+- **Chromium Core -> 149.0.7827.54**: Updated to Chrome 149 stable (149.0.7827.54). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+
 ## [2026-06-02]
 ### Improvements
 - **Graphics Capability Consistency**: Improved profile-backed WebGL behavior across host environments, keeping graphics fingerprint protection more consistent during validation and production runs.

@@ -6,9 +6,9 @@ Academic Framework for Browser-Environment Simulation.
 
 | Channel | Version | Description |
 |---------|---------|------------------------|
-| [stable](stable/) | v147, v148 | Current supported Chrome release lines. Chrome 148 is the Early Stable Release, and Chrome 147 remains available during the 148 rollout. |
+| [stable](stable/) | v148, v149 | Current supported Chrome release lines. Chrome 149 is the current stable release, and Chrome 148 remains available during the rollout window. |
 | [canary](canary/) | none | Reserved for explicitly published pre-stable test profiles. Chrome Early Stable profiles are published under stable. |
-| [archive](archive/) | v135-v146 | Older profile lines outside the current stable support window. |
+| [archive](archive/) | v135-v147 | Older profile lines outside the current stable support window. |
 
 In BotBrowser, everything starts with a profile. Browser fingerprinting is recognized as a privacy threat by [W3C, major browser vendors, and EU regulators](../FINGERPRINT_PRIVACY.md), and profiles are the foundation of protection against such tracking. Profiles are provided to authorized researchers, so review the project [Legal Disclaimer](../DISCLAIMER.md) and [Responsible Use Guidelines](../RESPONSIBLE_USE.md) for access policies.
 

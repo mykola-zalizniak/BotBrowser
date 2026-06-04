@@ -1,13 +1,13 @@
-# BotBrowser Stable Profiles (v147, v148)
+# BotBrowser Stable Profiles (v148, v149)
 
 This directory contains the current supported public demo profile lines.
 
 | Chrome line | Matching BotBrowser build | Public demo profiles |
 |-------------|---------------------------|----------------------|
-| v147 | [147.0.7727.139](https://github.com/botswin/BotBrowser/releases/tag/147.0.7727.139) | `chrome147_*.enc` |
 | v148 | [148.0.7778.97](https://github.com/botswin/BotBrowser/releases/tag/148.0.7778.97) Early Stable Release | `chrome148_*.enc` |
+| v149 | [149.0.7827.54](https://github.com/botswin/BotBrowser/releases/tag/149.0.7827.54) | `chrome149_*.enc` |
 
-Use a profile with the matching BotBrowser major version. For example, v147 profiles require a v147 BotBrowser binary, and v148 profiles require a v148 BotBrowser binary.
+Use a profile with the matching BotBrowser major version. For example, v148 profiles require a v148 BotBrowser binary, and v149 profiles require a v149 BotBrowser binary.
 
 > **Usage:** Run demo profiles via [CLI](../../INSTALLATION.md#download--installation) or [Launcher](../../launcher/). Automation framework integration (Puppeteer, Playwright) requires [premium profiles](../README.md#premium-profiles).
 
