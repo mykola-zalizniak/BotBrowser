@@ -3,6 +3,15 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-06-06]
+### Major
+- **Chromium Core -> 148.0.7778.254**: Updated the Chrome 148 stable line to 148.0.7778.254. Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **Cross-Platform Screen Policy**: Improved default screen handling for cross-platform profiles so headed sessions keep profile-backed display behavior more consistent across Linux, Windows, and macOS hosts.
+- **Android Profile Consistency**: Improved maintained Android profile behavior for profile-backed font and capability surfaces, helping validation and production runs stay closer to the expected profile shape.
+
+
 ## [2026-06-04]
 ### Major
 - **Chromium Core -> 149.0.7827.54**: Updated to Chrome 149 stable (149.0.7827.54). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
