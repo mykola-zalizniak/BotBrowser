@@ -57,7 +57,7 @@ const ctxIdA = afterA.filter((id) => !beforeA.includes(id))[0];
 await client.send("BotBrowser.setBrowserContextFlags", {
   browserContextId: ctxIdA,
   botbrowserFlags: [
-    "--bot-profile=/path/to/us-profile.enc",
+    "--bot-profile=path/to/us-profile.enc",
     "--proxy-server=socks5://user:pass@us-proxy.example.com:1080",
     "--bot-config-timezone=America/New_York",
     "--bot-config-languages=en-US,en",
