@@ -99,10 +99,10 @@ Verify that a profile produces identical fingerprints on different operating sys
 chrome.exe --bot-profile="C:\profiles\profile.enc" --bot-mirror-controller-endpoint=0.0.0.0:9333
 
 # Client on macOS
-/Applications/Chromium.app/Contents/MacOS/Chromium --bot-profile="/profiles/profile.enc" --bot-mirror-client-endpoint=windows-machine:9333
+/Applications/Chromium.app/Contents/MacOS/Chromium --bot-profile="profiles/profile.enc" --bot-mirror-client-endpoint=windows-machine:9333
 
 # Client on Ubuntu
-chromium-browser --bot-profile="/profiles/profile.enc" --bot-mirror-client-endpoint=windows-machine:9333
+chromium-browser --bot-profile="profiles/profile.enc" --bot-mirror-client-endpoint=windows-machine:9333
 ```
 
 Navigate to a fingerprint testing site on the controller. All clients display the same page with identical fingerprint values.

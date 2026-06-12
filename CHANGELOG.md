@@ -3,6 +3,54 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-06-09]
+### Major
+- **Chromium Core -> 149.0.7827.59**: Updated to Chrome 149 stable (149.0.7827.59). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **WebKit-Family Profile Consistency (ENT Tier4)**: Added premium WebKit-family profile support for desktop and mobile browser-family identity consistency on the BotBrowser browser core. This extends profile consistency beyond browser brand and platform metadata into engine-level runtime behavior, CSS behavior, media capability behavior, navigation headers, TLS behavior, HTTP/2 behavior, and BrowserContext isolation, giving privacy teams a controlled way to validate WebKit-family profile bundles across supported host platforms.
+
+### Improvements
+- **Per-Context Fingerprint Flag Coverage**: Expanded validated per-context support for `--bot-profile-dir`, `--bot-script`, `--bot-cookies`, graphics mode controls, lifecycle controls, and WebRTC ICE settings.
+
+
+## [2026-06-06]
+### Major
+- **Chromium Core -> 148.0.7778.254**: Updated the Chrome 148 stable line to 148.0.7778.254. Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **Cross-Platform Screen Policy**: Improved default screen handling for cross-platform profiles so headed sessions keep profile-backed display behavior more consistent across Linux, Windows, and macOS hosts.
+- **Android Profile Consistency**: Improved maintained Android profile behavior for profile-backed font and capability surfaces, helping validation and production runs stay closer to the expected profile shape.
+
+
+## [2026-06-04]
+### Major
+- **Chromium Core -> 149.0.7827.54**: Updated to Chrome 149 stable (149.0.7827.54). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+
+## [2026-06-02]
+### Improvements
+- **Graphics Capability Consistency**: Improved profile-backed WebGL behavior across host environments, keeping graphics fingerprint protection more consistent during validation and production runs.
+- **V8Log Forensics**: Improved runtime evidence readability and review workflow, making authorized privacy validation easier to compare, triage, and document.
+
+
+## [2026-05-31]
+### Major
+- **Chromium Core -> 148.0.7778.217**: Updated to Chrome 148 stable (148.0.7778.217). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **V8Log Forensics (`--bot-v8-log`, `--bot-v8-log-dir`)**: Added gated browser-runtime forensics for authorized privacy validation, helping teams review runtime signal collection without changing normal browsing behavior.
+
+### Improvements
+- **Cross-Platform Profile Consistency**: Improved profile fidelity across desktop and mobile profiles so the same profile behaves more consistently across macOS, Windows, and Linux hosts.
+- **Per-Context Isolation**: Strengthened per-context behavior for profile-specific capabilities, storage, permissions, browser identity, theme preference, and proxy settings.
+- **Speech and Device Capability Consistency**: Improved profile-backed speech, device, and network capability behavior across main sessions and per-context sessions.
+- **Rendering and Media Stability**: Improved font, canvas, WebGL, media capability, and browser-engine compatibility coverage for profile-backed sessions.
+- **Mobile Profile Parity**: Improved Android profile behavior across target-platform policy, device capability, storage, focus, sensor, and locale-related surfaces.
+- **Network and Proxy Reliability**: Improved proxy-authenticated navigation reliability across redirects and tunnel setup while keeping credentials scoped to the proxy layer.
+- **Release Validation Coverage**: Expanded deterministic release gates and focused validation for profile replay, browser-context isolation, and engine-specific network behavior.
+
+
 ## [2026-05-25]
 ### Major
 - **Chromium Core → 148.0.7778.180**: Updated to Chrome 148 stable (148.0.7778.180). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
@@ -1003,7 +1051,6 @@ Refined per-OS rendering differences (fonts, CSS, anti-aliasing, text sizing) so
 - **Browser Brand Config**: New `configs.browserBrand` option for `chromium`, `chrome`, `brave`, or `edge`, enabling high-fidelity brand emulation.
 - **Brave Simulation**: Full Brave browser emulation including `userAgent`, `userAgentData`, and `navigator.brave.isBrave` properties.
 - **Edge Simulation**: Full Microsoft Edge emulation covering `userAgent`, `userAgentData`, and Edge-specific APIs.
-- **WebKit Emulation**: Preliminary WebKit engine simulation for basic Safari-like behaviors.
 - **Random History Augmentation**: `configs.injectRandomHistory` adds realistic history entries (URLs, timestamps) on new page loads without an opener.
 
 ### Improved

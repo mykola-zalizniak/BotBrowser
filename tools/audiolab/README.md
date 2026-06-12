@@ -22,7 +22,7 @@ AudioLab records every Web Audio API call so you can see exactly what tracking c
 
 ## Try It Now
 
-> **[Launch Audio Viewer](https://botswin.github.io/BotBrowser/docs/tools/audiolab/audio_viewer.html?jsonl=https://botswin.github.io/BotBrowser/docs/tools/audiolab/audio_sample.jsonl)**: Interactive demo preloaded with a sample recording. Filter events, view the audio graph topology, and inspect extracted data.
+> **[Launch Audio Viewer](https://botswin.github.io/BotBrowser/tools/audiolab/audio_viewer.html?jsonl=https://botswin.github.io/BotBrowser/tools/audiolab/audio_sample.jsonl)**: Interactive demo preloaded with a sample recording. Filter events, view the audio graph topology, and inspect extracted data.
 
 ### Demo Resources
 
@@ -63,7 +63,7 @@ chromium \
 Go to the website you want to study. Let it load normally. AudioLab will record every Web Audio API call the tracking code makes.
 
 **Step 3: Look at what was recorded**
-Close BotBrowser. Your recording is saved to `/tmp/audiolab.jsonl`. Open it in the [Audio Viewer](https://botswin.github.io/BotBrowser/docs/tools/audiolab/audio_viewer.html) or inspect it directly:
+Close BotBrowser. Your recording is saved to `/tmp/audiolab.jsonl`. Open it in the [Audio Viewer](https://botswin.github.io/BotBrowser/tools/audiolab/audio_viewer.html) or inspect it directly:
 
 ```bash
 # Pretty-print all events

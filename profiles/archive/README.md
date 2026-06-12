@@ -1,6 +1,6 @@
 # Archived Profiles
 
-This directory contains older BotBrowser profile lines (v135-v146).
+This directory contains older BotBrowser profile lines (v135-v147).
 
 For current supported public demo profiles, see [stable/](../stable/). The stable directory can contain more than one Chrome major while a release rollout is active.
 

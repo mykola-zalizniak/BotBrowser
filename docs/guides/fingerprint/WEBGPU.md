@@ -1,6 +1,6 @@
-# WebGPU Fingerprint Protection
+# WebGPU Fingerprinting and GPU Profile Consistency
 
-> Control WebGPU API behavior and protect GPU adapter information with `--bot-config-webgpu`.
+> Keep WebGPU adapter behavior aligned with the selected browser profile.
 
 ---
 
@@ -17,7 +17,9 @@
 
 ## Overview
 
-WebGPU is a modern graphics API that exposes GPU adapter details (vendor, architecture, device name) and rendering characteristics. These properties can serve as a fingerprint surface because they vary by hardware and driver version. BotBrowser controls WebGPU behavior at the browser engine level to maintain consistency across different host systems.
+WebGPU is a modern graphics API that can expose GPU adapter family, capability limits, feature support, and rendering behavior. These properties can become a fingerprint surface because they vary by hardware, driver, operating system, and browser profile.
+
+BotBrowser keeps WebGPU behavior aligned with the selected profile so a browser identity does not expose the host GPU by accident.
 
 ---
 
