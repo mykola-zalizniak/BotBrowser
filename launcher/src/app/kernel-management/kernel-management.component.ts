@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, type OnInit } from '@angular/core';
+import { Component, effect, inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +27,7 @@ import { KernelService } from '../shared/kernel.service';
         MatTooltipModule,
     ],
     templateUrl: './kernel-management.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './kernel-management.component.scss',
 })
 export class KernelManagementComponent implements OnInit {

@@ -55,6 +55,14 @@ export const ProfileRealDisabledOptions: ProfileRealDisabled[] = ['profile', 're
 export type ProfileReal = 'profile' | 'real';
 export const ProfileRealOptions: ProfileReal[] = ['profile', 'real'];
 
+// GPU emulation modes (--bot-gpu-emulation accepts false | true | priority)
+export type GpuEmulationMode = 'off' | 'on' | 'priority';
+export const GpuEmulationModes: GpuEmulationMode[] = ['off', 'on', 'priority'];
+
+// V8Log modes
+export type V8LogMode = 'sample' | 'full' | 'none';
+export const V8LogModes: V8LogMode[] = ['sample', 'full', 'none'];
+
 // Font options
 export type FontOption = 'profile' | 'expand' | 'real';
 export const FontOptions: FontOption[] = ['profile', 'expand', 'real'];
@@ -104,9 +112,10 @@ export interface CustomUserAgentConfig {
 }
 
 // Display & Input config
+// botConfigWindow / botConfigScreen accept: 'profile' | 'real' | 'WxH' (e.g. '1920x1080') | JSON
 export interface DisplayInputConfig {
-    botConfigWindow?: ProfileReal;
-    botConfigScreen?: ProfileReal;
+    botConfigWindow?: string;
+    botConfigScreen?: string;
     botConfigKeyboard?: ProfileReal;
     botConfigFonts?: FontOption;
     botConfigOrientation?: OrientationOption;
@@ -137,7 +146,8 @@ export interface RenderingMediaConfig {
     botConfigMediaTypes?: MediaTypesOption;
     botConfigWebrtc?: ProfileRealDisabled;
     botWebrtcIce?: string;
-    botGpuEmulation?: boolean;
+    // Accepts boolean (legacy) or GpuEmulationMode
+    botGpuEmulation?: boolean | GpuEmulationMode;
 }
 
 // Proxy & Network config
@@ -146,8 +156,8 @@ export interface ProxyConfig {
     proxyIp?: string;
     botIpService?: string;
     proxyBypassRgx?: string;
-    // Network protection (moved from Behavior)
-    botLocalDns?: boolean;
+    // --bot-local-dns: boolean (legacy on/off) or string ('IP' / 'IP:port' for custom upstream DNS)
+    botLocalDns?: boolean | string;
     botPortProtection?: boolean;
     botNetworkInfoOverride?: boolean;
 }
@@ -157,6 +167,15 @@ export interface AdvancedConfig {
     botCookies?: string;
     botBookmarks?: string;
     botCustomHeaders?: string;
+    botScript?: string;
+}
+
+// Forensics config (V8Log + CanvasLab + AudioLab record files)
+export interface ForensicsConfig {
+    botV8Log?: V8LogMode;
+    botV8LogDir?: string;
+    botCanvasRecordFile?: string;
+    botAudioRecordFile?: string;
 }
 
 // Launch options (all CLI flags combined)
@@ -169,6 +188,7 @@ export interface LaunchOptions {
     renderingMedia?: RenderingMediaConfig;
     proxy?: ProxyConfig;
     advanced?: AdvancedConfig;
+    forensics?: ForensicsConfig;
 }
 
 export interface BrowserProfile {
@@ -183,4 +203,6 @@ export interface BrowserProfile {
     lastUsedAt?: number;
     deletedAt?: number;
     launchOptions?: LaunchOptions;
+    // Chromium kernel major override (required for WebKit/Safari profiles where UA has no Chrome major).
+    kernelMajorOverride?: number;
 }

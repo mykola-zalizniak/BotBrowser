@@ -254,6 +254,34 @@ export class KernelService {
         return this.#installedKernels.find((k) => k.id === id);
     }
 
+    // Highest available major version on GitHub for the current platform (WebKit zero-kernel auto-download).
+    async getLatestAvailableMajorVersion(): Promise<number | null> {
+        if (this.#allReleases.length === 0) {
+            try { this.#allReleases = await this.#fetchAllReleases(); }
+            catch { return null; }
+        }
+        const candidates = this.#allReleases
+            .filter((r) => r.assets.some((a) => a.platform === this.#currentPlatform))
+            .map((r) => r.majorVersion);
+        return candidates.length > 0 ? Math.max(...candidates) : null;
+    }
+
+    // Latest installed kernel across all major versions; used as WebKit/Safari fallback.
+    async getLatestInstalledKernel(): Promise<InstalledKernel | undefined> {
+        const platformKernels = this.#installedKernels.filter((k) => k.platform === this.#currentPlatform);
+        if (platformKernels.length === 0) return undefined;
+        return platformKernels.reduce((latest, k) => {
+            if (k.majorVersion !== latest.majorVersion) {
+                return k.majorVersion > latest.majorVersion ? k : latest;
+            }
+            const versionCompare = compareVersions(k.fullVersion, latest.fullVersion);
+            if (versionCompare !== 0) return versionCompare > 0 ? k : latest;
+            const dateK = k.assetDate || '';
+            const dateLatest = latest.assetDate || '';
+            return dateK > dateLatest ? k : latest;
+        });
+    }
+
     async getInstalledKernelByMajorVersion(majorVersion: number): Promise<InstalledKernel | undefined> {
         // Get the latest installed kernel for this major version
         const kernels = this.#installedKernels.filter(

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +25,7 @@ import { MatStepperModule } from '@angular/material/stepper';
         MatAutocompleteModule,
     ],
     templateUrl: './clone-browser-profile.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './clone-browser-profile.component.scss',
 })
 export class CloneBrowserProfileComponent {

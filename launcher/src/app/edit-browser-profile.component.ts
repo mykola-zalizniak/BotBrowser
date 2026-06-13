@@ -1,6 +1,16 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, NgZone, ViewChild, type AfterViewInit, type OnDestroy, type OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+    Component,
+    ElementRef,
+    inject,
+    NgZone,
+    ViewChild,
+    type AfterViewInit,
+    type OnDestroy,
+    type OnInit,
+    ChangeDetectionStrategy,
+} from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -24,17 +34,21 @@ import {
     BrowserProfileStatus,
     ColorSchemes,
     FontOptions,
+    GpuEmulationModes,
     MediaTypesOptions,
     OrientationOptions,
     Platforms,
     ProfileRealDisabledOptions,
     ProfileRealOptions,
+    V8LogModes,
     type BasicInfo,
     type BehaviorToggles,
     type BotProfileInfo,
     type BrowserProfile,
     type CustomUserAgentConfig,
     type DisplayInputConfig,
+    type ForensicsConfig,
+    type GpuEmulationMode,
     type IdentityLocaleConfig,
     type LaunchOptions,
     type AdvancedConfig,
@@ -73,6 +87,7 @@ import { ProxyService } from './shared/proxy.service';
         ProxyInputComponent,
     ],
     templateUrl: './edit-browser-profile.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './edit-browser-profile.component.scss',
 })
 export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -100,6 +115,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         { id: 'section-noise', label: 'Noise' },
         { id: 'section-rendering', label: 'Rendering' },
         { id: 'section-behavior', label: 'Behavior' },
+        { id: 'section-forensics', label: 'Forensics' },
         { id: 'section-advanced', label: 'Advanced' },
     ];
     activeSection = 'section-basic';
@@ -116,6 +132,8 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     readonly mediaTypesOptions = MediaTypesOptions;
     readonly colorSchemes = ColorSchemes;
     readonly orientationOptions = OrientationOptions;
+    readonly gpuEmulationModes = GpuEmulationModes;
+    readonly v8LogModes = V8LogModes;
 
     readonly basicInfoFormGroup = this.#formBuilder.group<BasicInfo>({
         profileName: this.#injectedData?.basicInfo.profileName || 'New Profile',
@@ -144,6 +162,13 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
 
     readonly advancedGroup = this.#formBuilder.group({
         binaryPath: this.#injectedData?.binaryPath || '',
+        kernelMajorOverride: [
+            // Treat 0 as "unset" so legacy/hand-edited profiles with override=0 don't trip Validators.min(1).
+            this.#injectedData?.kernelMajorOverride && this.#injectedData.kernelMajorOverride > 0
+                ? this.#injectedData.kernelMajorOverride
+                : (null as number | null),
+            [Validators.min(1), Validators.max(999), Validators.pattern(/^\d+$/)],
+        ],
     });
 
     proxyValue: ParsedProxy | null = this.#injectedData?.proxyServer
@@ -151,41 +176,45 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         : null;
     selectedProxyId = '';
 
-    // Behavior toggles - defaults:
-    // DisableDebugger=true, DisableConsoleMessage=true, AlwaysActive=true
+    // Behavior toggles. No launcher-side defaults — kernel applies its own when no flag is set.
     readonly behaviorGroup = this.#formBuilder.group<BehaviorToggles>({
-        botDisableDebugger: this.#injectedData?.launchOptions?.behavior?.botDisableDebugger ?? true,
+        botDisableDebugger: this.#injectedData?.launchOptions?.behavior?.botDisableDebugger,
         botMobileForceTouch: this.#injectedData?.launchOptions?.behavior?.botMobileForceTouch,
-        botAlwaysActive: this.#injectedData?.launchOptions?.behavior?.botAlwaysActive ?? true,
-        botDisableConsoleMessage: this.#injectedData?.launchOptions?.behavior?.botDisableConsoleMessage ?? true,
+        botAlwaysActive: this.#injectedData?.launchOptions?.behavior?.botAlwaysActive,
+        botDisableConsoleMessage: this.#injectedData?.launchOptions?.behavior?.botDisableConsoleMessage,
     });
 
-    // Identity & Locale - default: browserBrand=chrome
+    // Identity & Locale. browserBrand has NO default — when unset, the kernel uses the
+    // brand encoded in the bot profile (WebKit-family profiles must NOT receive
+    // --bot-config-browser-brand=chrome or they get coerced into Chrome identity).
     // botInjectRandomHistory: migrate from old behavior location
     readonly identityLocaleGroup = this.#formBuilder.group<IdentityLocaleConfig>({
-        botConfigBrowserBrand: this.#injectedData?.launchOptions?.identityLocale?.botConfigBrowserBrand ?? 'chrome',
+        botConfigBrowserBrand: this.#injectedData?.launchOptions?.identityLocale?.botConfigBrowserBrand,
         botConfigBrandFullVersion: this.#injectedData?.launchOptions?.identityLocale?.botConfigBrandFullVersion,
         botConfigUaFullVersion: this.#injectedData?.launchOptions?.identityLocale?.botConfigUaFullVersion,
         botConfigLanguages: this.#injectedData?.launchOptions?.identityLocale?.botConfigLanguages,
         botConfigLocale: this.#injectedData?.launchOptions?.identityLocale?.botConfigLocale,
         botConfigTimezone: this.#injectedData?.launchOptions?.identityLocale?.botConfigTimezone,
         botConfigLocation: this.#injectedData?.launchOptions?.identityLocale?.botConfigLocation,
-        botInjectRandomHistory: this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory
-            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory,
+        botInjectRandomHistory:
+            this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory,
         botEnableVariationsInContext: this.#injectedData?.launchOptions?.identityLocale?.botEnableVariationsInContext,
     });
 
     // History injection mode: off / random / specific count
     historyMode: '' | 'random' | 'number' = (() => {
-        const v = this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory
-            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory;
+        const v =
+            this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory;
         if (typeof v === 'number') return 'number' as const;
         if (v === true) return 'random' as const;
         return '' as const;
     })();
     historyCount: number | null = (() => {
-        const v = this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory
-            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory;
+        const v =
+            this.#injectedData?.launchOptions?.identityLocale?.botInjectRandomHistory ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botInjectRandomHistory;
         return typeof v === 'number' ? v : null;
     })();
 
@@ -200,25 +229,66 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botConfigMobile: this.#injectedData?.launchOptions?.customUserAgent?.botConfigMobile,
     });
 
-    // Display & Input - defaults: window/screen=real, keyboard/fonts=profile, colorScheme=light
+    // Display & Input. No launcher-side defaults — when unset the kernel uses its own per-profile default.
     readonly displayInputGroup = this.#formBuilder.group<DisplayInputConfig>({
-        botConfigWindow: this.#injectedData?.launchOptions?.displayInput?.botConfigWindow ?? 'real',
-        botConfigScreen: this.#injectedData?.launchOptions?.displayInput?.botConfigScreen ?? 'real',
-        botConfigKeyboard: this.#injectedData?.launchOptions?.displayInput?.botConfigKeyboard ?? 'profile',
-        botConfigFonts: this.#injectedData?.launchOptions?.displayInput?.botConfigFonts ?? 'profile',
+        botConfigWindow: this.#injectedData?.launchOptions?.displayInput?.botConfigWindow,
+        botConfigScreen: this.#injectedData?.launchOptions?.displayInput?.botConfigScreen,
+        botConfigKeyboard: this.#injectedData?.launchOptions?.displayInput?.botConfigKeyboard,
+        botConfigFonts: this.#injectedData?.launchOptions?.displayInput?.botConfigFonts,
         botConfigOrientation: this.#injectedData?.launchOptions?.displayInput?.botConfigOrientation,
-        botConfigColorScheme: this.#injectedData?.launchOptions?.displayInput?.botConfigColorScheme ?? 'light',
+        botConfigColorScheme: this.#injectedData?.launchOptions?.displayInput?.botConfigColorScheme,
         botConfigDisableDeviceScaleFactor:
             this.#injectedData?.launchOptions?.displayInput?.botConfigDisableDeviceScaleFactor,
     });
 
-    // Noise - defaults:
-    // NoiseCanvas=true, NoiseWebglImage=true, NoiseAudioContext=true
-    // NoiseClientRects=off, NoiseTextRects=off
+    // Window/Screen mode derived from saved value. '' = "no override, use kernel default".
+    windowMode: '' | 'profile' | 'real' | 'wxh' | 'json' = this.#deriveSizeMode(
+        this.#injectedData?.launchOptions?.displayInput?.botConfigWindow
+    );
+    screenMode: '' | 'profile' | 'real' | 'wxh' | 'json' = this.#deriveSizeMode(
+        this.#injectedData?.launchOptions?.displayInput?.botConfigScreen
+    );
+    // Cache last user-typed value per mode so wxh ↔ json toggles don't cross-pollute.
+    #savedWindowWxh: string = (() => {
+        const v = this.#injectedData?.launchOptions?.displayInput?.botConfigWindow;
+        return typeof v === 'string' && /^\d+x\d+$/.test(v) ? v : '';
+    })();
+    #savedWindowJson: string = (() => {
+        const v = this.#injectedData?.launchOptions?.displayInput?.botConfigWindow;
+        return typeof v === 'string' && /^\s*\{/.test(v) ? v : '';
+    })();
+    #savedScreenWxh: string = (() => {
+        const v = this.#injectedData?.launchOptions?.displayInput?.botConfigScreen;
+        return typeof v === 'string' && /^\d+x\d+$/.test(v) ? v : '';
+    })();
+    #savedScreenJson: string = (() => {
+        const v = this.#injectedData?.launchOptions?.displayInput?.botConfigScreen;
+        return typeof v === 'string' && /^\s*\{/.test(v) ? v : '';
+    })();
+
+    // null/undefined/'' → undefined; otherwise coerce to integer in [1, 999] or undefined.
+    #parseKernelMajorOverride(): number | undefined {
+        const raw = this.advancedGroup.value.kernelMajorOverride as number | string | null | undefined;
+        if (raw == null) return undefined;
+        if (typeof raw === 'string' && raw.trim() === '') return undefined;
+        const n = Number(raw);
+        return Number.isInteger(n) && n >= 1 && n <= 999 ? n : undefined;
+    }
+
+    #deriveSizeMode(v: string | undefined): '' | 'profile' | 'real' | 'wxh' | 'json' {
+        if (!v) return '';
+        if (v === 'real') return 'real';
+        if (v === 'profile') return 'profile';
+        if (/^\s*\{/.test(v)) return 'json';
+        if (/^\d+x\d+$/.test(v)) return 'wxh';
+        return 'json';
+    }
+
+    // Noise. No launcher-side defaults — when unset the kernel applies its own.
     readonly noiseGroup = this.#formBuilder.group<NoiseConfig>({
-        botConfigNoiseWebglImage: this.#injectedData?.launchOptions?.noise?.botConfigNoiseWebglImage ?? true,
-        botConfigNoiseCanvas: this.#injectedData?.launchOptions?.noise?.botConfigNoiseCanvas ?? true,
-        botConfigNoiseAudioContext: this.#injectedData?.launchOptions?.noise?.botConfigNoiseAudioContext ?? true,
+        botConfigNoiseWebglImage: this.#injectedData?.launchOptions?.noise?.botConfigNoiseWebglImage,
+        botConfigNoiseCanvas: this.#injectedData?.launchOptions?.noise?.botConfigNoiseCanvas,
+        botConfigNoiseAudioContext: this.#injectedData?.launchOptions?.noise?.botConfigNoiseAudioContext,
         botConfigNoiseClientRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseClientRects,
         botConfigNoiseTextRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseTextRects,
         botNoiseSeed: this.#injectedData?.launchOptions?.noise?.botNoiseSeed,
@@ -244,19 +314,31 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         return '' as const;
     })();
 
-    // Rendering & Media - defaults: webgl/webgpu/speechVoices/mediaDevices/webrtc=profile, mediaTypes=expand
-    // botGpuEmulation: migrate from old behavior location
+    // Rendering & Media. No launcher-side defaults — when unset the kernel applies its own.
+    // botGpuEmulation: migrate from old behavior location.
     readonly renderingMediaGroup = this.#formBuilder.group<RenderingMediaConfig>({
-        botConfigWebgl: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebgl ?? 'profile',
-        botConfigWebgpu: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebgpu ?? 'profile',
-        botConfigSpeechVoices: this.#injectedData?.launchOptions?.renderingMedia?.botConfigSpeechVoices ?? 'profile',
-        botConfigMediaDevices: this.#injectedData?.launchOptions?.renderingMedia?.botConfigMediaDevices ?? 'profile',
-        botConfigMediaTypes: this.#injectedData?.launchOptions?.renderingMedia?.botConfigMediaTypes ?? 'expand',
-        botConfigWebrtc: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebrtc ?? 'profile',
+        botConfigWebgl: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebgl,
+        botConfigWebgpu: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebgpu,
+        botConfigSpeechVoices: this.#injectedData?.launchOptions?.renderingMedia?.botConfigSpeechVoices,
+        botConfigMediaDevices: this.#injectedData?.launchOptions?.renderingMedia?.botConfigMediaDevices,
+        botConfigMediaTypes: this.#injectedData?.launchOptions?.renderingMedia?.botConfigMediaTypes,
+        botConfigWebrtc: this.#injectedData?.launchOptions?.renderingMedia?.botConfigWebrtc,
         botWebrtcIce: this.#injectedData?.launchOptions?.renderingMedia?.botWebrtcIce,
-        botGpuEmulation: this.#injectedData?.launchOptions?.renderingMedia?.botGpuEmulation
-            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botGpuEmulation,
+        botGpuEmulation:
+            this.#injectedData?.launchOptions?.renderingMedia?.botGpuEmulation ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botGpuEmulation,
     });
+
+    // GPU emulation mode (legacy boolean migrated to off/on/priority).
+    gpuEmulationMode: '' | GpuEmulationMode = (() => {
+        const v =
+            this.#injectedData?.launchOptions?.renderingMedia?.botGpuEmulation ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botGpuEmulation;
+        if (v === 'priority') return 'priority';
+        if (v === 'off' || v === false) return 'off';
+        if (v === 'on' || v === true) return 'on';
+        return '';
+    })();
 
     // Proxy & Network config
     // Network flags: migrate from old behavior location
@@ -265,19 +347,48 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         proxyIp: this.#injectedData?.launchOptions?.proxy?.proxyIp,
         botIpService: this.#injectedData?.launchOptions?.proxy?.botIpService,
         proxyBypassRgx: this.#injectedData?.launchOptions?.proxy?.proxyBypassRgx,
-        botLocalDns: this.#injectedData?.launchOptions?.proxy?.botLocalDns
-            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns,
-        botPortProtection: this.#injectedData?.launchOptions?.proxy?.botPortProtection
-            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botPortProtection,
-        botNetworkInfoOverride: this.#injectedData?.launchOptions?.proxy?.botNetworkInfoOverride
-            ?? (this.#injectedData?.launchOptions?.behavior as any)?.botNetworkInfoOverride,
+        botLocalDns:
+            this.#injectedData?.launchOptions?.proxy?.botLocalDns ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns,
+        botPortProtection:
+            this.#injectedData?.launchOptions?.proxy?.botPortProtection ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botPortProtection,
+        botNetworkInfoOverride:
+            this.#injectedData?.launchOptions?.proxy?.botNetworkInfoOverride ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botNetworkInfoOverride,
     });
+
+    // Local DNS mode: off / built-in / custom server (with separate value input).
+    localDnsMode: 'off' | 'builtin' | 'custom' = (() => {
+        const v =
+            this.#injectedData?.launchOptions?.proxy?.botLocalDns ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns;
+        if (typeof v === 'string' && v) return 'custom';
+        if (v === true) return 'builtin';
+        return 'off';
+    })();
+    localDnsServer: string = (() => {
+        const v =
+            this.#injectedData?.launchOptions?.proxy?.botLocalDns ??
+            (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns;
+        return typeof v === 'string' ? v : '';
+    })();
 
     // Advanced config
     readonly advancedConfigGroup = this.#formBuilder.group<AdvancedConfig>({
         botCookies: this.#injectedData?.launchOptions?.advanced?.botCookies,
         botBookmarks: this.#injectedData?.launchOptions?.advanced?.botBookmarks,
         botCustomHeaders: this.#injectedData?.launchOptions?.advanced?.botCustomHeaders,
+        botScript: this.#injectedData?.launchOptions?.advanced?.botScript,
+    });
+
+    // Forensics: V8Log + CanvasLab/AudioLab record file outputs. botV8Log uses null sentinel for "Off"
+    // (matches the mat-option [value]="null") so round-trip after save preserves the selection.
+    readonly forensicsGroup = this.#formBuilder.group({
+        botV8Log: this.#injectedData?.launchOptions?.forensics?.botV8Log ?? (null as any),
+        botV8LogDir: this.#injectedData?.launchOptions?.forensics?.botV8LogDir,
+        botCanvasRecordFile: this.#injectedData?.launchOptions?.forensics?.botCanvasRecordFile,
+        botAudioRecordFile: this.#injectedData?.launchOptions?.forensics?.botAudioRecordFile,
     });
 
     // Advanced section modes
@@ -286,13 +397,13 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     cookiesMode: 'file' | 'input' = (() => {
         const v = this.#injectedData?.launchOptions?.advanced?.botCookies;
         if (!v) return 'file' as const;
-        return v.startsWith('@') ? 'file' as const : 'input' as const;
+        return v.startsWith('@') ? ('file' as const) : ('input' as const);
     })();
 
     bookmarksMode: 'file' | 'input' = (() => {
         const v = this.#injectedData?.launchOptions?.advanced?.botBookmarks;
         if (!v) return 'file' as const;
-        return v.startsWith('@') ? 'file' as const : 'input' as const;
+        return v.startsWith('@') ? ('file' as const) : ('input' as const);
     })();
 
     cookiesFilePath = (() => {
@@ -322,6 +433,11 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
                 this.basicInfo = tryParseBotProfile(this.#injectedData.botProfileInfo.content);
             }
         }
+
+        // Per CLI_FLAGS: desktop headful defaults to 'real', Android/headless to 'profile'.
+        // Round 3 reconciliation was wrong — silently rewrote legacy profiles to include the
+        // flag on save. We instead leave the form value undefined; the kernel's own default
+        // matches the dropdown's derived mode, so "no flag" is semantically equivalent.
 
         this.#browserProfileService.getAllBrowserProfiles().then((profiles) => {
             this.#groupNames$.next(compact(profiles.map((profile) => profile.basicInfo.groupName)));
@@ -387,21 +503,19 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     onFpsModeChange(): void {
         if (this.fpsMode === 'profile' || this.fpsMode === 'real') {
             this.noiseGroup.patchValue({ botFps: this.fpsMode });
-        } else if (this.fpsMode === 'number') {
-            this.noiseGroup.patchValue({ botFps: '' });
         } else {
             this.noiseGroup.patchValue({ botFps: '' });
         }
+        this.noiseGroup.markAsDirty();
     }
 
     onStackSeedModeChange(): void {
         if (this.stackSeedMode === 'profile' || this.stackSeedMode === 'real') {
             this.noiseGroup.patchValue({ botStackSeed: this.stackSeedMode });
-        } else if (this.stackSeedMode === 'number') {
-            this.noiseGroup.patchValue({ botStackSeed: '' });
         } else {
             this.noiseGroup.patchValue({ botStackSeed: '' });
         }
+        this.noiseGroup.markAsDirty();
     }
 
     onHistoryModeChange(): void {
@@ -415,11 +529,13 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             this.identityLocaleGroup.patchValue({ botInjectRandomHistory: undefined });
             this.historyCount = null;
         }
+        this.identityLocaleGroup.markAsDirty();
     }
 
     onHistoryCountChange(): void {
         if (this.historyMode === 'number' && this.historyCount != null) {
             this.identityLocaleGroup.patchValue({ botInjectRandomHistory: Number(this.historyCount) });
+            this.identityLocaleGroup.markAsDirty();
         }
     }
 
@@ -436,23 +552,30 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
                 username: proxy.username,
                 password: proxy.password,
             };
+            this.proxyConfigGroup.markAsDirty();
         }
     }
 
     onProxyValueChange(value: ParsedProxy | null): void {
         this.proxyValue = value;
         this.selectedProxyId = '';
+        this.proxyConfigGroup.markAsDirty();
     }
 
     onClearProxy(): void {
         this.proxyValue = null;
         this.selectedProxyId = '';
         this.proxyConfigGroup.patchValue({ proxyIp: '', botIpService: '' });
+        this.proxyConfigGroup.markAsDirty();
     }
 
     async onSaveProxyToList(proxy: ParsedProxy): Promise<void> {
         const duplicate = this.proxies.find(
-            (p) => p.host === proxy.host && p.port === proxy.port && (p.username || '') === (proxy.username || '') && (p.password || '') === (proxy.password || '')
+            (p) =>
+                p.host === proxy.host &&
+                p.port === proxy.port &&
+                (p.username || '') === (proxy.username || '') &&
+                (p.password || '') === (proxy.password || '')
         );
         if (duplicate) {
             this.#dialog.open(AlertDialogComponent, {
@@ -519,18 +642,151 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         if (mode === 'kernel') {
             this.advancedGroup.patchValue({ binaryPath: '' });
         }
+        this.advancedGroup.markAsDirty();
+    }
+
+    onWindowModeChange(): void {
+        const current = (this.displayInputGroup.get('botConfigWindow')?.value ?? '') as string;
+        // Cache the current value into its matching slot so toggling wxh→json→wxh round-trips.
+        if (/^\d+x\d+$/.test(current)) this.#savedWindowWxh = current;
+        else if (/^\s*\{/.test(current)) this.#savedWindowJson = current;
+        if (this.windowMode === '') {
+            this.displayInputGroup.patchValue({ botConfigWindow: null });
+        } else if (this.windowMode === 'profile' || this.windowMode === 'real') {
+            this.displayInputGroup.patchValue({ botConfigWindow: this.windowMode });
+        } else if (this.windowMode === 'wxh') {
+            this.displayInputGroup.patchValue({ botConfigWindow: this.#savedWindowWxh });
+        } else {
+            this.displayInputGroup.patchValue({ botConfigWindow: this.#savedWindowJson });
+        }
+        this.displayInputGroup.markAsDirty();
+    }
+
+    onScreenModeChange(): void {
+        const current = (this.displayInputGroup.get('botConfigScreen')?.value ?? '') as string;
+        if (/^\d+x\d+$/.test(current)) this.#savedScreenWxh = current;
+        else if (/^\s*\{/.test(current)) this.#savedScreenJson = current;
+        if (this.screenMode === '') {
+            this.displayInputGroup.patchValue({ botConfigScreen: null });
+        } else if (this.screenMode === 'profile' || this.screenMode === 'real') {
+            this.displayInputGroup.patchValue({ botConfigScreen: this.screenMode });
+        } else if (this.screenMode === 'wxh') {
+            this.displayInputGroup.patchValue({ botConfigScreen: this.#savedScreenWxh });
+        } else {
+            this.displayInputGroup.patchValue({ botConfigScreen: this.#savedScreenJson });
+        }
+        this.displayInputGroup.markAsDirty();
+    }
+
+    onGpuEmulationModeChange(): void {
+        this.renderingMediaGroup.patchValue({
+            botGpuEmulation: this.gpuEmulationMode === '' ? undefined : (this.gpuEmulationMode as GpuEmulationMode),
+        });
+        this.renderingMediaGroup.markAsDirty();
+    }
+
+    onLocalDnsModeChange(): void {
+        if (this.localDnsMode === 'off') {
+            this.proxyConfigGroup.patchValue({ botLocalDns: false });
+            this.localDnsServer = '';
+        } else if (this.localDnsMode === 'builtin') {
+            this.proxyConfigGroup.patchValue({ botLocalDns: true });
+            this.localDnsServer = '';
+        } else if (this.localDnsServer) {
+            this.proxyConfigGroup.patchValue({ botLocalDns: this.localDnsServer });
+        }
+        // 'custom' with empty server: leave the form value alone; onConfirmClick gates on a non-empty server.
+        this.proxyConfigGroup.markAsDirty();
+    }
+
+    onLocalDnsServerChange(): void {
+        if (this.localDnsMode === 'custom') {
+            this.proxyConfigGroup.patchValue({ botLocalDns: this.localDnsServer });
+            this.proxyConfigGroup.markAsDirty();
+        }
+    }
+
+    async chooseBotScript(): Promise<void> {
+        let entries: string[];
+        try {
+            entries = await Neutralino.os.showOpenDialog('Select bot script', {
+                filters: [
+                    { name: 'JavaScript', extensions: ['js', 'mjs'] },
+                    { name: 'All Files', extensions: ['*'] },
+                ],
+                multiSelections: false,
+            });
+        } catch {
+            return;
+        }
+        const entry = entries[0];
+        if (!entry) return;
+        this.#ngZone.run(() => {
+            this.advancedConfigGroup.patchValue({ botScript: entry });
+            this.advancedConfigGroup.markAsDirty();
+        });
+    }
+
+    async chooseV8LogDir(): Promise<void> {
+        let path: string;
+        try {
+            path = await Neutralino.os.showFolderDialog('Select V8Log output directory');
+        } catch {
+            return;
+        }
+        if (!path) return;
+        this.#ngZone.run(() => {
+            this.forensicsGroup.patchValue({ botV8LogDir: path });
+            this.forensicsGroup.markAsDirty();
+        });
+    }
+
+    async chooseCanvasRecordFile(): Promise<void> {
+        let path: string;
+        try {
+            path = await Neutralino.os.showSaveDialog('Select CanvasLab record output', {
+                filters: [{ name: 'JSONL', extensions: ['jsonl', 'json'] }],
+                defaultPath: 'canvaslab.jsonl',
+            });
+        } catch {
+            return;
+        }
+        if (!path) return;
+        this.#ngZone.run(() => {
+            this.forensicsGroup.patchValue({ botCanvasRecordFile: path });
+            this.forensicsGroup.markAsDirty();
+        });
+    }
+
+    async chooseAudioRecordFile(): Promise<void> {
+        let path: string;
+        try {
+            path = await Neutralino.os.showSaveDialog('Select AudioLab record output', {
+                filters: [{ name: 'JSONL', extensions: ['jsonl', 'json'] }],
+                defaultPath: 'audiolab.jsonl',
+            });
+        } catch {
+            return;
+        }
+        if (!path) return;
+        this.#ngZone.run(() => {
+            this.forensicsGroup.patchValue({ botAudioRecordFile: path });
+            this.forensicsGroup.markAsDirty();
+        });
     }
 
     onCookiesModeChange(mode: 'file' | 'input'): void {
         this.cookiesMode = mode;
         this.cookiesFilePath = '';
         this.advancedConfigGroup.patchValue({ botCookies: '' });
+        this.advancedConfigGroup.markAsDirty();
     }
 
     onBookmarksModeChange(mode: 'file' | 'input'): void {
         this.bookmarksMode = mode;
         this.bookmarksFilePath = '';
         this.advancedConfigGroup.patchValue({ botBookmarks: '' });
+        this.advancedConfigGroup.markAsDirty();
     }
 
     async chooseExecutable(): Promise<void> {
@@ -551,6 +807,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         if (!entry) return;
 
         this.advancedGroup.get('binaryPath')?.setValue(entry);
+        this.advancedGroup.markAsDirty();
     }
 
     async chooseCookiesFile(): Promise<void> {
@@ -569,6 +826,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         this.#ngZone.run(() => {
             this.cookiesFilePath = entry;
             this.advancedConfigGroup.patchValue({ botCookies: `@${entry}` });
+            this.advancedConfigGroup.markAsDirty();
         });
     }
 
@@ -588,6 +846,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         this.#ngZone.run(() => {
             this.bookmarksFilePath = entry;
             this.advancedConfigGroup.patchValue({ botBookmarks: `@${entry}` });
+            this.advancedConfigGroup.markAsDirty();
         });
     }
 
@@ -605,7 +864,9 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             this.noiseGroup.dirty ||
             this.renderingMediaGroup.dirty ||
             this.proxyConfigGroup.dirty ||
-            this.advancedConfigGroup.dirty
+            this.advancedConfigGroup.dirty ||
+            this.advancedGroup.dirty ||
+            this.forensicsGroup.dirty
         );
     }
 
@@ -627,36 +888,42 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     #handleFileSelection(filePath: string): void {
         Neutralino.filesystem
             .readFile(filePath)
-            .then((content) => {
-                const basicInfo = tryParseBotProfile(content);
-                if (!basicInfo) {
+            .then((content) =>
+                this.#ngZone.run(() => {
+                    const basicInfo = tryParseBotProfile(content);
+                    if (!basicInfo) {
+                        this.#dialog.open(AlertDialogComponent, {
+                            data: { message: 'Invalid bot profile file.' },
+                        });
+                        return;
+                    }
+
+                    this.basicInfo = basicInfo;
+                    this.botProfileInfoGroup.get('content')?.setValue(content);
+                    this.botProfileInfoGroup.get('filename')?.setValue(filePath);
+
+                    // Bot profile changed → caches from the previous profile are stale.
+                    this.#savedWindowWxh = '';
+                    this.#savedWindowJson = '';
+                    this.#savedScreenWxh = '';
+                    this.#savedScreenJson = '';
+                    // No launcher-side window/screen override on file change — leave it to BB.
+                    // (botMobileForceTouch on the other hand has no implicit kernel default,
+                    // so we keep the Android touch hint.)
+                    if (this.#isAndroidProfile(basicInfo)) {
+                        this.behaviorGroup.patchValue({ botMobileForceTouch: true });
+                        this.behaviorGroup.markAsDirty();
+                    }
+                })
+            )
+            .catch((error) =>
+                this.#ngZone.run(() => {
+                    console.error('Failed to read file:', error);
                     this.#dialog.open(AlertDialogComponent, {
-                        data: { message: 'Invalid bot profile file.' },
+                        data: { message: `Failed to read file: ${error.message || error}` },
                     });
-                    return;
-                }
-
-                this.basicInfo = basicInfo;
-                this.botProfileInfoGroup.get('content')?.setValue(content);
-                this.botProfileInfoGroup.get('filename')?.setValue(filePath);
-
-                // Auto-configure settings for Android profiles
-                if (this.#isAndroidProfile(basicInfo)) {
-                    this.displayInputGroup.patchValue({
-                        botConfigWindow: 'profile',
-                        botConfigScreen: 'profile',
-                    });
-                    this.behaviorGroup.patchValue({
-                        botMobileForceTouch: true,
-                    });
-                }
-            })
-            .catch((error) => {
-                console.error('Failed to read file:', error);
-                this.#dialog.open(AlertDialogComponent, {
-                    data: { message: `Failed to read file: ${error.message || error}` },
-                });
-            });
+                })
+            );
     }
 
     #isAndroidProfile(basicInfo: BotProfileBasicInfo): boolean {
@@ -706,15 +973,19 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             proxyServer: this.proxyValue ? this.#proxyParser.toUrl(this.proxyValue) : undefined,
             createdAt: 0,
             updatedAt: 0,
+            kernelMajorOverride: this.#parseKernelMajorOverride(),
             launchOptions: {
                 behavior: this.#cleanObject(this.behaviorGroup.value) as BehaviorToggles | undefined,
                 identityLocale: this.#cleanObject(this.identityLocaleGroup.value) as IdentityLocaleConfig | undefined,
-                customUserAgent: this.#cleanObject(this.customUserAgentGroup.value) as CustomUserAgentConfig | undefined,
+                customUserAgent: this.#cleanObject(this.customUserAgentGroup.value) as
+                    | CustomUserAgentConfig
+                    | undefined,
                 displayInput: this.#cleanObject(this.displayInputGroup.value) as DisplayInputConfig | undefined,
                 noise: this.#cleanObject(this.noiseGroup.value) as NoiseConfig | undefined,
                 renderingMedia: this.#cleanObject(this.renderingMediaGroup.value) as RenderingMediaConfig | undefined,
                 proxy: this.#cleanObject(this.proxyConfigGroup.value) as ProxyConfig | undefined,
                 advanced: this.#cleanObject(this.advancedConfigGroup.value) as AdvancedConfig | undefined,
+                forensics: this.#cleanObject(this.forensicsGroup.value) as ForensicsConfig | undefined,
             },
         };
         const flags = BrowserLauncherService.buildProfileFlags(tempProfile);
@@ -747,6 +1018,40 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         }
         console.log('basicInfoFormGroup valid');
 
+        if (this.advancedGroup.invalid) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: { message: 'Kernel Version Override must be a positive integer (1-999), or leave it blank.' },
+            });
+            return;
+        }
+
+        // Custom window/screen modes require a value, otherwise the mode is silently lost on reload.
+        const winVal = (this.displayInputGroup.get('botConfigWindow')?.value ?? '') as string;
+        if ((this.windowMode === 'wxh' || this.windowMode === 'json') && !winVal.trim()) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: {
+                    message: `Window Mode is set to ${this.windowMode}; please fill in a value (e.g. 1920x1080 or {"innerWidth":1920,"innerHeight":1080}).`,
+                },
+            });
+            return;
+        }
+        const scrVal = (this.displayInputGroup.get('botConfigScreen')?.value ?? '') as string;
+        if ((this.screenMode === 'wxh' || this.screenMode === 'json') && !scrVal.trim()) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: { message: `Screen Mode is set to ${this.screenMode}; please fill in a value.` },
+            });
+            return;
+        }
+
+        if (this.localDnsMode === 'custom' && !this.localDnsServer.trim()) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: {
+                    message: 'Local DNS is set to "custom DNS server"; please enter an IP or IP:port (e.g. 8.8.8.8).',
+                },
+            });
+            return;
+        }
+
         if (!this.botProfileInfoGroup.value?.content) {
             console.log('botProfileInfoGroup content missing');
             this.#dialog.open(AlertDialogComponent, {
@@ -765,6 +1070,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             renderingMedia: this.#cleanObject(this.renderingMediaGroup.value) as RenderingMediaConfig | undefined,
             proxy: this.#cleanObject(this.proxyConfigGroup.value) as ProxyConfig | undefined,
             advanced: this.#cleanObject(this.advancedConfigGroup.value) as AdvancedConfig | undefined,
+            forensics: this.#cleanObject(this.forensicsGroup.value) as ForensicsConfig | undefined,
         };
 
         const browserProfile: BrowserProfile = {
@@ -772,6 +1078,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             basicInfo: this.basicInfoFormGroup.value,
             botProfileInfo: this.botProfileInfoGroup.value,
             binaryPath: this.advancedGroup.value.binaryPath || undefined,
+            kernelMajorOverride: this.#parseKernelMajorOverride(),
             proxyServer: this.proxyValue ? this.#proxyParser.toUrl(this.proxyValue) : undefined,
             createdAt: this.#injectedData?.createdAt || Date.now(),
             lastUsedAt: this.#injectedData?.lastUsedAt,

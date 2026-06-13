@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, type OnInit } from '@angular/core';
+import { Component, inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -50,6 +50,7 @@ import { ProxyService } from './shared/proxy.service';
             <button mat-button (click)="onSave()">Save</button>
         </mat-dialog-actions>
     `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     styles: `
         mat-dialog-content {
             min-width: 450px;
@@ -103,7 +104,11 @@ export class QuickProxyChangeComponent implements OnInit {
 
     async onSaveProxyToList(proxy: ParsedProxy): Promise<void> {
         const duplicate = this.proxies.find(
-            (p) => p.host === proxy.host && p.port === proxy.port && (p.username || '') === (proxy.username || '') && (p.password || '') === (proxy.password || '')
+            (p) =>
+                p.host === proxy.host &&
+                p.port === proxy.port &&
+                (p.username || '') === (proxy.username || '') &&
+                (p.password || '') === (proxy.password || '')
         );
         if (duplicate) {
             this.#dialog.open(AlertDialogComponent, {
