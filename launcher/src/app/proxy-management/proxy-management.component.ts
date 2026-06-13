@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
-import { Component, inject, ViewChild, type AfterViewInit } from '@angular/core';
+import { Component, inject, ViewChild, type AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -12,9 +12,13 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import * as Neutralino from '@neutralinojs/lib';
 import type { Proxy } from '../data/proxy';
+import { AlertDialogComponent } from '../shared/alert-dialog.component';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
 import { ProxyCheckService, type ProxyCheckResult } from '../shared/proxy-check.service';
+import { ProxyParserService } from '../shared/proxy-parser.service';
 import { ProxyService } from '../shared/proxy.service';
 import { StopPropagationDirective } from '../shared/stop-propagation.directive';
 import { BulkImportProxyComponent } from './bulk-import-proxy.component';
@@ -36,20 +40,27 @@ import { EditProxyComponent } from './edit-proxy.component';
         MatProgressBarModule,
         MatProgressSpinnerModule,
         MatTooltipModule,
+        MatSnackBarModule,
         StopPropagationDirective,
     ],
     templateUrl: './proxy-management.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './proxy-management.component.scss',
 })
 export class ProxyManagementComponent implements AfterViewInit {
     readonly #proxyService = inject(ProxyService);
     readonly #proxyCheck = inject(ProxyCheckService);
+    readonly #proxyParser = inject(ProxyParserService);
     readonly #dialog = inject(MatDialog);
+    readonly #snackBar = inject(MatSnackBar);
 
     readonly displayedColumns = ['select', 'name', 'type', 'host', 'username', 'status'];
     readonly dataSource = new MatTableDataSource<Proxy>([]);
     readonly selection = new SelectionModel<Proxy>(true, []);
-    readonly checkResults = new Map<string, { status: 'checking' | 'ok' | 'fail'; result?: ProxyCheckResult; error?: string }>();
+    readonly checkResults = new Map<
+        string,
+        { status: 'checking' | 'ok' | 'fail'; result?: ProxyCheckResult; error?: string }
+    >();
 
     highlightedId: string | null = null;
     loading = false;
@@ -134,9 +145,7 @@ export class ProxyManagementComponent implements AfterViewInit {
     }
 
     editSelectedProxy(): void {
-        const proxy = this.highlightedId
-            ? this.dataSource.data.find((p) => p.id === this.highlightedId)
-            : null;
+        const proxy = this.highlightedId ? this.dataSource.data.find((p) => p.id === this.highlightedId) : null;
         if (!proxy) return;
         this.editProxy(proxy);
     }
@@ -166,6 +175,30 @@ export class ProxyManagementComponent implements AfterViewInit {
                 await this.#proxyService.deleteProxies(this.selection.selected.map((p) => p.id));
                 await this.refreshProxies();
             });
+    }
+
+    async exportProxies(): Promise<void> {
+        const targets = this.selection.selected.length > 0 ? this.selection.selected : this.dataSource.data;
+        if (targets.length === 0) return;
+        const content = targets.map((p) => this.#proxyParser.toUrl(p)).join('\n') + '\n';
+        let filePath: string;
+        try {
+            filePath = await Neutralino.os.showSaveDialog('Export proxies', {
+                filters: [{ name: 'Text', extensions: ['txt'] }],
+                defaultPath: 'proxies.txt',
+            });
+        } catch {
+            return;
+        }
+        if (!filePath) return;
+        try {
+            await Neutralino.filesystem.writeFile(filePath, content);
+            this.#snackBar.open(`Exported ${targets.length} proxies`, '', { duration: 2500 });
+        } catch (error) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: { message: `Failed to write file: ${error instanceof Error ? error.message : error}` },
+            });
+        }
     }
 
     async checkProxies(): Promise<void> {

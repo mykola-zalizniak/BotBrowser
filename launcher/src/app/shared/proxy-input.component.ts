@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, NgZone, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, NgZone, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -96,9 +96,7 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
             <div class="check-ip-section">
                 <div class="button-row">
                     @if (showClearButton && getValue()) {
-                        <button mat-stroked-button color="warn" (click)="onClearProxy()">
-                            Clear proxy
-                        </button>
+                        <button mat-stroked-button color="warn" (click)="onClearProxy()">Clear proxy</button>
                     }
                     @if (showCheckButton) {
                         <button mat-stroked-button (click)="onCheckIp()" [disabled]="checking || !getValue()">
@@ -111,14 +109,10 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
                         </button>
                     }
                     @if (showSaveButton && getValue()) {
-                        <button mat-stroked-button (click)="onSaveToList()">
-                            Save to proxy list
-                        </button>
+                        <button mat-stroked-button (click)="onSaveToList()">Save to proxy list</button>
                     }
                     @if (getValue()) {
-                        <button mat-stroked-button (click)="onCopyProxyUrl()">
-                            Copy URL
-                        </button>
+                        <button mat-stroked-button (click)="onCopyProxyUrl()">Copy URL</button>
                     }
                 </div>
 
@@ -168,6 +162,7 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
             </div>
         }
     `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     styles: `
         :host {
             display: block;
@@ -348,7 +343,6 @@ export class ProxyInputComponent {
     checking = false;
     checkResult: ProxyCheckResult | null = null;
     checkError = '';
-
 
     readonly formGroup = this.#formBuilder.group({
         type: 'http' as ProxyType,

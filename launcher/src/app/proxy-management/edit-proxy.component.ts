@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, type OnInit } from '@angular/core';
+import { Component, inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -25,6 +25,7 @@ import { ProxyService } from '../shared/proxy.service';
         ProxyInputComponent,
     ],
     templateUrl: './edit-proxy.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './edit-proxy.component.scss',
 })
 export class EditProxyComponent implements OnInit {
@@ -93,8 +94,13 @@ export class EditProxyComponent implements OnInit {
         const curr = this.#currentProxyValue;
         if (!orig && !curr) return false;
         if (!orig || !curr) return true;
-        return orig.type !== curr.type || orig.host !== curr.host || orig.port !== curr.port
-            || orig.username !== curr.username || orig.password !== curr.password;
+        return (
+            orig.type !== curr.type ||
+            orig.host !== curr.host ||
+            orig.port !== curr.port ||
+            orig.username !== curr.username ||
+            orig.password !== curr.password
+        );
     }
 
     async onConfirmClick(): Promise<void> {

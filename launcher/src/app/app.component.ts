@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
-import { Component, inject, ViewChild, type AfterViewInit } from '@angular/core';
+import { Component, effect, inject, ViewChild, type AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -20,7 +20,7 @@ import { cloneDeep } from 'lodash-es';
 import { v4 as uuidv4 } from 'uuid';
 import { CloneBrowserProfileComponent } from './clone-browser-profile.component';
 import { AppName } from './const';
-import { extractMajorVersion } from './data/bot-profile';
+import { extractMajorVersion, getRequiredKernelMajor, isWebKitProfile } from './data/bot-profile';
 import { BrowserProfileStatus, type BrowserProfile } from './data/browser-profile';
 import { EditBrowserProfileComponent } from './edit-browser-profile.component';
 import { KernelManagementComponent } from './kernel-management/kernel-management.component';
@@ -63,6 +63,7 @@ export type NavItem = 'profiles' | 'proxies' | 'kernels';
         KernelManagementComponent,
     ],
     templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './app.component.scss',
 })
 export class AppComponent implements AfterViewInit {
@@ -79,7 +80,7 @@ export class AppComponent implements AfterViewInit {
     readonly formatDateTime = formatDateTime;
     readonly formatProxyDisplay = formatProxyDisplay;
     readonly BrowserProfileStatus = BrowserProfileStatus;
-    readonly displayedColumns = ['select', 'status', 'name', 'group', 'proxy', 'kernel', 'lastUsedAt'];
+    readonly displayedColumns = ['select', 'status', 'name', 'platform', 'proxy', 'kernel', 'lastUsedAt', 'group'];
     readonly dataSource = new MatTableDataSource<BrowserProfile>([]);
     readonly selection = new SelectionModel<BrowserProfile>(true, []);
 
@@ -103,25 +104,114 @@ export class AppComponent implements AfterViewInit {
                     return this.browserLauncherService.getRunningStatus(data);
                 case 'kernel':
                     return this.getKernelVersion(data) ?? 0;
+                case 'platform':
+                    return this.getProfilePlatform(data);
                 case 'lastUsedAt':
                     return data.lastUsedAt ?? 0;
                 default:
                     return '';
             }
         };
+        // Refresh the WebKit-fallback snapshot whenever kernel installs/auto-updates run.
+        effect(() => {
+            this.kernelService.installedKernelsVersion();
+            this.#refreshLatestKernelMajor().catch(console.error);
+        });
     }
 
-    getKernelVersion(profile: BrowserProfile): number | null {
-        const content = profile.botProfileInfo?.content;
-        if (!content) return null;
+    async #refreshLatestKernelMajor(): Promise<void> {
         try {
-            const info = JSON.parse(content);
-            const userAgent = info.userAgent || '';
-            const version = info.version || '';
-            return extractMajorVersion(userAgent) ?? extractMajorVersion(version);
+            await this.kernelService.initialize();
+            const latest = await this.kernelService.getLatestInstalledKernel();
+            this.#latestInstalledKernelMajor = latest?.majorVersion ?? null;
         } catch {
-            return null;
+            this.#latestInstalledKernelMajor = null;
         }
+        // Invalidate WebKit-cached results — extractMajorVersion results don't depend on the snapshot
+        // but isWebKitProfile rows do, and overwhelmingly the simpler reset is safer than tracking which.
+        this.#kernelVersionCache = new WeakMap();
+    }
+
+    // Memoize per botProfileInfo reference: refreshProfiles() reassigns dataSource.data,
+    // so stale entries are GC'd. Without this, JSON.parse runs on every change-detection tick.
+    #kernelVersionCache = new WeakMap<object, number | null>();
+    #parsedCache = new WeakMap<object, { ua: string; version: string } | null>();
+    // Snapshot of the latest installed kernel major for the current platform. Refreshed
+    // on installedKernelsVersion signal change so getKernelVersion() mirrors run()'s WebKit fallback synchronously.
+    #latestInstalledKernelMajor: number | null = null;
+
+    getKernelVersion(profile: BrowserProfile): number | null {
+        const override = profile.kernelMajorOverride;
+        if (typeof override === 'number' && Number.isInteger(override) && override >= 1 && override <= 999) {
+            return override;
+        }
+        const info = profile.botProfileInfo;
+        if (!info?.content) return null;
+        const cached = this.#kernelVersionCache.get(info as object);
+        if (cached !== undefined) return cached;
+        let result: number | null = null;
+        try {
+            const parsed = JSON.parse(info.content);
+            const userAgent = parsed.userAgent || '';
+            const version = parsed.version || '';
+            // Mirrors browser-launcher.service.ts run() — Chrome UA → WebKit map → WebKit fallback
+            // (latest installed) → version field.
+            result = extractMajorVersion(userAgent) ?? getRequiredKernelMajor(userAgent);
+            if (result == null) {
+                if (isWebKitProfile({ userAgent, version, unmaskedVendor: '', unmaskedRenderer: '' })) {
+                    result = this.#latestInstalledKernelMajor;
+                } else {
+                    result = extractMajorVersion(version);
+                }
+            }
+        } catch {
+            result = null;
+        }
+        this.#kernelVersionCache.set(info as object, result);
+        return result;
+    }
+
+    #getParsedBasics(profile: BrowserProfile): { ua: string; version: string } | null {
+        const info = profile.botProfileInfo;
+        if (!info?.content) return null;
+        const cached = this.#parsedCache.get(info as object);
+        if (cached !== undefined) return cached;
+        let result: { ua: string; version: string } | null = null;
+        try {
+            const parsed = JSON.parse(info.content);
+            result = { ua: parsed.userAgent || '', version: parsed.version || '' };
+        } catch {
+            result = null;
+        }
+        this.#parsedCache.set(info as object, result);
+        return result;
+    }
+
+    getProfileOS(profile: BrowserProfile): string {
+        const basics = this.#getParsedBasics(profile);
+        if (!basics) return '';
+        const ua = basics.ua;
+        if (/Android/i.test(ua)) return 'Android';
+        if (/iPhone|iPad|iPod|iOS/i.test(ua)) return 'iOS';
+        if (/Windows/i.test(ua)) return 'Windows';
+        if (/Mac OS X|Macintosh|macOS/i.test(ua)) return 'macOS';
+        if (/Linux|X11/i.test(ua)) return 'Linux';
+        return '';
+    }
+
+    getProfileEngine(profile: BrowserProfile): string {
+        const basics = this.#getParsedBasics(profile);
+        if (!basics) return '';
+        const ua = basics.ua;
+        if (/Chrom(?:e|ium)\//.test(ua)) return 'Blink';
+        if (/AppleWebKit\/|Safari\//.test(ua)) return 'WebKit';
+        return '';
+    }
+
+    getProfilePlatform(profile: BrowserProfile): string {
+        const os = this.getProfileOS(profile);
+        const engine = this.getProfileEngine(profile);
+        return [os, engine].filter(Boolean).join(' · ');
     }
 
     newProfile(): void {
@@ -178,9 +268,7 @@ export class AppComponent implements AfterViewInit {
     }
 
     editSelectedProfile(): void {
-        const profile = this.highlightedId
-            ? this.dataSource.data.find((p) => p.id === this.highlightedId)
-            : null;
+        const profile = this.highlightedId ? this.dataSource.data.find((p) => p.id === this.highlightedId) : null;
         if (!profile) return;
         this.editProfile(profile);
     }
@@ -320,7 +408,8 @@ export class AppComponent implements AfterViewInit {
                 if (!result) return;
 
                 try {
-                    const userDataDirPath = await this.#browserProfileService.getBrowserProfileUserDataDirPath(browserProfile);
+                    const userDataDirPath =
+                        await this.#browserProfileService.getBrowserProfileUserDataDirPath(browserProfile);
                     await Neutralino.filesystem.remove(userDataDirPath);
                 } catch (error) {
                     // Directory may not exist yet, which is fine
@@ -345,7 +434,6 @@ export class AppComponent implements AfterViewInit {
         this.loading = true;
         try {
             const profiles = await this.#browserProfileService.getAllBrowserProfiles();
-            // Preserve checkbox checked state across refresh
             const checkedIds = this.selection.selected.map((profile) => profile.id);
             this.dataSource.data = profiles;
             this.selection.clear();

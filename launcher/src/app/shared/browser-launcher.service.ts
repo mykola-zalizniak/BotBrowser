@@ -4,7 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Neutralino from '@neutralinojs/lib';
 import { AppName } from '../const';
-import { extractMajorVersion } from '../data/bot-profile';
+import { extractMajorVersion, getRequiredKernelMajor, isWebKitProfile } from '../data/bot-profile';
 import { BrowserProfileStatus, getBrowserProfileStatusText, type BrowserProfile } from '../data/browser-profile';
 import { SimpleCDP } from '../simple-cdp';
 import { createDirectoryIfNotExists, sleep } from '../utils';
@@ -12,6 +12,62 @@ import { ShellService } from './shell.service';
 import { AlertDialogComponent } from './alert-dialog.component';
 import { BrowserProfileService } from './browser-profile.service';
 import { KernelService } from './kernel.service';
+
+// Neutralino.os.spawnProcess wraps the command in `/bin/sh -c "..."` on POSIX and
+// `cmd.exe /c "..."` on Windows. shQuotePosix uses single-quote wrap to suppress $, backtick, \
+// expansion. shQuoteWin handles BOTH the inner CommandLineToArgvW pass (program's argv parser)
+// AND the outer cmd.exe parse (escapes %VAR% expansion + cmd metacharacters).
+const IS_WINDOWS = (() => {
+    try {
+        const ua = (typeof navigator !== 'undefined')
+            ? (navigator.userAgent || (navigator as any).platform || '')
+            : '';
+        return /Win/i.test(ua);
+    } catch { return false; }
+})();
+
+function shQuotePosix(s: string): string {
+    return `'${String(s).replace(/'/g, `'\\''`)}'`;
+}
+
+function shQuoteWin(s: string): string {
+    // Step 1: CommandLineToArgvW — double backslash runs preceding a `"` or end of string.
+    const argvEscaped = String(s).replace(/(\\*)("|$)/g, (_m, slashes: string, q: string) => {
+        if (q === '"') return slashes + slashes + '\\"';
+        return slashes + slashes;
+    });
+    // Step 2: Walk argvEscaped tracking cmd.exe's quote-parity. cmd toggles on EVERY raw `"`
+    // (including the `\"` Step 1 emits — cmd is unaware of CommandLineToArgvW's backslash rule).
+    // Emit `"^%"` only when currently INSIDE a cmd-quoted region; otherwise `^%` suffices.
+    // Backslashes preceding the synthetic `"` must be doubled (CommandLineToArgvW will see them
+    // immediately before a literal `"`).
+    let out = '';
+    let insideCmdQuotes = true;
+    let pendingSlashes = 0;
+    for (const ch of argvEscaped) {
+        if (ch === '\\') { pendingSlashes++; continue; }
+        if (ch === '"') {
+            out += '\\'.repeat(pendingSlashes) + '"';
+            insideCmdQuotes = !insideCmdQuotes;
+        } else if (ch === '%') {
+            if (insideCmdQuotes) out += '\\'.repeat(pendingSlashes * 2) + '"^%"';
+            else out += '\\'.repeat(pendingSlashes) + '^%';
+        } else {
+            out += '\\'.repeat(pendingSlashes) + ch;
+        }
+        pendingSlashes = 0;
+    }
+    out += '\\'.repeat(pendingSlashes);
+    // If walk ended OUT, the closing wrap `"` would toggle cmd INTO quoted mode, leaking
+    // state into the next token. Append a `"` so the closing wrap brings cmd back to OUT.
+    // The trailing `""` becomes zero literal chars in CommandLineToArgvW.
+    if (!insideCmdQuotes) out += '"';
+    return `"${out}"`;
+}
+
+function shQuote(s: string): string {
+    return IS_WINDOWS ? shQuoteWin(s) : shQuotePosix(s);
+}
 
 export interface RunningInfo {
     browserProfileId: string;
@@ -61,11 +117,10 @@ export class BrowserLauncherService {
                         runningInfo.spawnProcessInfo = undefined;
 
                         if (exitCode !== 0 && uptime < 5000) {
-                            this.#dialog.open(AlertDialogComponent, {
-                                data: {
-                                    message: `Browser failed to start (exit code ${exitCode}). This can happen right after a kernel update while files are being indexed. Please wait a few seconds and try again.`,
-                                },
-                            });
+                            const message = exitedKernelId
+                                ? `Browser failed to start (exit code ${exitCode}). This can happen right after a kernel update while files are being indexed. Please wait a few seconds and try again.`
+                                : `Browser failed to start (exit code ${exitCode}). Check the custom Binary Path and any extra arguments in the profile's Advanced section, or switch back to "Auto (from kernel)".`;
+                            this.#dialog.open(AlertDialogComponent, { data: { message } });
                         }
 
                         // Try to clean up old kernels now that this browser exited
@@ -145,50 +200,117 @@ export class BrowserLauncherService {
             browserProfile.id
         );
 
-        // Get executable path from kernel based on bot profile version
         let execPath: string | undefined;
+        let majorVersion: number | null = null;
+        let kernel: Awaited<ReturnType<KernelService['getInstalledKernelByMajorVersion']>> = undefined;
 
-        // Extract major version from bot profile
-        const userAgent = botProfileObject.userAgent || '';
-        const version = botProfileObject.version || '';
-        const majorVersion = extractMajorVersion(userAgent) || extractMajorVersion(version);
-
-        if (!majorVersion) {
+        // Validate kernelMajorOverride unconditionally so hand-edited/imported JSON surfaces an
+        // error even when binaryPath would short-circuit kernel resolution. 0 is a no-override sentinel.
+        const rawOverride = browserProfile.kernelMajorOverride;
+        if (rawOverride != null && rawOverride !== 0
+            && (!Number.isInteger(rawOverride) || rawOverride < 1 || rawOverride > 999)) {
             this.#dialog.open(AlertDialogComponent, {
-                data: { message: 'Could not determine browser version from bot profile. Please check the profile.' },
+                data: { message: `Invalid kernel version override: ${rawOverride}. Use a positive integer (e.g. 149).` },
             });
             return;
         }
+        const overrideVersion = (typeof rawOverride === 'number' && rawOverride > 0) ? rawOverride : null;
 
-        console.log('Bot profile requires kernel major version:', majorVersion);
-
-        // Find matching kernel
-        await this.#kernelService.initialize();
-        const kernel = await this.#kernelService.getInstalledKernelByMajorVersion(majorVersion);
-
+        // Custom executable path takes precedence — skip kernel resolution entirely.
         if (browserProfile.binaryPath) {
-            // Custom executable path set in profile takes highest priority
-            if (osType.includes('Darwin')) {
-                if (browserProfile.binaryPath.endsWith('.app')) {
-                    execPath = await this.#findMacOSExecutable(browserProfile.binaryPath);
-                } else {
-                    execPath = browserProfile.binaryPath;
+            const trimmed = browserProfile.binaryPath.trim();
+            if (trimmed) {
+                // Strip trailing separators so a Finder-pasted ".app/" still routes through #findMacOSExecutable.
+                const stripped = trimmed.replace(/[\\/]+$/, '');
+                const candidate = osType.includes('Darwin') && stripped.endsWith('.app')
+                    ? await this.#findMacOSExecutable(stripped)
+                    : stripped;
+                try {
+                    const stats = await Neutralino.filesystem.getStats(candidate);
+                    if (!stats.isFile) {
+                        this.#dialog.open(AlertDialogComponent, {
+                            data: { message: `Custom executable path is not a file: ${trimmed}. Point Binary Path at the browser binary (or a .app bundle on macOS).` },
+                        });
+                        return;
+                    }
+                    execPath = candidate;
+                } catch {
+                    this.#dialog.open(AlertDialogComponent, {
+                        data: { message: `Custom executable not found: ${trimmed}. Update Binary Path in the profile's Advanced section, or switch back to "Auto (from kernel)".` },
+                    });
+                    return;
                 }
-            } else {
-                execPath = browserProfile.binaryPath;
             }
-        } else if (kernel) {
-            if (osType.includes('Darwin') && kernel.executablePath.endsWith('.app')) {
-                execPath = await this.#findMacOSExecutable(kernel.executablePath);
+        }
+
+        if (!execPath) {
+            await this.#kernelService.initialize();
+
+            // Resolution order: override → Chrome UA major → WebKit Safari→Chromium map → WebKit fallback
+            // (latest installed / available). The WebKit branch must run BEFORE the generic
+            // extractMajorVersion(version) fallback, because WebKit profiles store the Safari major
+            // (e.g. "26.0") in `version`, which would otherwise resolve to the wrong kernel.
+            const userAgent = botProfileObject.userAgent || '';
+            const version = botProfileObject.version || '';
+
+            if (overrideVersion) {
+                majorVersion = overrideVersion;
             } else {
-                execPath = kernel.executablePath;
+                majorVersion = extractMajorVersion(userAgent);
+                if (!majorVersion) {
+                    const requiredMajor = getRequiredKernelMajor(userAgent);
+                    if (requiredMajor != null) {
+                        majorVersion = requiredMajor;
+                        console.log(`WebKit/Safari profile mapped to required kernel major ${requiredMajor}`);
+                    } else if (isWebKitProfile({ userAgent, version, unmaskedVendor: '', unmaskedRenderer: '' })) {
+                        const latestKernel = await this.#kernelService.getLatestInstalledKernel();
+                        if (latestKernel) {
+                            kernel = latestKernel;
+                            majorVersion = latestKernel.majorVersion;
+                            console.log(`WebKit/Safari profile: falling back to latest installed kernel ${latestKernel.majorVersion} (${latestKernel.fullVersion})`);
+                        } else {
+                            const latestAvailable = await this.#kernelService.getLatestAvailableMajorVersion();
+                            if (latestAvailable) {
+                                majorVersion = latestAvailable;
+                                console.log(`WebKit/Safari profile + no installed kernels: routing to auto-download of v${latestAvailable}`);
+                            }
+                        }
+                    } else {
+                        // Non-WebKit profile with no Chrome UA — fall back to the generic version field.
+                        majorVersion = extractMajorVersion(version);
+                    }
+                }
+            }
+
+            if (!majorVersion) {
+                this.#dialog.open(AlertDialogComponent, {
+                    data: {
+                        message:
+                            'Could not auto-detect a kernel major version from this bot profile (userAgent has no Chrome/Chromium or Safari Version/<N> marker). Set a Kernel Version Override in the Advanced section to force a specific kernel.',
+                    },
+                });
+                return;
+            }
+
+            if (!kernel) {
+                kernel = await this.#kernelService.getInstalledKernelByMajorVersion(majorVersion);
+            }
+
+            console.log('Bot profile requires kernel major version:', majorVersion);
+
+            if (kernel) {
+                if (osType.includes('Darwin') && kernel.executablePath.endsWith('.app')) {
+                    execPath = await this.#findMacOSExecutable(kernel.executablePath);
+                } else {
+                    execPath = kernel.executablePath;
+                }
             }
         }
 
         if (!execPath) {
             // Auto-download the required kernel
             try {
-                await this.#kernelService.downloadKernelByMajorVersion(majorVersion);
+                await this.#kernelService.downloadKernelByMajorVersion(majorVersion!);
                 this.#dialog.open(AlertDialogComponent, {
                     data: {
                         message: `Kernel version ${majorVersion} is being downloaded. Please wait for the download to complete and try again.`,
@@ -229,7 +351,7 @@ export class BrowserLauncherService {
             });
         }
 
-        const proc = await Neutralino.os.spawnProcess(`"${execPath}" ${args.join(' ')}`);
+        const proc = await Neutralino.os.spawnProcess(`${shQuote(execPath)} ${args.join(' ')}`);
         runningInfo.spawnProcessInfo = proc;
 
         this.#runningStatuses.set(browserProfile.id, runningInfo);
@@ -272,14 +394,14 @@ export class BrowserLauncherService {
             '--use-mock-keychain',
             '--restore-last-session',
             '--disable-blink-features=AutomationControlled',
-            `--user-data-dir="${paths.userDataDirPath}"`,
-            `--disk-cache-dir="${paths.diskCacheDirPath}"`,
-            `--bot-profile="${paths.botProfilePath}"`,
+            `--user-data-dir=${shQuote(paths.userDataDirPath)}`,
+            `--disk-cache-dir=${shQuote(paths.diskCacheDirPath)}`,
+            `--bot-profile=${shQuote(paths.botProfilePath)}`,
         ];
 
         args.push(...BrowserLauncherService.buildProfileFlags(profile));
 
-        if (profile.basicInfo.profileName) args.push(`--bot-title="${profile.basicInfo.profileName}"`);
+        if (profile.basicInfo.profileName) args.push(`--bot-title=${shQuote(profile.basicInfo.profileName)}`);
 
         return args;
     }
@@ -298,12 +420,22 @@ export class BrowserLauncherService {
         if (opts?.behavior?.botAlwaysActive) args.push('--bot-always-active');
         if (opts?.behavior?.botDisableConsoleMessage) args.push('--bot-disable-console-message');
 
-        // Backward compat
+        // Backward compat: legacy `behavior.*` for fields that moved. Use `in` so explicit `false` is honored.
         const beh = opts?.behavior as any;
-        if (beh?.botLocalDns && !opts?.proxy?.botLocalDns) args.push('--bot-local-dns');
+        if (beh && 'botLocalDns' in beh && opts?.proxy?.botLocalDns == null) {
+            const v = beh.botLocalDns;
+            if (typeof v === 'string' && v) args.push(`--bot-local-dns=${shQuote(v)}`);
+            else if (v === true) args.push('--bot-local-dns');
+            else if (v === false) args.push('--bot-local-dns=false');
+        }
         if (beh?.botPortProtection && !opts?.proxy?.botPortProtection) args.push('--bot-port-protection');
         if (beh?.botNetworkInfoOverride && !opts?.proxy?.botNetworkInfoOverride) args.push('--bot-network-info-override');
-        if (beh?.botGpuEmulation && !opts?.renderingMedia?.botGpuEmulation) args.push('--bot-gpu-emulation');
+        if (beh && 'botGpuEmulation' in beh && opts?.renderingMedia?.botGpuEmulation == null) {
+            const v = beh.botGpuEmulation;
+            if (v === 'priority') args.push('--bot-gpu-emulation=priority');
+            else if (v === 'off' || v === false) args.push('--bot-gpu-emulation=false');
+            else if (v === 'on' || v === true) args.push('--bot-gpu-emulation');
+        }
         if (beh?.botInjectRandomHistory && !opts?.identityLocale?.botInjectRandomHistory) {
             if (typeof beh.botInjectRandomHistory === 'number') {
                 args.push(`--bot-inject-random-history=${beh.botInjectRandomHistory}`);
@@ -316,48 +448,45 @@ export class BrowserLauncherService {
         if (opts?.identityLocale?.botConfigBrowserBrand)
             args.push(`--bot-config-browser-brand=${opts.identityLocale.botConfigBrowserBrand}`);
         if (opts?.identityLocale?.botConfigBrandFullVersion)
-            args.push(`--bot-config-brand-full-version=${opts.identityLocale.botConfigBrandFullVersion}`);
+            args.push(`--bot-config-brand-full-version=${shQuote(opts.identityLocale.botConfigBrandFullVersion)}`);
         if (opts?.identityLocale?.botConfigUaFullVersion)
-            args.push(`--bot-config-ua-full-version=${opts.identityLocale.botConfigUaFullVersion}`);
+            args.push(`--bot-config-ua-full-version=${shQuote(opts.identityLocale.botConfigUaFullVersion)}`);
         if (opts?.identityLocale?.botConfigLanguages)
-            args.push(`--bot-config-languages=${opts.identityLocale.botConfigLanguages}`);
+            args.push(`--bot-config-languages=${shQuote(opts.identityLocale.botConfigLanguages)}`);
         if (opts?.identityLocale?.botConfigLocale)
-            args.push(`--bot-config-locale=${opts.identityLocale.botConfigLocale}`);
+            args.push(`--bot-config-locale=${shQuote(opts.identityLocale.botConfigLocale)}`);
         if (opts?.identityLocale?.botConfigTimezone)
-            args.push(`--bot-config-timezone=${opts.identityLocale.botConfigTimezone}`);
+            args.push(`--bot-config-timezone=${shQuote(opts.identityLocale.botConfigTimezone)}`);
         if (opts?.identityLocale?.botConfigLocation)
-            args.push(`--bot-config-location=${opts.identityLocale.botConfigLocation}`);
+            args.push(`--bot-config-location=${shQuote(opts.identityLocale.botConfigLocation)}`);
         if (opts?.identityLocale?.botInjectRandomHistory != null) {
             const v = opts.identityLocale.botInjectRandomHistory;
-            if (typeof v === 'number') {
-                args.push(`--bot-inject-random-history=${v}`);
-            } else if (v === true) {
-                args.push('--bot-inject-random-history');
-            }
+            if (typeof v === 'number') args.push(`--bot-inject-random-history=${v}`);
+            else if (v === true) args.push('--bot-inject-random-history');
         }
         if (opts?.identityLocale?.botEnableVariationsInContext)
             args.push('--bot-enable-variations-in-context');
 
         // Custom User-Agent
         if (opts?.customUserAgent?.userAgent)
-            args.push(`--user-agent="${opts.customUserAgent.userAgent}"`);
+            args.push(`--user-agent=${shQuote(opts.customUserAgent.userAgent)}`);
         if (opts?.customUserAgent?.botConfigPlatform)
             args.push(`--bot-config-platform=${opts.customUserAgent.botConfigPlatform}`);
         if (opts?.customUserAgent?.botConfigPlatformVersion)
-            args.push(`--bot-config-platform-version=${opts.customUserAgent.botConfigPlatformVersion}`);
+            args.push(`--bot-config-platform-version=${shQuote(opts.customUserAgent.botConfigPlatformVersion)}`);
         if (opts?.customUserAgent?.botConfigModel)
-            args.push(`--bot-config-model=${opts.customUserAgent.botConfigModel}`);
+            args.push(`--bot-config-model=${shQuote(opts.customUserAgent.botConfigModel)}`);
         if (opts?.customUserAgent?.botConfigArchitecture)
             args.push(`--bot-config-architecture=${opts.customUserAgent.botConfigArchitecture}`);
         if (opts?.customUserAgent?.botConfigBitness)
             args.push(`--bot-config-bitness=${opts.customUserAgent.botConfigBitness}`);
         if (opts?.customUserAgent?.botConfigMobile) args.push('--bot-config-mobile');
 
-        // Display & Input
+        // Display & Input — window/screen accept JSON, so always quote.
         if (opts?.displayInput?.botConfigWindow)
-            args.push(`--bot-config-window=${opts.displayInput.botConfigWindow}`);
+            args.push(`--bot-config-window=${shQuote(opts.displayInput.botConfigWindow)}`);
         if (opts?.displayInput?.botConfigScreen)
-            args.push(`--bot-config-screen=${opts.displayInput.botConfigScreen}`);
+            args.push(`--bot-config-screen=${shQuote(opts.displayInput.botConfigScreen)}`);
         if (opts?.displayInput?.botConfigKeyboard)
             args.push(`--bot-config-keyboard=${opts.displayInput.botConfigKeyboard}`);
         if (opts?.displayInput?.botConfigFonts)
@@ -369,7 +498,7 @@ export class BrowserLauncherService {
         if (opts?.displayInput?.botConfigDisableDeviceScaleFactor)
             args.push('--bot-config-disable-device-scale-factor');
 
-        // Noise
+        // Noise (numeric / enum — no quoting needed)
         if (opts?.noise?.botConfigNoiseWebglImage) args.push('--bot-config-noise-webgl-image');
         if (opts?.noise?.botConfigNoiseCanvas) args.push('--bot-config-noise-canvas');
         if (opts?.noise?.botConfigNoiseAudioContext) args.push('--bot-config-noise-audio-context');
@@ -396,23 +525,47 @@ export class BrowserLauncherService {
         if (opts?.renderingMedia?.botConfigWebrtc)
             args.push(`--bot-config-webrtc=${opts.renderingMedia.botConfigWebrtc}`);
         if (opts?.renderingMedia?.botWebrtcIce)
-            args.push(`--bot-webrtc-ice=${opts.renderingMedia.botWebrtcIce}`);
-        if (opts?.renderingMedia?.botGpuEmulation) args.push('--bot-gpu-emulation');
+            args.push(`--bot-webrtc-ice=${shQuote(opts.renderingMedia.botWebrtcIce)}`);
+        {
+            const v = opts?.renderingMedia?.botGpuEmulation;
+            if (v === 'priority') args.push('--bot-gpu-emulation=priority');
+            else if (v === 'off' || v === false) args.push('--bot-gpu-emulation=false');
+            else if (v === 'on' || v === true) args.push('--bot-gpu-emulation');
+        }
 
         // Proxy
-        if (profile.proxyServer) args.push(`--proxy-server=${profile.proxyServer}`);
-        if (opts?.proxy?.proxyIp) args.push(`--proxy-ip=${opts.proxy.proxyIp}`);
-        if (opts?.proxy?.botIpService) args.push(`--bot-ip-service=${opts.proxy.botIpService}`);
-        if (opts?.proxy?.proxyBypassRgx) args.push(`--proxy-bypass-rgx=${opts.proxy.proxyBypassRgx}`);
-        if (opts?.proxy?.botLocalDns) args.push('--bot-local-dns');
+        if (profile.proxyServer) args.push(`--proxy-server=${shQuote(profile.proxyServer)}`);
+        if (opts?.proxy?.proxyIp) args.push(`--proxy-ip=${shQuote(opts.proxy.proxyIp)}`);
+        if (opts?.proxy?.botIpService) args.push(`--bot-ip-service=${shQuote(opts.proxy.botIpService)}`);
+        if (opts?.proxy?.proxyBypassRgx) args.push(`--proxy-bypass-rgx=${shQuote(opts.proxy.proxyBypassRgx)}`);
+        {
+            const v = opts?.proxy?.botLocalDns;
+            if (typeof v === 'string' && v) args.push(`--bot-local-dns=${shQuote(v)}`);
+            else if (v === true) args.push('--bot-local-dns');
+            else if (v === false) args.push('--bot-local-dns=false');
+        }
         if (opts?.proxy?.botPortProtection) args.push('--bot-port-protection');
         if (opts?.proxy?.botNetworkInfoOverride) args.push('--bot-network-info-override');
 
-        // Advanced
-        if (opts?.advanced?.botCookies) args.push(`--bot-cookies=${opts.advanced.botCookies}`);
-        if (opts?.advanced?.botBookmarks) args.push(`--bot-bookmarks=${opts.advanced.botBookmarks}`);
+        // Advanced (JSON / paths — always quote)
+        if (opts?.advanced?.botCookies) args.push(`--bot-cookies=${shQuote(opts.advanced.botCookies)}`);
+        if (opts?.advanced?.botBookmarks) args.push(`--bot-bookmarks=${shQuote(opts.advanced.botBookmarks)}`);
         if (opts?.advanced?.botCustomHeaders)
-            args.push(`--bot-custom-headers=${opts.advanced.botCustomHeaders}`);
+            args.push(`--bot-custom-headers=${shQuote(opts.advanced.botCustomHeaders)}`);
+        if (opts?.advanced?.botScript) args.push(`--bot-script=${shQuote(opts.advanced.botScript)}`);
+
+        // Forensics: --bot-v8-log and --bot-v8-log-dir must travel together per CLI_FLAGS doc.
+        const v8Mode = opts?.forensics?.botV8Log;
+        if (v8Mode) {
+            args.push(`--bot-v8-log=${v8Mode}`);
+            if (v8Mode !== 'none' && opts?.forensics?.botV8LogDir) {
+                args.push(`--bot-v8-log-dir=${shQuote(opts.forensics.botV8LogDir)}`);
+            }
+        }
+        if (opts?.forensics?.botCanvasRecordFile)
+            args.push(`--bot-canvas-record-file=${shQuote(opts.forensics.botCanvasRecordFile)}`);
+        if (opts?.forensics?.botAudioRecordFile)
+            args.push(`--bot-audio-record-file=${shQuote(opts.forensics.botAudioRecordFile)}`);
 
         return args;
     }

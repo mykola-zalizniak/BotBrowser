@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,7 @@ import { BrowserProfileService } from './shared/browser-profile.service';
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
     templateUrl: './warmup.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./warmup.component.scss'],
 })
 export class WarmupComponent {

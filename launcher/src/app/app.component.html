@@ -274,6 +274,11 @@
                                 <td mat-cell *matCellDef="let element">{{ element.basicInfo.groupName }}</td>
                             </ng-container>
 
+                            <ng-container matColumnDef="platform">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Platform</th>
+                                <td mat-cell *matCellDef="let element">{{ getProfilePlatform(element) || '-' }}</td>
+                            </ng-container>
+
                             <ng-container matColumnDef="proxy">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Proxy</th>
                                 <td mat-cell *matCellDef="let element">

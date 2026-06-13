@@ -12,8 +12,8 @@
 
 # npx browserslist
 
-last 10 Chrome versions
-last 10 Firefox version
-last 10 Edge major versions
-last 8 Safari major versions
-Firefox ESR
+# App ships inside a Neutralino webview (Chromium on Win/Linux WebView2/WebKitGTK, WebKit on macOS),
+# so we only target reasonably-modern engines. Old Safari < 17 trips up modern destructuring in zone.js.
+last 5 Chrome versions
+last 5 Edge major versions
+last 4 Safari major versions

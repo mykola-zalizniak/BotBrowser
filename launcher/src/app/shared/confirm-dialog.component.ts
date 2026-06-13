@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -21,6 +21,7 @@ import { MatStepperModule } from '@angular/material/stepper';
         MatStepperModule,
         MatAutocompleteModule,
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './confirm-dialog.component.html',
 })
 export class ConfirmDialogComponent {

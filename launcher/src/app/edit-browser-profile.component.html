@@ -53,6 +53,9 @@
             <div class="section-title">Bot Profile</div>
             @if (basicInfo) {
                 <div class="profile-info">
+                    @if (botProfileInfoGroup.value.filename) {
+                        <p><strong>Source file:</strong> {{ botProfileInfoGroup.value.filename }}</p>
+                    }
                     <p><strong>Version:</strong> {{ basicInfo.version }}</p>
                     <p><strong>User Agent:</strong> {{ basicInfo.userAgent }}</p>
                     <p><strong>Unmasked Vendor:</strong> {{ basicInfo.unmaskedVendor }}</p>
@@ -116,12 +119,25 @@
                 </mat-form-field>
 
                 <div class="section-title">Network Protection</div>
+                <div class="form-row">
+                    <mat-form-field class="flex-1">
+                        <mat-label>Local DNS</mat-label>
+                        <mat-select [(value)]="localDnsMode" (selectionChange)="onLocalDnsModeChange()">
+                            <mat-option value="off">off (use proxy DNS)</mat-option>
+                            <mat-option value="builtin">built-in resolver</mat-option>
+                            <mat-option value="custom">custom DNS server</mat-option>
+                        </mat-select>
+                        <mat-hint>Default: off · built-in keeps DNS local</mat-hint>
+                    </mat-form-field>
+                    @if (localDnsMode === 'custom') {
+                        <mat-form-field class="flex-2">
+                            <mat-label>DNS Server</mat-label>
+                            <input matInput placeholder="8.8.8.8 or 127.0.0.1:5353" [(ngModel)]="localDnsServer" [ngModelOptions]="{standalone: true}" (input)="onLocalDnsServerChange()" />
+                            <mat-hint>IP or IP:port (port defaults to 53)</mat-hint>
+                        </mat-form-field>
+                    }
+                </div>
                 <div class="toggle-grid">
-                    <mat-slide-toggle formControlName="botLocalDns">
-                        Local DNS Resolution
-                        <span class="toggle-hint">Resolve DNS locally instead of through proxy (default: off)</span>
-                    </mat-slide-toggle>
-
                     <mat-slide-toggle formControlName="botPortProtection">
                         Port Protection
                         <span class="toggle-hint">Protect local ports from scanning (default: off)</span>
@@ -144,10 +160,12 @@
                     <mat-form-field class="flex-1">
                         <mat-label>Browser Brand</mat-label>
                         <mat-select formControlName="botConfigBrowserBrand">
+                            <mat-option [value]="null">Default (from profile)</mat-option>
                             @for (brand of browserBrands; track brand) {
                                 <mat-option [value]="brand">{{ brand }}</mat-option>
                             }
                         </mat-select>
+                        <mat-hint>WebKit/Safari profiles should leave this on "Default"</mat-hint>
                     </mat-form-field>
 
                     <mat-form-field class="flex-1">
@@ -179,15 +197,15 @@
                 <div class="form-row">
                     <mat-form-field class="flex-1">
                         <mat-label>Timezone</mat-label>
-                        <input matInput placeholder="auto or America/New_York" formControlName="botConfigTimezone" />
+                        <input matInput placeholder="auto, real, or America/New_York" formControlName="botConfigTimezone" />
                     </mat-form-field>
 
                     <mat-form-field class="flex-1">
                         <mat-label>Location</mat-label>
-                        <input matInput placeholder="auto or lat,lng" formControlName="botConfigLocation" />
+                        <input matInput placeholder="auto, real, or lat,lng" formControlName="botConfigLocation" />
                     </mat-form-field>
                 </div>
-                <mat-hint class="section-hint">Leave empty or "auto" to derive from IP address</mat-hint>
+                <mat-hint class="section-hint">auto = derive from IP · real = system value · or supply an explicit override</mat-hint>
             </form>
 
             <div class="section-title">Session Authenticity</div>
@@ -286,29 +304,47 @@
             <form [formGroup]="displayInputGroup">
                 <div class="form-row">
                     <mat-form-field class="flex-1">
-                        <mat-label>Window Size</mat-label>
-                        <mat-select formControlName="botConfigWindow">
-                            @for (opt of profileRealOptions; track opt) {
-                                <mat-option [value]="opt">{{ opt }}</mat-option>
-                            }
+                        <mat-label>Window Mode</mat-label>
+                        <mat-select [(value)]="windowMode" (selectionChange)="onWindowModeChange()">
+                            <mat-option value="">Default</mat-option>
+                            <mat-option value="profile">profile</mat-option>
+                            <mat-option value="real">real</mat-option>
+                            <mat-option value="wxh">WxH (custom)</mat-option>
+                            <mat-option value="json">JSON (custom)</mat-option>
                         </mat-select>
                     </mat-form-field>
-
-                    <mat-form-field class="flex-1">
-                        <mat-label>Screen Size</mat-label>
-                        <mat-select formControlName="botConfigScreen">
-                            @for (opt of profileRealOptions; track opt) {
-                                <mat-option [value]="opt">{{ opt }}</mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
+                    @if (windowMode === 'wxh' || windowMode === 'json') {
+                        <mat-form-field class="flex-2">
+                            <mat-label>Window Value</mat-label>
+                            <input matInput formControlName="botConfigWindow" [placeholder]="windowMode === 'wxh' ? '1920x1080' : '{&quot;innerWidth&quot;:1920,&quot;innerHeight&quot;:1080}'" />
+                        </mat-form-field>
+                    }
                 </div>
-                <mat-hint class="section-hint">profile = use bot profile values, real = use actual system values</mat-hint>
+                <div class="form-row">
+                    <mat-form-field class="flex-1">
+                        <mat-label>Screen Mode</mat-label>
+                        <mat-select [(value)]="screenMode" (selectionChange)="onScreenModeChange()">
+                            <mat-option value="">Default</mat-option>
+                            <mat-option value="profile">profile</mat-option>
+                            <mat-option value="real">real</mat-option>
+                            <mat-option value="wxh">WxH (custom)</mat-option>
+                            <mat-option value="json">JSON (custom)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    @if (screenMode === 'wxh' || screenMode === 'json') {
+                        <mat-form-field class="flex-2">
+                            <mat-label>Screen Value</mat-label>
+                            <input matInput formControlName="botConfigScreen" [placeholder]="screenMode === 'wxh' ? '2560x1440' : '{&quot;width&quot;:2560,&quot;height&quot;:1440}'" />
+                        </mat-form-field>
+                    }
+                </div>
+                <mat-hint class="section-hint">profile = profile values · real = system values · WxH = direct size · JSON = full customization (no spaces)</mat-hint>
 
                 <div class="form-row margin-top">
                     <mat-form-field class="flex-1">
                         <mat-label>Keyboard Layout</mat-label>
                         <mat-select formControlName="botConfigKeyboard">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (opt of profileRealOptions; track opt) {
                                 <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
@@ -318,6 +354,7 @@
                     <mat-form-field class="flex-1">
                         <mat-label>Fonts</mat-label>
                         <mat-select formControlName="botConfigFonts">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (opt of fontOptions; track opt) {
                                 <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
@@ -327,6 +364,7 @@
                     <mat-form-field class="flex-1">
                         <mat-label>Color Scheme</mat-label>
                         <mat-select formControlName="botConfigColorScheme">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (scheme of colorSchemes; track scheme) {
                                 <mat-option [value]="scheme">{{ scheme }}</mat-option>
                             }
@@ -450,6 +488,7 @@
                     <mat-form-field class="flex-1">
                         <mat-label>WebGL</mat-label>
                         <mat-select formControlName="botConfigWebgl">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (opt of profileRealDisabledOptions; track opt) {
                                 <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
@@ -459,6 +498,7 @@
                     <mat-form-field class="flex-1">
                         <mat-label>WebGPU</mat-label>
                         <mat-select formControlName="botConfigWebgpu">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (opt of profileRealDisabledOptions; track opt) {
                                 <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
@@ -470,6 +510,7 @@
                     <mat-form-field class="flex-1">
                         <mat-label>Speech Voices</mat-label>
                         <mat-select formControlName="botConfigSpeechVoices">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (opt of profileRealOptions; track opt) {
                                 <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
@@ -479,6 +520,7 @@
                     <mat-form-field class="flex-1">
                         <mat-label>Media Devices</mat-label>
                         <mat-select formControlName="botConfigMediaDevices">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (opt of profileRealOptions; track opt) {
                                 <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
@@ -488,6 +530,7 @@
                     <mat-form-field class="flex-1">
                         <mat-label>Media Types</mat-label>
                         <mat-select formControlName="botConfigMediaTypes">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (opt of mediaTypesOptions; track opt) {
                                 <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
@@ -499,6 +542,7 @@
                     <mat-form-field class="flex-1">
                         <mat-label>WebRTC</mat-label>
                         <mat-select formControlName="botConfigWebrtc">
+                            <mat-option [value]="null">Default</mat-option>
                             @for (opt of profileRealDisabledOptions; track opt) {
                                 <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
@@ -511,10 +555,18 @@
                     </mat-form-field>
                 </div>
 
-                <mat-slide-toggle formControlName="botGpuEmulation" class="standalone-toggle">
-                    GPU Emulation
-                    <span class="toggle-hint">Auto-select optimal GPU rendering backend (default: off)</span>
-                </mat-slide-toggle>
+                <div class="form-row margin-top">
+                    <mat-form-field class="flex-1">
+                        <mat-label>GPU Emulation</mat-label>
+                        <mat-select [(value)]="gpuEmulationMode" (selectionChange)="onGpuEmulationModeChange()">
+                            <mat-option value="">Default</mat-option>
+                            <mat-option value="off">off</mat-option>
+                            <mat-option value="on">on (standard)</mat-option>
+                            <mat-option value="priority">priority (prioritized scheduling)</mat-option>
+                        </mat-select>
+                        <mat-hint>Default applies BotBrowser's built-in policy</mat-hint>
+                    </mat-form-field>
+                </div>
             </form>
         </div>
 
@@ -544,6 +596,51 @@
             </form>
         </div>
 
+        <!-- Forensics -->
+        <div class="section" id="section-forensics">
+            <div class="section-header">Forensics</div>
+            <form [formGroup]="forensicsGroup">
+                <div class="section-title">V8Log</div>
+                <div class="form-row">
+                    <mat-form-field class="flex-1">
+                        <mat-label>V8Log Mode</mat-label>
+                        <mat-select formControlName="botV8Log">
+                            <mat-option [value]="null">Off</mat-option>
+                            @for (mode of v8LogModes; track mode) {
+                                <mat-option [value]="mode">{{ mode }}</mat-option>
+                            }
+                        </mat-select>
+                        <mat-hint>sample = standard trace · full = exhaustive · none = no data</mat-hint>
+                    </mat-form-field>
+                </div>
+                <div class="file-picker-row margin-top">
+                    <mat-form-field>
+                        <mat-label>V8Log Output Directory</mat-label>
+                        <input matInput placeholder="Absolute writable directory" formControlName="botV8LogDir" />
+                    </mat-form-field>
+                    <button mat-stroked-button type="button" (click)="chooseV8LogDir()">Browse...</button>
+                </div>
+
+                <div class="section-title">CanvasLab</div>
+                <div class="file-picker-row">
+                    <mat-form-field>
+                        <mat-label>Canvas Record File</mat-label>
+                        <input matInput placeholder="Absolute path, e.g. /tmp/canvaslab.jsonl" formControlName="botCanvasRecordFile" />
+                    </mat-form-field>
+                    <button mat-stroked-button type="button" (click)="chooseCanvasRecordFile()">Browse...</button>
+                </div>
+
+                <div class="section-title">AudioLab</div>
+                <div class="file-picker-row">
+                    <mat-form-field>
+                        <mat-label>Audio Record File</mat-label>
+                        <input matInput placeholder="Absolute path, e.g. /tmp/audiolab.jsonl" formControlName="botAudioRecordFile" />
+                    </mat-form-field>
+                    <button mat-stroked-button type="button" (click)="chooseAudioRecordFile()">Browse...</button>
+                </div>
+            </form>
+        </div>
+
         <!-- Advanced -->
         <div class="section" id="section-advanced">
             <div class="section-header">Advanced</div>
@@ -565,6 +662,31 @@
                     </div>
                 </form>
             }
+
+            <!-- Kernel version override -->
+            <div class="section-title">Kernel Version Override</div>
+            <form [formGroup]="advancedGroup">
+                <mat-form-field>
+                    <mat-label>Chromium major version</mat-label>
+                    <input matInput type="number" min="1" max="999" step="1" placeholder="e.g. 149 (leave empty for auto)" formControlName="kernelMajorOverride" />
+                    <mat-hint>Required for WebKit/Safari profiles; otherwise leave empty</mat-hint>
+                    @if (advancedGroup.controls.kernelMajorOverride.invalid && advancedGroup.controls.kernelMajorOverride.touched) {
+                        <mat-error>Enter a positive integer between 1 and 999</mat-error>
+                    }
+                </mat-form-field>
+            </form>
+
+            <!-- Bot Script -->
+            <div class="section-title">Bot Script</div>
+            <form [formGroup]="advancedConfigGroup">
+                <div class="file-picker-row">
+                    <mat-form-field>
+                        <mat-label>Script path</mat-label>
+                        <input matInput placeholder="Absolute path to .js file" formControlName="botScript" />
+                    </mat-form-field>
+                    <button mat-stroked-button type="button" (click)="chooseBotScript()">Browse...</button>
+                </div>
+            </form>
 
             <!-- Cookies -->
             <div class="section-title">Cookies</div>

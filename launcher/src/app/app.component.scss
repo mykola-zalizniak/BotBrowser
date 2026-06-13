@@ -25,38 +25,27 @@
         flex: 1;
     }
 
-    ::ng-deep {
-        .mat-mdc-list-item {
-            .mdc-list-item__primary-text {
-                color: rgba(255, 255, 255, 0.85) !important;
-            }
+    ::ng-deep .mat-mdc-list-item {
+        .mdc-list-item__primary-text,
+        .mat-mdc-list-item-icon {
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
 
+        &:hover {
+            background: rgba(255, 255, 255, 0.05) !important;
+
+            .mdc-list-item__primary-text,
             .mat-mdc-list-item-icon {
-                color: rgba(255, 255, 255, 0.85) !important;
+                color: white !important;
             }
+        }
 
-            &:hover {
-                background: rgba(255, 255, 255, 0.05) !important;
+        &.mdc-list-item--activated {
+            background: rgba(56, 189, 248, 0.15) !important;
 
-                .mdc-list-item__primary-text {
-                    color: white !important;
-                }
-
-                .mat-mdc-list-item-icon {
-                    color: white !important;
-                }
-            }
-
-            &.mdc-list-item--activated {
-                background: rgba(56, 189, 248, 0.15) !important;
-
-                .mdc-list-item__primary-text {
-                    color: #38bdf8 !important;
-                }
-
-                .mat-mdc-list-item-icon {
-                    color: #38bdf8 !important;
-                }
+            .mdc-list-item__primary-text,
+            .mat-mdc-list-item-icon {
+                color: #38bdf8 !important;
             }
         }
     }
@@ -187,6 +176,11 @@ mat-toolbar {
 .mat-column-kernel {
     width: 80px;
     max-width: 80px;
+}
+
+.mat-column-platform {
+    width: 140px;
+    max-width: 140px;
 }
 
 .status-running {

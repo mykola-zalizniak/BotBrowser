@@ -9,6 +9,11 @@
         Bulk Import
     </button>
 
+    <button mat-button (click)="exportProxies()" [disabled]="dataSource.data.length === 0">
+        <mat-icon>upload</mat-icon>
+        Export
+    </button>
+
     <button mat-button (click)="editSelectedProxy()" [disabled]="!highlightedId">
         <mat-icon>edit</mat-icon>
         Edit
@@ -109,7 +114,16 @@
                         @if (check.status === 'checking') {
                             <mat-spinner diameter="16"></mat-spinner>
                         } @else if (check.status === 'ok') {
-                            <span class="status-ok" [matTooltip]="check.result?.country + ', ' + check.result?.city + ' | ' + check.result?.isp">
+                            <span
+                                class="status-ok"
+                                [matTooltip]="
+                                    $safeNavigationMigration(check.result?.country) +
+                                    ', ' +
+                                    $safeNavigationMigration(check.result?.city) +
+                                    ' | ' +
+                                    $safeNavigationMigration(check.result?.isp)
+                                "
+                            >
                                 {{ check.result?.ip }}
                             </span>
                         } @else {
@@ -120,7 +134,13 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let element; columns: displayedColumns" [class.row-selected]="highlightedId === element.id" (click)="selectRow(element)" (dblclick)="editProxy(element)"></tr>
+            <tr
+                mat-row
+                *matRowDef="let element; columns: displayedColumns"
+                [class.row-selected]="highlightedId === element.id"
+                (click)="selectRow(element)"
+                (dblclick)="editProxy(element)"
+            ></tr>
         </table>
     }
 </div>

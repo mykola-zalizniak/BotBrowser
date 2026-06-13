@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -22,6 +22,7 @@ interface ParseResult {
     standalone: true,
     imports: [CommonModule, MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
     templateUrl: './bulk-import-proxy.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './bulk-import-proxy.component.scss',
 })
 export class BulkImportProxyComponent {
