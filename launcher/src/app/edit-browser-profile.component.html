@@ -123,11 +123,11 @@
                     <mat-form-field class="flex-1">
                         <mat-label>Local DNS</mat-label>
                         <mat-select [(value)]="localDnsMode" (selectionChange)="onLocalDnsModeChange()">
-                            <mat-option value="off">off (use proxy DNS)</mat-option>
+                            <mat-option value="">Default (off)</mat-option>
                             <mat-option value="builtin">built-in resolver</mat-option>
                             <mat-option value="custom">custom DNS server</mat-option>
                         </mat-select>
-                        <mat-hint>Default: off · built-in keeps DNS local</mat-hint>
+                        <mat-hint>Default routes DNS through the proxy · built-in keeps DNS local</mat-hint>
                     </mat-form-field>
                     @if (localDnsMode === 'custom') {
                         <mat-form-field class="flex-2">
@@ -185,24 +185,24 @@
                 <div class="form-row">
                     <mat-form-field class="flex-1">
                         <mat-label>Languages</mat-label>
-                        <input matInput placeholder="auto or en-US,en" formControlName="botConfigLanguages" />
+                        <input matInput placeholder="e.g. en-US,en (empty = auto)" formControlName="botConfigLanguages" />
                     </mat-form-field>
 
                     <mat-form-field class="flex-1">
                         <mat-label>Locale</mat-label>
-                        <input matInput placeholder="auto or en-US" formControlName="botConfigLocale" />
+                        <input matInput placeholder="e.g. en-US (empty = auto)" formControlName="botConfigLocale" />
                     </mat-form-field>
                 </div>
 
                 <div class="form-row">
                     <mat-form-field class="flex-1">
                         <mat-label>Timezone</mat-label>
-                        <input matInput placeholder="auto, real, or America/New_York" formControlName="botConfigTimezone" />
+                        <input matInput placeholder="real or America/New_York (empty = auto)" formControlName="botConfigTimezone" />
                     </mat-form-field>
 
                     <mat-form-field class="flex-1">
                         <mat-label>Location</mat-label>
-                        <input matInput placeholder="auto, real, or lat,lng" formControlName="botConfigLocation" />
+                        <input matInput placeholder="real or lat,lng (empty = auto)" formControlName="botConfigLocation" />
                     </mat-form-field>
                 </div>
                 <mat-hint class="section-hint">auto = derive from IP · real = system value · or supply an explicit override</mat-hint>
@@ -291,9 +291,14 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <div class="flex-1 toggle-in-row">
-                        <mat-slide-toggle formControlName="botConfigMobile"> Mobile Mode </mat-slide-toggle>
-                    </div>
+                    <mat-form-field class="flex-1">
+                        <mat-label>Mobile Mode</mat-label>
+                        <mat-select formControlName="botConfigMobile">
+                            <mat-option [value]="null">Default (from profile)</mat-option>
+                            <mat-option [value]="true">On</mat-option>
+                            <mat-option [value]="false">Off</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
             </form>
         </div>
@@ -607,19 +612,23 @@
                         <mat-select formControlName="botV8Log">
                             <mat-option [value]="null">Off</mat-option>
                             @for (mode of v8LogModes; track mode) {
-                                <mat-option [value]="mode">{{ mode }}</mat-option>
+                                @if (mode !== 'none') {
+                                    <mat-option [value]="mode">{{ mode }}</mat-option>
+                                }
                             }
                         </mat-select>
-                        <mat-hint>sample = standard trace · full = exhaustive · none = no data</mat-hint>
+                        <mat-hint>sample = standard trace · full = exhaustive</mat-hint>
                     </mat-form-field>
                 </div>
-                <div class="file-picker-row margin-top">
-                    <mat-form-field>
-                        <mat-label>V8Log Output Directory</mat-label>
-                        <input matInput placeholder="Absolute writable directory" formControlName="botV8LogDir" />
-                    </mat-form-field>
-                    <button mat-stroked-button type="button" (click)="chooseV8LogDir()">Browse...</button>
-                </div>
+                @if (forensicsGroup.value.botV8Log && forensicsGroup.value.botV8Log !== 'none') {
+                    <div class="file-picker-row margin-top">
+                        <mat-form-field>
+                            <mat-label>V8Log Output Directory</mat-label>
+                            <input matInput placeholder="Absolute writable directory" formControlName="botV8LogDir" />
+                        </mat-form-field>
+                        <button mat-stroked-button type="button" (click)="chooseV8LogDir()">Browse...</button>
+                    </div>
+                }
 
                 <div class="section-title">CanvasLab</div>
                 <div class="file-picker-row">

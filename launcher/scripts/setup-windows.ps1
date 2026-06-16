@@ -3,7 +3,7 @@
 
 $ErrorActionPreference = "Stop"
 
-$NODE_VERSION = "24.13.0"
+$NODE_VERSION = "24.15.0"
 $NODE_URL = "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-win-x64.zip"
 $REPO_ZIP_URL = "https://github.com/botswin/BotBrowser/archive/refs/heads/main.zip"
 $INSTALL_DIR = "$env:LOCALAPPDATA\BotBrowser"
@@ -17,8 +17,13 @@ $STARTMENU_SHORTCUT = [System.IO.Path]::Combine($STARTMENU_DIR, "BotBrowser Laun
 
 function Install-NodeJS {
     if (Test-Path "$NODE_DIR\node.exe") {
-        Write-Host "Node.js already installed." -ForegroundColor Green
-        return
+        $installed = (& "$NODE_DIR\node.exe" --version).Trim()
+        if ($installed -eq "v${NODE_VERSION}") {
+            Write-Host "Node.js v${NODE_VERSION} already installed." -ForegroundColor Green
+            return
+        }
+        Write-Host "Replacing Node.js $installed with v${NODE_VERSION} (Angular 22 requires >= 24.15.0)..." -ForegroundColor Yellow
+        Remove-Item -Recurse -Force $NODE_DIR
     }
 
     Write-Host "Downloading Node.js v${NODE_VERSION}..." -ForegroundColor Yellow

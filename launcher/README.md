@@ -67,7 +67,7 @@ curl -fsSL https://raw.githubusercontent.com/botswin/BotBrowser/main/launcher/sc
 
 ### Prerequisites
 
-- **Node.js 24+** (Angular 21 requirement)
+- **Node.js 22 LTS (>=22.22.3)** or **24 LTS (>=24.15.0)** (Angular 22 requirement)
 
 ### Build & Run
 
@@ -88,9 +88,9 @@ npm run app
 
 | Component | Technology                                         |
 | --------- | -------------------------------------------------- |
-| Frontend  | [Angular 21](https://angular.dev)                  |
+| Frontend  | [Angular 22](https://angular.dev)                  |
 | UI        | [Angular Material 21](https://material.angular.io) |
-| Runtime   | [Neutralino.js 6.5](https://neutralino.js.org)     |
+| Runtime   | [Neutralino.js 6.8](https://neutralino.js.org)     |
 
 ---
 

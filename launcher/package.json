@@ -9,6 +9,9 @@
         "app": "neu run"
     },
     "private": true,
+    "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+    },
     "dependencies": {
         "@angular/animations": "^22.0.1",
         "@angular/cdk": "^21.1.0",
