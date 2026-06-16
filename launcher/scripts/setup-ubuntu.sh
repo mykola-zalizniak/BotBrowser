@@ -4,7 +4,7 @@
 
 set -e
 
-NODE_VERSION="24.13.0"
+NODE_VERSION="24.15.0"
 REPO_ZIP_URL="https://github.com/botswin/BotBrowser/archive/refs/heads/main.zip"
 INSTALL_DIR="$HOME/.botbrowser"
 NODE_DIR="$INSTALL_DIR/node"
@@ -39,8 +39,13 @@ install_dependencies() {
 
 install_nodejs() {
     if [ -f "$NODE_DIR/bin/node" ]; then
-        echo "Node.js already installed."
-        return
+        installed=$("$NODE_DIR/bin/node" --version)
+        if [ "$installed" = "v${NODE_VERSION}" ]; then
+            echo "Node.js v${NODE_VERSION} already installed."
+            return
+        fi
+        echo "Replacing Node.js $installed with v${NODE_VERSION} (Angular 22 requires >= 24.15.0)..."
+        rm -rf "$NODE_DIR"
     fi
 
     echo "Downloading Node.js v${NODE_VERSION} for ${ARCH}..."

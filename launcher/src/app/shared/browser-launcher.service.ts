@@ -401,8 +401,6 @@ export class BrowserLauncherService {
 
         args.push(...BrowserLauncherService.buildProfileFlags(profile));
 
-        if (profile.basicInfo.profileName) args.push(`--bot-title=${shQuote(profile.basicInfo.profileName)}`);
-
         return args;
     }
 
@@ -414,11 +412,14 @@ export class BrowserLauncherService {
         const args: string[] = [];
         const opts = profile.launchOptions;
 
-        // Behavior
-        if (opts?.behavior?.botDisableDebugger) args.push('--bot-disable-debugger');
+        // Window title mirrors profile name; emit here so CLI preview matches the spawn.
+        if (profile.basicInfo?.profileName) args.push(`--bot-title=${shQuote(profile.basicInfo.profileName)}`);
+
+        // Default-on behavior flags: only emit when user explicitly overrides to OFF (matches BB default → no flag).
+        if (opts?.behavior?.botDisableDebugger === false) args.push('--bot-disable-debugger=false');
         if (opts?.behavior?.botMobileForceTouch) args.push('--bot-mobile-force-touch');
-        if (opts?.behavior?.botAlwaysActive) args.push('--bot-always-active');
-        if (opts?.behavior?.botDisableConsoleMessage) args.push('--bot-disable-console-message');
+        if (opts?.behavior?.botAlwaysActive === false) args.push('--bot-always-active=false');
+        if (opts?.behavior?.botDisableConsoleMessage === false) args.push('--bot-disable-console-message=false');
 
         // Backward compat: legacy `behavior.*` for fields that moved. Use `in` so explicit `false` is honored.
         const beh = opts?.behavior as any;
@@ -426,7 +427,7 @@ export class BrowserLauncherService {
             const v = beh.botLocalDns;
             if (typeof v === 'string' && v) args.push(`--bot-local-dns=${shQuote(v)}`);
             else if (v === true) args.push('--bot-local-dns');
-            else if (v === false) args.push('--bot-local-dns=false');
+            // v === false matches the kernel default (off) — emit nothing.
         }
         if (beh?.botPortProtection && !opts?.proxy?.botPortProtection) args.push('--bot-port-protection');
         if (beh?.botNetworkInfoOverride && !opts?.proxy?.botNetworkInfoOverride) args.push('--bot-network-info-override');
@@ -451,14 +452,23 @@ export class BrowserLauncherService {
             args.push(`--bot-config-brand-full-version=${shQuote(opts.identityLocale.botConfigBrandFullVersion)}`);
         if (opts?.identityLocale?.botConfigUaFullVersion)
             args.push(`--bot-config-ua-full-version=${shQuote(opts.identityLocale.botConfigUaFullVersion)}`);
-        if (opts?.identityLocale?.botConfigLanguages)
-            args.push(`--bot-config-languages=${shQuote(opts.identityLocale.botConfigLanguages)}`);
-        if (opts?.identityLocale?.botConfigLocale)
-            args.push(`--bot-config-locale=${shQuote(opts.identityLocale.botConfigLocale)}`);
-        if (opts?.identityLocale?.botConfigTimezone)
-            args.push(`--bot-config-timezone=${shQuote(opts.identityLocale.botConfigTimezone)}`);
-        if (opts?.identityLocale?.botConfigLocation)
-            args.push(`--bot-config-location=${shQuote(opts.identityLocale.botConfigLocation)}`);
+        // 'auto' equals BB's IP-derived default; suppress to avoid redundant emit.
+        {
+            const v = opts?.identityLocale?.botConfigLanguages?.trim();
+            if (v && v.toLowerCase() !== 'auto') args.push(`--bot-config-languages=${shQuote(v)}`);
+        }
+        {
+            const v = opts?.identityLocale?.botConfigLocale?.trim();
+            if (v && v.toLowerCase() !== 'auto') args.push(`--bot-config-locale=${shQuote(v)}`);
+        }
+        {
+            const v = opts?.identityLocale?.botConfigTimezone?.trim();
+            if (v && v.toLowerCase() !== 'auto') args.push(`--bot-config-timezone=${shQuote(v)}`);
+        }
+        {
+            const v = opts?.identityLocale?.botConfigLocation?.trim();
+            if (v && v.toLowerCase() !== 'auto') args.push(`--bot-config-location=${shQuote(v)}`);
+        }
         if (opts?.identityLocale?.botInjectRandomHistory != null) {
             const v = opts.identityLocale.botInjectRandomHistory;
             if (typeof v === 'number') args.push(`--bot-inject-random-history=${v}`);
@@ -480,7 +490,9 @@ export class BrowserLauncherService {
             args.push(`--bot-config-architecture=${opts.customUserAgent.botConfigArchitecture}`);
         if (opts?.customUserAgent?.botConfigBitness)
             args.push(`--bot-config-bitness=${opts.customUserAgent.botConfigBitness}`);
-        if (opts?.customUserAgent?.botConfigMobile) args.push('--bot-config-mobile');
+        // Tri-state: null/undefined → inherit profile's mobile flag (no emit).
+        if (opts?.customUserAgent?.botConfigMobile === true) args.push('--bot-config-mobile=true');
+        else if (opts?.customUserAgent?.botConfigMobile === false) args.push('--bot-config-mobile=false');
 
         // Display & Input — window/screen accept JSON, so always quote.
         if (opts?.displayInput?.botConfigWindow)
@@ -498,12 +510,16 @@ export class BrowserLauncherService {
         if (opts?.displayInput?.botConfigDisableDeviceScaleFactor)
             args.push('--bot-config-disable-device-scale-factor');
 
-        // Noise (numeric / enum — no quoting needed)
-        if (opts?.noise?.botConfigNoiseWebglImage) args.push('--bot-config-noise-webgl-image');
-        if (opts?.noise?.botConfigNoiseCanvas) args.push('--bot-config-noise-canvas');
-        if (opts?.noise?.botConfigNoiseAudioContext) args.push('--bot-config-noise-audio-context');
-        if (opts?.noise?.botConfigNoiseClientRects) args.push('--bot-config-noise-client-rects');
-        if (opts?.noise?.botConfigNoiseTextRects) args.push('--bot-config-noise-text-rects');
+        // Noise toggles: emit only when user diverges from BB default; matching default → no flag.
+        const emitToggle = (flag: string, v: boolean | null | undefined, bbDefault: boolean) => {
+            if (v == null || v === bbDefault) return;
+            args.push(`${flag}=${v}`);
+        };
+        emitToggle('--bot-config-noise-webgl-image', opts?.noise?.botConfigNoiseWebglImage, true);
+        emitToggle('--bot-config-noise-canvas', opts?.noise?.botConfigNoiseCanvas, true);
+        emitToggle('--bot-config-noise-audio-context', opts?.noise?.botConfigNoiseAudioContext, true);
+        emitToggle('--bot-config-noise-client-rects', opts?.noise?.botConfigNoiseClientRects, false);
+        emitToggle('--bot-config-noise-text-rects', opts?.noise?.botConfigNoiseTextRects, true);
         if (opts?.noise?.botNoiseSeed != null) args.push(`--bot-noise-seed=${opts.noise.botNoiseSeed}`);
         if (opts?.noise?.botTimeScale != null) args.push(`--bot-time-scale=${opts.noise.botTimeScale}`);
         if (opts?.noise?.botFps) args.push(`--bot-fps=${opts.noise.botFps}`);
@@ -542,7 +558,7 @@ export class BrowserLauncherService {
             const v = opts?.proxy?.botLocalDns;
             if (typeof v === 'string' && v) args.push(`--bot-local-dns=${shQuote(v)}`);
             else if (v === true) args.push('--bot-local-dns');
-            else if (v === false) args.push('--bot-local-dns=false');
+            // false/null/undefined → kernel default (off), emit nothing.
         }
         if (opts?.proxy?.botPortProtection) args.push('--bot-port-protection');
         if (opts?.proxy?.botNetworkInfoOverride) args.push('--bot-network-info-override');

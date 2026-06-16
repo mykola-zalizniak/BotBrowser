@@ -176,12 +176,13 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         : null;
     selectedProxyId = '';
 
-    // Behavior toggles. No launcher-side defaults — kernel applies its own when no flag is set.
+    // Behavior toggles. Default-on flags (per CLI_FLAGS) keep the launcher fallback so the visible
+    // toggle matches BB's actual behavior — a mat-slide-toggle can't represent a "no override" state.
     readonly behaviorGroup = this.#formBuilder.group<BehaviorToggles>({
-        botDisableDebugger: this.#injectedData?.launchOptions?.behavior?.botDisableDebugger,
+        botDisableDebugger: this.#injectedData?.launchOptions?.behavior?.botDisableDebugger ?? true,
         botMobileForceTouch: this.#injectedData?.launchOptions?.behavior?.botMobileForceTouch,
-        botAlwaysActive: this.#injectedData?.launchOptions?.behavior?.botAlwaysActive,
-        botDisableConsoleMessage: this.#injectedData?.launchOptions?.behavior?.botDisableConsoleMessage,
+        botAlwaysActive: this.#injectedData?.launchOptions?.behavior?.botAlwaysActive ?? true,
+        botDisableConsoleMessage: this.#injectedData?.launchOptions?.behavior?.botDisableConsoleMessage ?? true,
     });
 
     // Identity & Locale. browserBrand has NO default — when unset, the kernel uses the
@@ -226,7 +227,14 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botConfigModel: this.#injectedData?.launchOptions?.customUserAgent?.botConfigModel,
         botConfigArchitecture: this.#injectedData?.launchOptions?.customUserAgent?.botConfigArchitecture,
         botConfigBitness: this.#injectedData?.launchOptions?.customUserAgent?.botConfigBitness,
-        botConfigMobile: this.#injectedData?.launchOptions?.customUserAgent?.botConfigMobile,
+        // Old slide-toggle saved `false` for "off" (= "no override"); the new tri-state
+        // mat-select would otherwise re-emit it as an explicit `--bot-config-mobile=false`
+        // and silently force desktop mode on Android profiles. Coerce legacy false → null
+        // and map undefined → null so [value]="null" pre-selects "Default (from profile)".
+        botConfigMobile: (() => {
+            const v = this.#injectedData?.launchOptions?.customUserAgent?.botConfigMobile;
+            return (v === false ? null : v ?? null) as any;
+        })(),
     });
 
     // Display & Input. No launcher-side defaults — when unset the kernel uses its own per-profile default.
@@ -284,13 +292,14 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         return 'json';
     }
 
-    // Noise. No launcher-side defaults — when unset the kernel applies its own.
+    // Noise. Default-on flags keep the launcher fallback so the visible toggle matches BB's actual
+    // behavior — a mat-slide-toggle can't represent a "no override" state.
     readonly noiseGroup = this.#formBuilder.group<NoiseConfig>({
-        botConfigNoiseWebglImage: this.#injectedData?.launchOptions?.noise?.botConfigNoiseWebglImage,
-        botConfigNoiseCanvas: this.#injectedData?.launchOptions?.noise?.botConfigNoiseCanvas,
-        botConfigNoiseAudioContext: this.#injectedData?.launchOptions?.noise?.botConfigNoiseAudioContext,
+        botConfigNoiseWebglImage: this.#injectedData?.launchOptions?.noise?.botConfigNoiseWebglImage ?? true,
+        botConfigNoiseCanvas: this.#injectedData?.launchOptions?.noise?.botConfigNoiseCanvas ?? true,
+        botConfigNoiseAudioContext: this.#injectedData?.launchOptions?.noise?.botConfigNoiseAudioContext ?? true,
         botConfigNoiseClientRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseClientRects,
-        botConfigNoiseTextRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseTextRects,
+        botConfigNoiseTextRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseTextRects ?? true,
         botNoiseSeed: this.#injectedData?.launchOptions?.noise?.botNoiseSeed,
         botTimeScale: this.#injectedData?.launchOptions?.noise?.botTimeScale,
         botFps: this.#injectedData?.launchOptions?.noise?.botFps,
@@ -347,9 +356,15 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         proxyIp: this.#injectedData?.launchOptions?.proxy?.proxyIp,
         botIpService: this.#injectedData?.launchOptions?.proxy?.botIpService,
         proxyBypassRgx: this.#injectedData?.launchOptions?.proxy?.proxyBypassRgx,
-        botLocalDns:
-            this.#injectedData?.launchOptions?.proxy?.botLocalDns ??
-            (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns,
+        // Legacy 'off' option saved `false`, matching the kernel default. Normalize so the
+        // form value agrees with the dropdown's "Default (off)" state and #cleanObject
+        // strips the field instead of persisting redundant `botLocalDns: false`.
+        botLocalDns: (() => {
+            const v =
+                this.#injectedData?.launchOptions?.proxy?.botLocalDns ??
+                (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns;
+            return v === false ? null : v;
+        })(),
         botPortProtection:
             this.#injectedData?.launchOptions?.proxy?.botPortProtection ??
             (this.#injectedData?.launchOptions?.behavior as any)?.botPortProtection,
@@ -358,14 +373,15 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             (this.#injectedData?.launchOptions?.behavior as any)?.botNetworkInfoOverride,
     });
 
-    // Local DNS mode: off / built-in / custom server (with separate value input).
-    localDnsMode: 'off' | 'builtin' | 'custom' = (() => {
+    // Local DNS mode: '' (kernel default = off) / built-in / custom server.
+    // Explicit-off is omitted: `--bot-local-dns=false` would match the kernel default, so we map it to ''.
+    localDnsMode: '' | 'builtin' | 'custom' = (() => {
         const v =
             this.#injectedData?.launchOptions?.proxy?.botLocalDns ??
             (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns;
         if (typeof v === 'string' && v) return 'custom';
         if (v === true) return 'builtin';
-        return 'off';
+        return '';
     })();
     localDnsServer: string = (() => {
         const v =
@@ -385,7 +401,12 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     // Forensics: V8Log + CanvasLab/AudioLab record file outputs. botV8Log uses null sentinel for "Off"
     // (matches the mat-option [value]="null") so round-trip after save preserves the selection.
     readonly forensicsGroup = this.#formBuilder.group({
-        botV8Log: this.#injectedData?.launchOptions?.forensics?.botV8Log ?? (null as any),
+        // Legacy 'none' (functionally identical to Off) is no longer a visible mode — coerce
+        // to the null sentinel so the mat-select renders "Off" instead of blank.
+        botV8Log: ((): any => {
+            const v = this.#injectedData?.launchOptions?.forensics?.botV8Log;
+            return v === 'none' ? null : v ?? null;
+        })(),
         botV8LogDir: this.#injectedData?.launchOptions?.forensics?.botV8LogDir,
         botCanvasRecordFile: this.#injectedData?.launchOptions?.forensics?.botCanvasRecordFile,
         botAudioRecordFile: this.#injectedData?.launchOptions?.forensics?.botAudioRecordFile,
@@ -686,8 +707,8 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     }
 
     onLocalDnsModeChange(): void {
-        if (this.localDnsMode === 'off') {
-            this.proxyConfigGroup.patchValue({ botLocalDns: false });
+        if (this.localDnsMode === '') {
+            this.proxyConfigGroup.patchValue({ botLocalDns: null });
             this.localDnsServer = '';
         } else if (this.localDnsMode === 'builtin') {
             this.proxyConfigGroup.patchValue({ botLocalDns: true });
