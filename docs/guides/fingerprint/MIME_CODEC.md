@@ -56,6 +56,8 @@ chromium-browser \
 
 All media type and codec query APIs return platform-consistent results matching the profile. Responses remain identical across all execution contexts (main page, Workers, Service Workers, iframes).
 
+For video-heavy workloads, media capability reporting and actual video playback cadence can be controlled separately with [`--bot-video-fps`](../../../CLI_FLAGS.md#--bot-video-fps). See [FPS Control](FPS_CONTROL.md#video-fps-control).
+
 ---
 
 <a id="related-docs"></a>
@@ -77,6 +79,7 @@ All media type and codec query APIs return platform-consistent results matching 
 ## Next Steps
 
 - [CLI Flags Reference](../../../CLI_FLAGS.md). Complete list of all available flags.
+- [FPS Control](FPS_CONTROL.md#video-fps-control). Video playback cadence control for media-heavy sessions.
 - [DRM Fingerprinting](DRM.md). How DRM capabilities interact with codec reporting.
 
 ---

@@ -90,7 +90,7 @@ ENT Tier3 adds built-in SOCKS5 UDP ASSOCIATE support with no extra flag required
 --proxy-server=socks5://username:password@proxy.example.com:1080
 ```
 
-To keep SOCKS5 proxying but avoid QUIC/HTTP/3, add Chromium's existing `--disable-quic` flag:
+To keep SOCKS5 proxying but avoid QUIC/HTTP/3, add the standard `--disable-quic` flag:
 
 ```bash
 --proxy-server=socks5://username:password@proxy.example.com:1080
@@ -98,6 +98,31 @@ To keep SOCKS5 proxying but avoid QUIC/HTTP/3, add Chromium's existing `--disabl
 ```
 
 `--disable-quic` affects QUIC/HTTP/3 only. WebRTC/STUN behavior still follows the UDP-over-SOCKS5 and WebRTC settings.
+
+<a id="pac-request-policy-ent-tier3"></a>
+<a id="pac-like-request-callback-ent-tier3"></a>
+### PAC-Like Request Callback (ENT Tier3)
+ENT Tier3 profiles can use trusted PAC scripts for request callback workflows while preserving standard PAC routing. Configure PAC through the standard `--proxy-pac-url` flag and keep the PAC source explicit.
+
+```bash
+# Local PAC file
+--proxy-pac-url=file:///absolute/path/to/proxy.pac
+
+# Controlled loopback PAC server
+--proxy-pac-url=http://127.0.0.1:8080/proxy.pac
+```
+
+Standard `FindProxyForURL(url, host)` behavior remains available for normal routing. Approved profiles and trusted PAC sources can also define BotBrowser's request callback:
+
+```javascript
+function BotBrowserFindProxyForRequest(url, host, method, headersB64, bodyB64, bodyState) {
+  return "CONTINUE";
+}
+```
+
+The callback can return `CONTINUE`, `BLOCK`, `CAPTURE`, `CAPTURE_TAG <tag>`, `CAPTURE_FILE <path>`, or a standard PAC route such as `DIRECT`, `PROXY`, `HTTPS`, `SOCKS`, `SOCKS4`, or `SOCKS5`. Capture records are written only when `CAPTURE` and `CAPTURE_FILE <path>` are returned together. Guide: [PAC-Like Request Callback](docs/guides/network/PAC_REQUEST_POLICY.md)
+
+Use this when request-aware policy should stay in PAC routing instead of CDP-level request interception, especially for workflows that need help preserving HTTP/2 connection and stream continuity while directing selected requests to different routes.
 
 ### `--proxy-ip` (ENT Tier1)
 Specify the proxy's public IP to optimize performance.
@@ -481,6 +506,8 @@ Runtime toggles that don’t rely on profile `configs` but still override behavi
 <a id="--bot-noise-seed"></a>
 - `--bot-noise-seed` (ENT Tier2): Integer seed (1-UINT32_MAX) for the deterministic noise RNG; each seed augments privacy variance across Canvas 2D/WebGL/WebGPU images, text metrics, text layout, ClientRect measurements, and offline audio hashes so you can treat a seed as a reproducible fingerprint ID per tenant while keeping runs stable. `0` keeps noise active with profile defaults. Guide: [Noise Seed Reproducibility](https://botbrowser.io/docs/fingerprint/noise-seed-reproducibility/)
 - `--bot-fps` (ENT Tier2): Control frame rate behavior at runtime. Accepts `profile` (use profile data, default when capable), `real` (use native frame rate), or a number (e.g., `60`). Guide: [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/)
+<a id="--bot-video-fps"></a>
+- `--bot-video-fps=<actual>[:<reported>]` (ENT Tier2): Control video playback cadence separately from media FPS reporting on profiles with Video FPS Control enabled. Profiles without Video FPS Control enabled ignore the flag. Examples: `--bot-video-fps=1` (actual and reported 1 FPS), `--bot-video-fps=1:30` (actual 1 FPS, reported 30 FPS), `--bot-video-fps=1:real` (actual 1 FPS, report the media's reported cadence where available). Visual frame updates follow the actual FPS. Guide: [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/#video-fps-control)
 - `--bot-time-scale` (ENT Tier2): Float < 1.0; scales down `performance.now()` intervals to emulate lower load and reduce timing skew signals (typical range 0.80-0.99). Guide: [Performance Fingerprinting](https://botbrowser.io/docs/fingerprint/performance/)
 - `--bot-time-seed` (ENT Tier2): Integer seed (1-UINT32_MAX) for deterministic execution timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, and more). `0` disables the feature (default). Each seed produces a unique, stable performance profile that protects against timing-based tracking. Also covers `performance.getEntries()`, `performance.getEntriesByType("navigation")`, and `performance.timing` with authentic per-session redistribution.
 - `--bot-stack-seed` (ENT Tier2): Controls JavaScript recursive call stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile’s exact depth), `real` (use native depth), or a positive integer seed (1-UINT32_MAX) for per-session depth variation. Guide: [Stack Depth Fingerprinting](https://botbrowser.io/docs/fingerprint/stack-depth/)
@@ -590,7 +617,8 @@ chromium-browser \
   --bot-time-scale=0.92 \  # ENT Tier2 feature
   --bot-time-seed=42 \     # ENT Tier2 feature, deterministic timing diversity
   --bot-stack-seed=profile \  # ENT Tier2 feature: "profile", "real", or integer seed
-  --bot-noise-seed=42      # ENT Tier2 feature, deterministic canvas/audio noise
+  --bot-noise-seed=42 \    # ENT Tier2 feature, deterministic canvas/audio noise
+  --bot-video-fps=1:30     # ENT Tier2 feature, lower actual video cadence while reporting 30 FPS
 ```
 
 ### Custom User-Agent with WebView (ENT Tier3)

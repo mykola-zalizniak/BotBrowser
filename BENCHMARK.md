@@ -8,6 +8,7 @@ Performance data comparing BotBrowser fingerprint protection overhead against st
 |----------|--------|
 | **How much overhead does BotBrowser add?** | Near-zero. Speedometer 3.0 shows **<1% difference** in both headed and headless modes, within run-to-run variance. |
 | **Are fingerprint APIs slower?** | No. Canvas, WebGL, Navigator, Screen, and Font APIs show **identical latency** with or without fingerprint profiles on macOS, Linux, and Windows. |
+| **Can video-heavy sessions lower CPU?** | Yes. In the tested Linux x64 video workload, `--bot-video-fps=1:30` reduced average CPU by **71-82%** where lower visual video cadence was acceptable. See [Video FPS Control](#video-fps-control). |
 | **How does Per-Context Fingerprint scale?** | At 50 concurrent profiles: **29% less memory**, **57% fewer processes**, **2x faster creation** vs launching 50 separate browser instances. Full fingerprint isolation verified. |
 | **How does Trimmed Build compare to Standard?** | On Linux x64 (400 official samples): **62% lower wall time**, **85% faster per-context creation**, **68% lower CPU peak**, **31% lower PSS peak** versus Standard, with **100% success rate** and **0 residual processes**. See [Trimmed Build](#trimmed-build). |
 
@@ -62,6 +63,42 @@ Median load time for a locally-intercepted page (milliseconds).
 | BotBrowser + macOS | 105.9ms | +76ms |
 
 > **Note**: The additional ~72-76ms comes from one-time profile initialization (reading and applying fingerprint configuration on first page load). All three profile types show similar overhead, indicating no significant difference between cross-platform profiles.
+
+---
+
+<a id="video-fps-control"></a>
+## Video FPS Control: Media Workload CPU
+
+`--bot-video-fps` (ENT Tier2) lowers the actual video decode/render cadence while optionally keeping media FPS reporting aligned with the selected policy. It requires a profile with Video FPS Control enabled. This benchmark measures a video-heavy workload where full visual frame cadence is not required.
+
+### Test Environment
+
+| Dimension | Value |
+|---|---|
+| Platform | Linux x64 official build |
+| Chromium line | BotBrowser 149.0.7827.102 |
+| Workload | Local AVC 640x360, 30 FPS video elements |
+| Mode | Headless |
+| Video FPS policy | Baseline `30:30`; throttled `1:30` |
+| Warmup | 10 seconds |
+| Sample window | 30 seconds |
+| Repeats | 3 per configuration |
+
+### Result
+
+Baseline uses normal 30 FPS video playback and reporting. Throttled uses `--bot-video-fps=1:30`, which updates video frames near 1 FPS while media reporting uses 30 FPS.
+
+| Concurrent videos | Baseline avg CPU | `--bot-video-fps=1:30` avg CPU | Reduction |
+|---:|---:|---:|---:|
+| 8 | 33.96% | 9.70% | **71.43%** |
+| 16 | 61.20% | 12.10% | **80.24%** |
+| 24 | 76.49% | 13.81% | **81.95%** |
+
+### Interpretation
+
+Use Video FPS Control when video decode/render work is the CPU bottleneck and the workflow only needs occasional visual frame updates. Pixel output follows the actual FPS, so choose a higher actual cadence when the workload samples video pixels frame by frame. CPU percentages vary by host, driver, codec, and workload; use the reduction range as a benchmark reference, not a pass/fail threshold.
+
+Configuration and examples: [FPS Control](docs/guides/fingerprint/FPS_CONTROL.md#video-fps-control).
 
 ---
 

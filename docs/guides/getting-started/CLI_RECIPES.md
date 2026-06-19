@@ -335,7 +335,7 @@ chromium-browser \
 ## Performance Tuning
 
 <a id="recipe-timing-control"></a>
-### 21. Performance timing and frame rate control (ENT Tier2)
+### 21. Performance timing, frame rate, and video cadence control (ENT Tier2)
 
 ```bash
 chromium-browser \
@@ -343,9 +343,12 @@ chromium-browser \
   --bot-time-scale=0.92 \
   --bot-time-seed=42 \
   --bot-fps=60 \
+  --bot-video-fps=1:30 \
   --bot-stack-seed=profile \
   --user-data-dir="$(mktemp -d)"
 ```
+
+`--bot-fps` controls display/runtime timing. `--bot-video-fps=1:30` lowers actual video cadence while media reporting uses 30 FPS; use a higher actual value when frame-by-frame video pixels matter.
 
 <a id="recipe-headless-server"></a>
 ### 22. Headless server with all protections

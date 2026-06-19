@@ -35,6 +35,7 @@ These guides cover everything from initial setup to advanced deployment scenario
 | [Custom HTTP Headers](network/CUSTOM_HTTP_HEADERS.md) | Configure custom request headers for all outgoing browser traffic. |
 | [Port Protection](network/PORT_PROTECTION.md) | Block remote pages from scanning localhost and internal service ports. |
 | [UDP over SOCKS5](network/UDP_OVER_SOCKS5.md) | Route QUIC/STUN UDP traffic through SOCKS5 for consistent network identity. |
+| [PAC-Like Request Callback](network/PAC_REQUEST_POLICY.md) | Use trusted PAC scripts for standard routing and approved request callback workflows. |
 | [Per-Context Proxy](network/PER_CONTEXT_PROXY.md) | Assign different proxies to different contexts for multi-identity automation. |
 | [Proxy Selective Routing](network/PROXY_SELECTIVE_ROUTING.md) | Control selective proxy routing with regex-based direct/proxied paths. |
 | [GeoIP Database](network/GEOIP_DATABASE.md) | Map proxy IPs to consistent timezone, locale, and language settings. |
@@ -58,7 +59,7 @@ These guides cover everything from initial setup to advanced deployment scenario
 | [Noise Seed Reproducibility](fingerprint/NOISE_SEED_REPRODUCIBILITY.md) | Use deterministic noise seeds for repeatable fingerprint behavior. |
 | [DRM Fingerprinting](fingerprint/DRM.md) | Keep DRM/EME capability responses consistent with platform identity. |
 | [Stack Depth Fingerprinting](fingerprint/STACK_DEPTH.md) | Control recursive stack-depth signals across JS execution contexts. |
-| [FPS Control](fingerprint/FPS_CONTROL.md) | Tune frame-rate behavior to reduce rendering-timing fingerprints. |
+| [FPS Control](fingerprint/FPS_CONTROL.md) | Tune display frame-rate behavior and video playback cadence for timing consistency and media workload control. |
 | [Storage Quota Fingerprinting](fingerprint/STORAGE_QUOTA.md) | Control storage and memory quota surfaces used for device profiling. |
 | [Incognito Fingerprinting](fingerprint/INCOGNITO.md) | Keep fingerprint surfaces consistent between regular and private browsing sessions. |
 | [Console Suppression](fingerprint/CONSOLE_SUPPRESSION.md) | Suppress CDP-forwarded console artifacts that can affect runtime consistency checks. |
