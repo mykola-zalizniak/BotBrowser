@@ -83,12 +83,21 @@ BotBrowser extends the standard `--proxy-server` flag to accept embedded credent
 
 <a id="udp-over-socks5-ent-tier3"></a>
 ### UDP over SOCKS5 (ENT Tier3)
-ENT Tier3 adds built-in SOCKS5 UDP ASSOCIATE support with no extra flag required. When the proxy supports UDP, BotBrowser will tunnel QUIC traffic and STUN probes over the proxy to harden proxy checks. Guide: [UDP over SOCKS5](https://botbrowser.io/docs/network/udp-over-socks5/)
+ENT Tier3 adds built-in SOCKS5 UDP ASSOCIATE support with no extra flag required. When the proxy supports UDP, BotBrowser will tunnel QUIC traffic and STUN probes over the proxy to keep network identity consistent. Guide: [UDP over SOCKS5](https://botbrowser.io/docs/network/udp-over-socks5/)
 
 ```bash
 # UDP (QUIC/STUN) auto-tunneled when the SOCKS5 proxy supports UDP associate
 --proxy-server=socks5://username:password@proxy.example.com:1080
 ```
+
+To keep SOCKS5 proxying but avoid QUIC/HTTP/3, add Chromium's existing `--disable-quic` flag:
+
+```bash
+--proxy-server=socks5://username:password@proxy.example.com:1080
+--disable-quic
+```
+
+`--disable-quic` affects QUIC/HTTP/3 only. WebRTC/STUN behavior still follows the UDP-over-SOCKS5 and WebRTC settings.
 
 ### `--proxy-ip` (ENT Tier1)
 Specify the proxy's public IP to optimize performance.

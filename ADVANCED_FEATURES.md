@@ -39,6 +39,7 @@ Smart auto-configuration: timezone, locale, and languages derive from your proxy
 - [Per-context proxies](PER_CONTEXT_FINGERPRINT.md) with proxy-based geo detection (timezone/locale/language) across contexts and sessions
 - DNS-through-proxy plus credentialed proxy URLs keep browser-level geo signals protected
 - UDP-over-SOCKS5 tunnel (ENT Tier3) for QUIC/STUN so ICE presets are only needed when UDP is unavailable
+- Chromium's `--disable-quic` flag remains available for deployments that prefer TCP-based HTTP protocols while keeping SOCKS5 proxying
 - Optional ICE control via [`--bot-webrtc-ice`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier1) when the proxy lacks UDP support
 - Chromium-level implementation: tunneling lives inside the network stack, no external proxy-chain hijacking
 

@@ -144,7 +144,7 @@ Do not assemble WebKit-family behavior from standalone profile fields. Use the p
 
 ⚠️ **Proxy configurations are intended for authorized networks only. They must not be used for unauthorized data collection or abuse.**
 
-> **[UDP-over-SOCKS5](../CLI_FLAGS.md#udp-over-socks5-ent-tier3):** ENT Tier3 support detects when a SOCKS5 upstream offers UDP associate and natively tunnels QUIC/STUN through it. No additional flag is required; simply provide a SOCKS5 proxy that advertises UDP support.
+> **[UDP-over-SOCKS5](../CLI_FLAGS.md#udp-over-socks5-ent-tier3):** ENT Tier3 support detects when a SOCKS5 upstream offers UDP associate and natively tunnels QUIC/STUN through it. No additional flag is required; simply provide a SOCKS5 proxy that advertises UDP support. Add Chromium's existing `--disable-quic` flag when your workload should avoid QUIC/HTTP/3.
 
 ### HTTP Request Settings
 
