@@ -174,6 +174,26 @@ When privacy requires that DNS queries also go through the proxy tunnel, use `so
 
 With `socks5h`, the proxy server resolves hostnames, so the target domain name is never visible to your local DNS resolver.
 
+### PAC routing and request callback
+
+Use the standard `--proxy-pac-url` flag when proxy routing should be controlled by a PAC script:
+
+```bash
+--proxy-pac-url=file:///absolute/path/to/proxy.pac
+```
+
+Standard PAC routing works through `FindProxyForURL(url, host)`. Approved ENT Tier3 profiles can also define BotBrowser's trusted request callback in the same PAC script:
+
+```javascript
+function BotBrowserFindProxyForRequest(url, host, method, headersB64, bodyB64, bodyState) {
+  return "CONTINUE";
+}
+```
+
+Keep PAC sources explicit and controlled. Use PAC auto-detect/WPAD only for standard routing. See [PAC-Like Request Callback](PAC_REQUEST_POLICY.md).
+
+The PAC callback guide documents the full parameter list, routing fallback behavior, and return-value rules.
+
 ---
 
 <a id="troubleshooting"></a>
@@ -197,6 +217,7 @@ With `socks5h`, the proxy server resolves hostnames, so the target domain name i
 - [Proxy and Geolocation](PROXY_GEOLOCATION_ALIGNMENT.md). How BotBrowser auto-detects geographic signals from your proxy IP.
 - [Per-Context Proxy](PER_CONTEXT_PROXY.md). Assign different proxies to different BrowserContexts.
 - [Dynamic Proxy Switching](DYNAMIC_PROXY_SWITCHING.md). Change proxy at runtime without restarting.
+- [PAC-Like Request Callback](PAC_REQUEST_POLICY.md). Use trusted PAC scripts for routing and enterprise request callback workflows.
 - [WebRTC Leak Prevention](WEBRTC_LEAK_PREVENTION.md). Protect against IP disclosure through WebRTC.
 - [DNS Leak Prevention](DNS_LEAK_PREVENTION.md). Prevent DNS queries from leaking outside the proxy tunnel.
 - [CLI Flags Reference](../../../CLI_FLAGS.md). Complete list of all available flags.

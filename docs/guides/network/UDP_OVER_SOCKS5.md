@@ -38,6 +38,8 @@ await page.goto("https://example.com");
 await browser.close();
 ```
 
+If your deployment should avoid QUIC/HTTP/3, add the standard `--disable-quic` flag. In BotBrowser 149.0.7827.102 and newer, UDP-over-SOCKS5 keeps SOCKS5 proxying active while this flag opts out of QUIC/HTTP/3. The SOCKS5 proxy setting stays the same.
+
 ---
 
 <a id="how-it-works"></a>
@@ -83,6 +85,17 @@ If your proxy supports UDP, everything works automatically:
 
 QUIC and STUN traffic are tunneled through the proxy. TCP traffic is proxied as usual.
 
+### Disable QUIC while keeping SOCKS5
+
+Use the standard `--disable-quic` flag when you want HTTP traffic to stay on TCP protocols:
+
+```bash
+--proxy-server=socks5://user:pass@proxy.example.com:1080
+--disable-quic
+```
+
+This disables QUIC/HTTP/3. It does not disable WebRTC or STUN; those continue to follow your UDP-over-SOCKS5 and WebRTC settings.
+
 ### When the proxy does not support UDP
 
 If the proxy does not support UDP ASSOCIATE, BotBrowser falls back gracefully:
@@ -124,6 +137,7 @@ const page = await ctx.newPage();
 
 - **Proxy must support UDP ASSOCIATE.** Not all SOCKS5 proxies support UDP. Check with your provider. HTTP and HTTPS proxies do not support UDP tunneling.
 - **Browser-level setting.** UDP proxy support applies at the browser level and cannot be configured per-context independently.
+- **QUIC control.** Use `--disable-quic` when your workload should avoid QUIC/HTTP/3. This does not disable WebRTC.
 - **Performance.** UDP-over-SOCKS5 adds latency compared to direct UDP. For latency-sensitive WebRTC applications, this trade-off favors privacy over raw speed.
 
 ---
@@ -135,6 +149,7 @@ const page = await ctx.newPage();
 | Problem | Solution |
 |---------|----------|
 | QUIC connections not going through proxy | Verify your SOCKS5 proxy supports UDP ASSOCIATE. Not all providers do. |
+| I do not want QUIC traffic | Add `--disable-quic`. SOCKS5 proxying remains active for TCP traffic. |
 | WebRTC still shows real IP | Confirm UDP support. If unavailable, use `--bot-webrtc-ice=google` for ICE control. |
 | Increased latency on some sites | UDP tunneling adds overhead. This is expected. For sites that support both QUIC and HTTP/2, performance should be comparable. |
 | Feature not available | UDP-over-SOCKS5 requires an ENT Tier3 license. |

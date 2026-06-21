@@ -144,7 +144,7 @@ Do not assemble WebKit-family behavior from standalone profile fields. Use the p
 
 ⚠️ **Proxy configurations are intended for authorized networks only. They must not be used for unauthorized data collection or abuse.**
 
-> **[UDP-over-SOCKS5](../CLI_FLAGS.md#udp-over-socks5-ent-tier3):** ENT Tier3 support detects when a SOCKS5 upstream offers UDP associate and natively tunnels QUIC/STUN through it. No additional flag is required; simply provide a SOCKS5 proxy that advertises UDP support.
+> **[UDP-over-SOCKS5](../CLI_FLAGS.md#udp-over-socks5-ent-tier3):** ENT Tier3 support detects when a SOCKS5 upstream offers UDP associate and natively tunnels QUIC/STUN through it. No additional flag is required; simply provide a SOCKS5 proxy that advertises UDP support. Add the standard `--disable-quic` flag when your workload should avoid QUIC/HTTP/3.
 
 ### HTTP Request Settings
 
@@ -190,6 +190,8 @@ Do not assemble WebKit-family behavior from standalone profile fields. Use the p
 | `timeSeed` (ENT Tier2 feature) | Integer seed (1–UINT32_MAX) for deterministic execution timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, etc.). `0` disables the feature. Each seed produces a unique, stable performance profile that protects against timing-based tracking. See [Performance Timing Protection](../ADVANCED_FEATURES.md#performance-timing-protection). | `0` (disabled) |
 | `stackSeed` (ENT Tier2 feature) | Controls JavaScript recursive call stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile's exact depth), `real` (use native depth), or a positive integer seed (1–UINT32_MAX) for per-session depth variation. See [Stack Depth Control](../ADVANCED_FEATURES.md#stack-depth-control). | `real` |
 | `networkInfoOverride` | Enable profile-defined `navigator.connection` values (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers. | `false` |
+
+Video playback cadence is controlled at launch with [`--bot-video-fps`](../CLI_FLAGS.md#--bot-video-fps) (ENT Tier2, requires a profile with Video FPS Control enabled). It is separate from the `fps` profile field, which controls display/runtime frame-rate behavior. Use `--bot-video-fps=1:real` when the actual cadence should be lowered while reporting follows the media's reported cadence where available.
 
 ---
 

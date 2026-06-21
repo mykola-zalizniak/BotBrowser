@@ -8,7 +8,7 @@ Technical architecture and implementation details behind BotBrowser's fingerprin
 
 ## Capabilities Index
 
-[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#multi-layer-fingerprint-noise), [Canvas replay (ENT Tier4)](#multi-layer-fingerprint-noise), [WebGL/WebGPU param control](#multi-layer-fingerprint-noise), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#browser-os-fingerprinting), [custom User-Agent (ENT Tier3)](CLI_FLAGS.md#profile-configuration-override-flags), [WebKit-family profile consistency (ENT Tier4)](#webkit-family-profile-consistency), [per-context proxy (ENT Tier1) geo](CLI_FLAGS.md#enhanced-proxy-configuration), [DNS-through-proxy](#network-fingerprint-control), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS behavior consistency](#network-fingerprint-control), [port protection (PRO)](#port-protection), [dynamic proxy switching (ENT Tier3)](#dynamic-proxy-switching), [distributed privacy consistency](#mirror-distributed-privacy-consistency), [CDP quick reference](#cdp-quick-reference)
+[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#multi-layer-fingerprint-noise), [Canvas replay (ENT Tier4)](#multi-layer-fingerprint-noise), [WebGL/WebGPU param control](#multi-layer-fingerprint-noise), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#browser-os-fingerprinting), [custom User-Agent (ENT Tier3)](CLI_FLAGS.md#profile-configuration-override-flags), [WebKit-family profile consistency (ENT Tier4)](#webkit-family-profile-consistency), [per-context proxy (ENT Tier1) geo](CLI_FLAGS.md#enhanced-proxy-configuration), [DNS-through-proxy](#network-fingerprint-control), [PAC-like request callback (ENT Tier3)](CLI_FLAGS.md#pac-request-policy-ent-tier3), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS behavior consistency](#network-fingerprint-control), [port protection (PRO)](#port-protection), [dynamic proxy switching (ENT Tier3)](#dynamic-proxy-switching), [video FPS control (ENT Tier2)](#video-fps-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency), [CDP quick reference](#cdp-quick-reference)
 
 ---
 
@@ -39,6 +39,8 @@ Smart auto-configuration: timezone, locale, and languages derive from your proxy
 - [Per-context proxies](PER_CONTEXT_FINGERPRINT.md) with proxy-based geo detection (timezone/locale/language) across contexts and sessions
 - DNS-through-proxy plus credentialed proxy URLs keep browser-level geo signals protected
 - UDP-over-SOCKS5 tunnel (ENT Tier3) for QUIC/STUN so ICE presets are only needed when UDP is unavailable
+- The standard `--disable-quic` flag remains available for deployments that prefer TCP-based HTTP protocols while keeping SOCKS5 proxying
+- PAC-like request callback (ENT Tier3) for trusted PAC sources and approved request-aware policy workflows while preserving standard PAC routing behavior and helping maintain HTTP/2 continuity in automation-heavy sessions
 - Optional ICE control via [`--bot-webrtc-ice`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier1) when the proxy lacks UDP support
 - Chromium-level implementation: tunneling lives inside the network stack, no external proxy-chain hijacking
 
@@ -285,6 +287,10 @@ Comprehensive hardware emulation and fingerprint management.
 
 **CPU Core Scaling Protection**: When `navigator.hardwareConcurrency` is set by the profile, Worker threads are automatically constrained to match the claimed core count via CPU affinity on Linux and Windows. This ensures parallel computation scaling curves align with the claimed value.
 
+<a id="video-fps-control"></a>
+
+**Video FPS Control** (ENT Tier2): [`--bot-video-fps=<actual>[:<reported>]`](CLI_FLAGS.md#--bot-video-fps) separates video playback cadence from media FPS reporting for video-heavy workloads on profiles with Video FPS Control enabled. Use it when lower actual video cadence is acceptable and CPU density matters. For example, `--bot-video-fps=1:30` updates video frames at 1 FPS while keeping media reporting at 30 FPS. Visual pixel updates follow the actual cadence.
+
 **Related guides:** [Performance](https://botbrowser.io/docs/fingerprint/performance/) · [Stack Depth](https://botbrowser.io/docs/fingerprint/stack-depth/) · [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/) · [Navigator Properties](https://botbrowser.io/docs/fingerprint/navigator-properties/)
 
 <details>
@@ -297,6 +303,7 @@ Comprehensive hardware emulation and fingerprint management.
 - Emulate target refresh rates (60Hz, 120Hz, 144Hz, etc.)
 - Simulate high-FPS macOS behavior on Ubuntu hosts (Ubuntu requires ENT Tier1)
 - Authentic vsync and frame timing patterns
+- Video playback cadence control via [`--bot-video-fps`](CLI_FLAGS.md#--bot-video-fps): `<actual>[:<reported>]`, such as `1:30` for lower decode/render cadence with 30 FPS media reporting, or `1:real` to report the media's reported cadence where available
 
 ### Performance Fingerprint Controls
 
@@ -405,11 +412,11 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 
 | Component | Capabilities |
 |-----------|-------------|
-| **Proxy** | Authentication embedding, credential management, geo-detection |
+| **Proxy** | Authentication embedding, credential management, geo-detection, PAC-like request callback |
 | **WebRTC** | SDP control, ICE candidate filtering, media stream simulation |
 | **HTTP Headers** | Google-specific headers (ENT Tier2), Chrome behavior patterns, request timing |
 | **Media Devices** | AudioContext simulation, speech synthesis, device enumeration |
-| **Codecs** | Extended media types, WebCodecs APIs, hardware acceleration simulation |
+| **Codecs** | Extended media types, WebCodecs APIs, hardware acceleration simulation, video FPS control |
 | **Widevine DRM** | Persistent license support, platform-appropriate license negotiation, EME capability fingerprinting prevention |
 | **WebAuthn** | Platform-specific client capabilities, Touch ID/Bluetooth/payment authenticator detection prevention |
 
@@ -419,7 +426,7 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 |-----------|-------------|
 | **Memory** | Allocation timing, garbage collection patterns, heap behavior |
 | **Storage** | IndexedDB latency, cache timing, quota management |
-| **Animation** | requestAnimationFrame precision, frame timing, smooth scrolling |
+| **Animation** | requestAnimationFrame precision, frame timing, smooth scrolling, video playback cadence |
 | **Computation** | JavaScript execution timing, WebAssembly performance, crypto operations |
 
 </details>

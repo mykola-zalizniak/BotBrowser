@@ -6,7 +6,7 @@
 
 WebKit-family Profile Consistency is profile-backed. The encrypted profile carries the browser-family data, and the browser loads it before the page starts.
 
-At a high level, the profile coordinates selected WebKit-family browser API surfaces, TLS ClientHello behavior, and HTTP/2 behavior so the selected browser-family identity remains consistent across supported hosts.
+The profile coordinates selected WebKit-family browser surfaces, TLS ClientHello behavior, and HTTP/2 behavior so the selected browser-family identity remains consistent across supported hosts.
 
 Use this profile line for desktop and mobile WebKit-family bundles. Use Chromium-family profiles for Chrome, Chromium, Edge, Brave, Opera, Android, and Android WebView.
 
@@ -14,7 +14,7 @@ For the product page, see [WebKit-family Profile Consistency](../../../WEBKIT_PR
 
 ## Requirements
 
-- BotBrowser 149.0.7827.59 or newer.
+- BotBrowser 149.0.7827.102 or newer.
 - ENT Tier4 access.
 - A WebKit-family `.enc` profile issued through the enterprise channel.
 - A separate `--user-data-dir` for each browser instance.
@@ -35,6 +35,7 @@ For Per-Context Fingerprint, pass the profile when the BrowserContext is created
 
 - Do not use `browserBrand` or User-Agent overrides to build this profile line by hand.
 - Keep proxy settings with the browser instance or BrowserContext that uses the profile.
+- Use BotBrowser 149.0.7827.102 or newer for the current WebKit-family network compatibility updates.
 - Validate desktop and mobile profile bundles separately.
 - Keep raw validation captures and profile internals out of public documents.
 

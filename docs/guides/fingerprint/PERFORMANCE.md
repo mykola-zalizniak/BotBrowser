@@ -58,7 +58,7 @@ This emulates lower system load and reduces timing skew signals.
 
 ### Frame Rate Control
 
-Control frame rate behavior with `--bot-fps` (ENT Tier2):
+Control display/runtime frame rate behavior with `--bot-fps` (ENT Tier2):
 
 ```bash
 # Use profile-defined frame rate
@@ -70,6 +70,15 @@ Control frame rate behavior with `--bot-fps` (ENT Tier2):
 # Set specific frame rate
 --bot-fps=60
 ```
+
+Control video playback cadence with `--bot-video-fps` (ENT Tier2, requires a profile with Video FPS Control enabled):
+
+```bash
+# Actual video cadence 1 FPS, media reporting 30 FPS
+--bot-video-fps=1:30
+```
+
+Use this for video-heavy workloads where lower visual video cadence is acceptable. Pixel output follows the actual video cadence, while media reporting follows the selected policy. See [FPS Control](FPS_CONTROL.md#video-fps-control) and the [Video FPS benchmark](../../../BENCHMARK.md#video-fps-control).
 
 ### Network Information Override
 
@@ -103,7 +112,7 @@ Control JavaScript recursive call stack depth with `--bot-stack-seed` (ENT Tier2
 
 ## How BotBrowser Provides Protection
 
-BotBrowser provides protection across all performance and timing surfaces: operation timing, navigation timing, frame rate, network connection properties, stack depth, and CPU core scaling. The flags listed above can be combined for comprehensive coverage. `--bot-time-seed` and `--bot-time-scale` protect against different aspects of timing and can be used together.
+BotBrowser provides protection across all performance and timing surfaces: operation timing, navigation timing, display frame rate, video playback cadence, network connection properties, stack depth, and CPU core scaling. The flags listed above can be combined for comprehensive coverage. `--bot-time-seed` and `--bot-time-scale` protect against different aspects of timing and can be used together.
 
 ---
 
@@ -121,6 +130,7 @@ BotBrowser provides protection across all performance and timing surfaces: opera
 |---------|----------|
 | Timing profile identical across instances | Use different `--bot-time-seed` values for each instance. |
 | Frame rate doesn't match profile | Set `--bot-fps=profile` or specify a target rate like `--bot-fps=60`. |
+| Video workload uses too much CPU | Use `--bot-video-fps=<actual>[:<reported>]`, such as `--bot-video-fps=1:30`, with a profile that has Video FPS Control enabled when lower visual video cadence is acceptable. |
 | Network connection info shows real values | Enable `--bot-network-info-override` to use profile-defined values. |
 | Performance entries show real server timing | `--bot-time-seed` redistributes entry timing. Verify it is set. |
 
@@ -131,6 +141,7 @@ BotBrowser provides protection across all performance and timing surfaces: opera
 ## Next Steps
 
 - [Navigator Properties](NAVIGATOR_PROPERTIES.md). Connection info and other navigator APIs.
+- [FPS Control](FPS_CONTROL.md). Display FPS and video FPS controls.
 - [Canvas Fingerprinting](CANVAS.md). Rendering-based tracking protection.
 - [Audio Fingerprinting](AUDIO.md). Audio processing fingerprint protection.
 - [CLI Flags Reference](../../../CLI_FLAGS.md). All timing and performance flags.

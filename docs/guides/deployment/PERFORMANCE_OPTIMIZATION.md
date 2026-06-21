@@ -53,7 +53,9 @@ BotBrowser performance is influenced by several factors:
 
 4. **Browser contexts.** Creating multiple BrowserContexts within a single browser process is more efficient than launching separate browser instances. Each context can have its own fingerprint via Per-Context Fingerprint (ENT Tier3). For workloads running many concurrent BrowserContexts under one browser, opt in to `--bot-gpu-emulation=priority` to prioritize GPU and WebGPU command-buffer scheduling across sibling contexts. See [`--bot-gpu-emulation` modes](LINUX_GPU_BACKEND.md#gpu-emulation-modes).
 
-5. **Build selection.** For short-session, high-concurrency automation, **Trimmed Build** (ENT Tier3) reduces context startup latency, first navigation, CPU peak, and shared memory pressure compared to Standard Build, while preserving the same fingerprint protection model. See [When to Consider Trimmed Build](#when-to-consider-trimmed-build).
+5. **Video playback cadence.** For video-heavy workloads, [`--bot-video-fps`](../../../CLI_FLAGS.md#--bot-video-fps) (ENT Tier2) can lower actual video decode/render cadence while keeping media reporting aligned with the selected policy. Use it only when lower visual video cadence is acceptable.
+
+6. **Build selection.** For short-session, high-concurrency automation, **Trimmed Build** (ENT Tier3) reduces context startup latency, first navigation, CPU peak, and shared memory pressure compared to Standard Build, while preserving the same fingerprint protection model. See [When to Consider Trimmed Build](#when-to-consider-trimmed-build).
 
 ---
 
@@ -133,6 +135,21 @@ chromium-browser \
 ```
 
 This is simpler than scripting profile rotation and provides fingerprint diversity across instances.
+
+### Lower CPU for video-heavy pages
+
+When many tabs or contexts keep video elements active, lower the actual video cadence with `--bot-video-fps` (ENT Tier2, requires a profile with Video FPS Control enabled):
+
+```bash
+chromium-browser \
+    --headless \
+    --no-sandbox \
+    --bot-profile="/path/to/profile.enc" \
+    --bot-video-fps=1:30 \
+    --user-data-dir="$(mktemp -d)"
+```
+
+`1:30` means video frames visually update near 1 FPS while media reporting uses 30 FPS. Pixel output follows the actual cadence, so choose a higher actual value when the workload samples video pixels frame by frame. For Per-Context Fingerprint, pass the flag in `botbrowserFlags` before creating pages in the context. See the [Video FPS benchmark](../../../BENCHMARK.md#video-fps-control).
 
 ### Reuse browser instances with multiple contexts
 

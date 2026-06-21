@@ -3,6 +3,22 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-06-19]
+### Major
+- **Chromium Core -> 149.0.7827.102**: Updated to Chrome 149 stable (149.0.7827.102). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+- **Profile Signal Consistency**: Improved selected profile-backed rendering, layout, media, storage, and browser-family consistency paths.
+
+### New
+- **Video FPS Control (`--bot-video-fps`, ENT Tier2)**: Added media playback FPS control for video-heavy workloads on profiles with Video FPS Control enabled. Teams can lower the actual video cadence while keeping media reporting aligned with the selected policy, which can reduce CPU usage when full visual frame cadence is not required.
+- **PAC-Like Request Callback (ENT Tier3)**: Added BotBrowser's trusted request callback workflow for approved profiles. Standard PAC routing remains unchanged, while trusted PAC scripts can define `BotBrowserFindProxyForRequest(url, host, method, headersB64, bodyB64, bodyState)` for request-aware policy handling through explicit PAC sources.
+
+### Improvements
+- **SOCKS5 UDP and QUIC Control**: UDP-over-SOCKS5 now respects the standard `--disable-quic` flag, so deployments can keep SOCKS5 proxying while opting out of QUIC/HTTP/3.
+- **WebKit-Family Network Compatibility**: Improved WebKit-family network compatibility for profile-backed sessions.
+- **Storage Consistency**: Improved storage quota behavior for non-default browser contexts so profile-backed sessions expose more consistent storage usage.
+- **Synthetic Input Consistency**: Improved automation input consistency in supported browser sessions.
+
+
 ## [2026-06-09]
 ### Major
 - **Chromium Core -> 149.0.7827.59**: Updated to Chrome 149 stable (149.0.7827.59). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
