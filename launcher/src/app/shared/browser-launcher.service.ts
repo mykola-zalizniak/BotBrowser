@@ -523,6 +523,7 @@ export class BrowserLauncherService {
         if (opts?.noise?.botNoiseSeed != null) args.push(`--bot-noise-seed=${opts.noise.botNoiseSeed}`);
         if (opts?.noise?.botTimeScale != null) args.push(`--bot-time-scale=${opts.noise.botTimeScale}`);
         if (opts?.noise?.botFps) args.push(`--bot-fps=${opts.noise.botFps}`);
+        if (opts?.noise?.botVideoFps) args.push(`--bot-video-fps=${opts.noise.botVideoFps}`);
         if (opts?.noise?.botTimeSeed != null && opts.noise.botTimeSeed !== 0)
             args.push(`--bot-time-seed=${opts.noise.botTimeSeed}`);
         if (opts?.noise?.botStackSeed) args.push(`--bot-stack-seed=${opts.noise.botStackSeed}`);
@@ -554,6 +555,8 @@ export class BrowserLauncherService {
         if (opts?.proxy?.proxyIp) args.push(`--proxy-ip=${shQuote(opts.proxy.proxyIp)}`);
         if (opts?.proxy?.botIpService) args.push(`--bot-ip-service=${shQuote(opts.proxy.botIpService)}`);
         if (opts?.proxy?.proxyBypassRgx) args.push(`--proxy-bypass-rgx=${shQuote(opts.proxy.proxyBypassRgx)}`);
+        if (opts?.proxy?.proxyPacUrl) args.push(`--proxy-pac-url=${shQuote(opts.proxy.proxyPacUrl)}`);
+        if (opts?.proxy?.disableQuic) args.push('--disable-quic');
         {
             const v = opts?.proxy?.botLocalDns;
             if (typeof v === 'string' && v) args.push(`--bot-local-dns=${shQuote(v)}`);

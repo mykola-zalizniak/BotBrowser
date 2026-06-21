@@ -303,6 +303,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botNoiseSeed: this.#injectedData?.launchOptions?.noise?.botNoiseSeed,
         botTimeScale: this.#injectedData?.launchOptions?.noise?.botTimeScale,
         botFps: this.#injectedData?.launchOptions?.noise?.botFps,
+        botVideoFps: this.#injectedData?.launchOptions?.noise?.botVideoFps,
         botTimeSeed: this.#injectedData?.launchOptions?.noise?.botTimeSeed,
         botStackSeed: this.#injectedData?.launchOptions?.noise?.botStackSeed,
     });
@@ -356,6 +357,8 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         proxyIp: this.#injectedData?.launchOptions?.proxy?.proxyIp,
         botIpService: this.#injectedData?.launchOptions?.proxy?.botIpService,
         proxyBypassRgx: this.#injectedData?.launchOptions?.proxy?.proxyBypassRgx,
+        proxyPacUrl: this.#injectedData?.launchOptions?.proxy?.proxyPacUrl,
+        disableQuic: this.#injectedData?.launchOptions?.proxy?.disableQuic,
         // Legacy 'off' option saved `false`, matching the kernel default. Normalize so the
         // form value agrees with the dropdown's "Default (off)" state and #cleanObject
         // strips the field instead of persisting redundant `botLocalDns: false`.

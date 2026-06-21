@@ -133,6 +133,8 @@ export interface NoiseConfig {
     botNoiseSeed?: number;
     botTimeScale?: number;
     botFps?: string;
+    // --bot-video-fps: <actual>[:<reported>], where reported is a number or 'real'.
+    botVideoFps?: string;
     botTimeSeed?: number;
     botStackSeed?: string;
 }
@@ -156,6 +158,10 @@ export interface ProxyConfig {
     proxyIp?: string;
     botIpService?: string;
     proxyBypassRgx?: string;
+    // Standard Chromium --proxy-pac-url; accepts file:// or http(s):// PAC sources.
+    proxyPacUrl?: string;
+    // Standard Chromium --disable-quic; required to keep SOCKS5 UDP fallback off QUIC/HTTP3.
+    disableQuic?: boolean;
     // --bot-local-dns: boolean (legacy on/off) or string ('IP' / 'IP:port' for custom upstream DNS)
     botLocalDns?: boolean | string;
     botPortProtection?: boolean;
