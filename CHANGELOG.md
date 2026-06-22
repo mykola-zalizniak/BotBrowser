@@ -3,6 +3,15 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-06-22]
+### Major
+- **Chromium Core -> 149.0.7827.157**: Updated to Chrome 149 stable (149.0.7827.157). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **Font and Text Profile Consistency**: Improved profile-backed font and text behavior for desktop and mobile profile families across supported host platforms.
+- **Storage Timing Consistency**: Improved profile-backed storage behavior across browser-context workflows so storage timing remains closer to the selected profile environment.
+
+
 ## [2026-06-19]
 ### Major
 - **Chromium Core -> 149.0.7827.102**: Updated to Chrome 149 stable (149.0.7827.102). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
