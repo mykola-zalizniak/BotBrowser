@@ -3,6 +3,17 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-06-24]
+### Major
+- **Chromium Core -> 149.0.7827.196**: Updated to Chrome 149 stable (149.0.7827.196). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **WebKit-Family Runtime Compatibility**: Improved renderer responsiveness for WebKit-family profile bundles on script-heavy pages.
+- **WebKit-Family Protocol Consistency**: Improved HTTP/2 behavior for profile-backed WebKit-family sessions.
+- **Profile-Backed Runtime Performance**: Reduced runtime overhead in profile-backed Standard Build sessions, improving page-load responsiveness.
+- **Android Profile Font Consistency**: Improved Android profile font behavior for profile-backed desktop-host workflows.
+
+
 ## [2026-06-22]
 ### Major
 - **Chromium Core -> 149.0.7827.157**: Updated to Chrome 149 stable (149.0.7827.157). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
