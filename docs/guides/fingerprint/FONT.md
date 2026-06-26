@@ -54,7 +54,7 @@ Control font behavior with the `--bot-config-fonts` flag:
 BotBrowser applies deterministic noise to font measurement APIs:
 
 ```bash
-# Enable ClientRects noise (default)
+# Enable ClientRects noise (disabled by default)
 --bot-config-noise-client-rects=true
 
 # Enable text rects noise (disabled by default)

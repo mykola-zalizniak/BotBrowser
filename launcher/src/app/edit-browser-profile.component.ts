@@ -299,7 +299,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botConfigNoiseCanvas: this.#injectedData?.launchOptions?.noise?.botConfigNoiseCanvas ?? true,
         botConfigNoiseAudioContext: this.#injectedData?.launchOptions?.noise?.botConfigNoiseAudioContext ?? true,
         botConfigNoiseClientRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseClientRects,
-        botConfigNoiseTextRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseTextRects ?? true,
+        botConfigNoiseTextRects: this.#injectedData?.launchOptions?.noise?.botConfigNoiseTextRects,
         botNoiseSeed: this.#injectedData?.launchOptions?.noise?.botNoiseSeed,
         botTimeScale: this.#injectedData?.launchOptions?.noise?.botTimeScale,
         botFps: this.#injectedData?.launchOptions?.noise?.botFps,
