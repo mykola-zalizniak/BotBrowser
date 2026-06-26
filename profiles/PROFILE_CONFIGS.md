@@ -178,7 +178,7 @@ Do not assemble WebKit-family behavior from standalone profile fields. Use the p
 | `noiseWebglImage`   | Introduce controlled variance to WebGL for fingerprint protection.   | `true`  |
 | `noiseAudioContext` | Introduce controlled variance to AudioContext for fingerprint protection.  | `true`  |
 | `noiseClientRects`  | Introduce controlled variance to client rects for fingerprint protection.  | `false` |
-| `noiseTextRects`    | Introduce controlled variance to TextRects for fingerprint protection.     | `true`  |
+| `noiseTextRects`    | Introduce controlled variance to TextRects for fingerprint protection.     | `false` |
 
 ### Timing & Deterministic Noise Controls
 
@@ -275,7 +275,7 @@ Video playback cadence is controlled at launch with [`--bot-video-fps`](../CLI_F
     "noiseClientRects": false,
 
     // noiseTextRects: Introduce controlled variance to TextRects for fingerprint protection
-    "noiseTextRects": true,
+    "noiseTextRects": false,
 
     // browserBrand: override for browser identity fields. Supports "chromium", "chrome", "edge", "brave", "opera", and "webview" (ENT Tier3). WebKit-family identities use ENT Tier4 premium profiles.
     "browserBrand": "chrome",

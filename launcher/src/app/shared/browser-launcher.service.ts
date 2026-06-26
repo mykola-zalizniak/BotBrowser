@@ -519,7 +519,7 @@ export class BrowserLauncherService {
         emitToggle('--bot-config-noise-canvas', opts?.noise?.botConfigNoiseCanvas, true);
         emitToggle('--bot-config-noise-audio-context', opts?.noise?.botConfigNoiseAudioContext, true);
         emitToggle('--bot-config-noise-client-rects', opts?.noise?.botConfigNoiseClientRects, false);
-        emitToggle('--bot-config-noise-text-rects', opts?.noise?.botConfigNoiseTextRects, true);
+        emitToggle('--bot-config-noise-text-rects', opts?.noise?.botConfigNoiseTextRects, false);
         if (opts?.noise?.botNoiseSeed != null) args.push(`--bot-noise-seed=${opts.noise.botNoiseSeed}`);
         if (opts?.noise?.botTimeScale != null) args.push(`--bot-time-scale=${opts.noise.botTimeScale}`);
         if (opts?.noise?.botFps) args.push(`--bot-fps=${opts.noise.botFps}`);

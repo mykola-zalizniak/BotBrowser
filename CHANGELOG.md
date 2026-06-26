@@ -1008,7 +1008,7 @@ Example (Edge browser emulation):
 --bot-config-noise-audio-context=true # AudioContext noise: true, false
 --bot-config-noise-canvas=true # Canvas fingerprint noise: true, false
 --bot-config-noise-client-rects=false # Client rects noise: true, false
---bot-config-noise-text-rects=true # Text rects noise: true, false
+--bot-config-noise-text-rects=false # Text rects noise: true, false
 --bot-config-noise-webgl-image=true # WebGL image noise: true, false
 --bot-config-screen="profile" # Screen: profile (use profile), real (system screen)
 --bot-config-speech-voices="profile" # Speech voices: profile (synthetic), real (system)
@@ -1274,7 +1274,7 @@ Refined per-OS rendering differences (fonts, CSS, anti-aliasing, text sizing) so
     "noiseClientRects": false,
 
     // noiseTextRects: true adds noise to TextRects fingerprint; false disables it
-    "noiseTextRects": true
+    "noiseTextRects": false
   }
 }
 
