@@ -3,6 +3,15 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-06-29]
+### Major
+- **Chromium Core -> 149.0.7827.199**: Updated to Chrome 149 stable (149.0.7827.199). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### Improvements
+- **WebKit-Family Runtime Consistency**: Improved browser runtime behavior for WebKit-family profile bundles while preserving Chrome-family behavior.
+- **Profile Signal Consistency**: Improved profile-backed memory, storage, and media capability behavior for complex browser workflows.
+
+
 ## [2026-06-24]
 ### Major
 - **Chromium Core -> 149.0.7827.196**: Updated to Chrome 149 stable (149.0.7827.196). Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
