@@ -28,7 +28,7 @@
       "icon": "/dist/botbrowser-launcher/browser/favicon.ico",
       "enableInspector": false,
       "borderless": false,
-      "maximize": false,
+      "maximize": true,
       "hidden": false,
       "resizable": true,
       "exitProcessOnClose": true,

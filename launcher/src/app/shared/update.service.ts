@@ -23,8 +23,8 @@ export class UpdateService {
     #isWindows = false;
     #intervalId: ReturnType<typeof setInterval> | null = null;
 
-    /** Start checking for updates: once immediately, then every hour. */
-    startPeriodicCheck(): void {
+    /** Start checking for updates: once immediately, then on an interval (default: hourly). */
+    startPeriodicCheck(intervalMs = 60 * 60 * 1000): void {
         if (this.#intervalId) return;
         this.checkForUpdate().catch(console.error);
         this.#intervalId = setInterval(() => {
@@ -32,7 +32,7 @@ export class UpdateService {
             if (this.status() === 'idle') {
                 this.checkForUpdate().catch(console.error);
             }
-        }, 60 * 60 * 1000);
+        }, intervalMs);
     }
 
     async checkForUpdate(): Promise<void> {

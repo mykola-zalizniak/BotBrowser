@@ -46,6 +46,7 @@ export class KernelService {
     #allReleases: KernelRelease[] = [];
     #initialized = false;
     #extractorAvailable: boolean | null = null; // null = not checked yet
+    #intervalId: ReturnType<typeof setInterval> | null = null;
 
     async initialize(): Promise<void> {
         if (this.#initialized) return;
@@ -126,14 +127,27 @@ export class KernelService {
         }
     }
 
-    // Called on app startup to perform auto-update tasks
+    /** Run the kernel auto-update routine now, then re-check periodically (default: hourly). */
+    startPeriodicCheck(intervalMs = 60 * 60 * 1000): void {
+        if (this.#intervalId) return;
+        this.performStartupTasks().catch(console.error);
+        this.#intervalId = setInterval(() => {
+            // Skip if a previous run or any download (auto or manual) is still in progress
+            if (this.isAutoUpdating() || this.hasActiveDownloads()) return;
+            this.performStartupTasks().catch(console.error);
+        }, intervalMs);
+    }
+
+    // Fetch releases and auto-update/-download kernels.
+    // Called on startup and on each periodic check; re-entrant calls are ignored.
     async performStartupTasks(): Promise<void> {
-        await this.initialize();
+        if (this.isAutoUpdating()) return; // prevent overlapping runs
 
         try {
             this.isAutoUpdating.set(true);
+            await this.initialize();
 
-            // Fetch all releases
+            // Always re-fetch so newly published releases are detected on periodic runs
             this.#allReleases = await this.#fetchAllReleases();
 
             // Clean up old kernel versions (keep only the latest per major version)

@@ -217,7 +217,7 @@ export class AppComponent implements AfterViewInit {
     newProfile(): void {
         this.#dialog
             .open(EditBrowserProfileComponent, {
-                width: '860px',
+                width: '1100px',
                 maxWidth: '95vw',
             })
             .afterClosed()
@@ -239,7 +239,7 @@ export class AppComponent implements AfterViewInit {
         }
         this.#dialog
             .open(EditBrowserProfileComponent, {
-                width: '860px',
+                width: '1100px',
                 maxWidth: '95vw',
                 data: browserProfile,
             })
@@ -445,10 +445,10 @@ export class AppComponent implements AfterViewInit {
 
     async ngAfterViewInit(): Promise<void> {
         await this.refreshProfiles();
-        // Start kernel auto-update and auto-download tasks in the background
-        this.kernelService.performStartupTasks().catch(console.error);
-        // Check for launcher updates: once now, then every hour
-        this.updateService.startPeriodicCheck();
+        // Start kernel auto-update/auto-download: once now, then re-check every 10 minutes
+        this.kernelService.startPeriodicCheck(10 * 60 * 1000);
+        // Check for launcher updates: once now, then every 10 minutes
+        this.updateService.startPeriodicCheck(10 * 60 * 1000);
     }
 
     restartApp(): void {

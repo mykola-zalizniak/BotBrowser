@@ -130,10 +130,10 @@
                         <mat-label>Local DNS</mat-label>
                         <mat-select [(value)]="localDnsMode" (selectionChange)="onLocalDnsModeChange()">
                             <mat-option value="">Default (off)</mat-option>
-                            <mat-option value="builtin">built-in resolver</mat-option>
+                            <mat-option value="local">local machine resolver</mat-option>
                             <mat-option value="custom">custom DNS server</mat-option>
                         </mat-select>
-                        <mat-hint>Default routes DNS through the proxy · built-in keeps DNS local</mat-hint>
+                        <mat-hint>Default routes DNS through the proxy · local resolves DNS on this machine</mat-hint>
                     </mat-form-field>
                     @if (localDnsMode === 'custom') {
                         <mat-form-field class="flex-2">

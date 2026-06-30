@@ -376,14 +376,14 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             (this.#injectedData?.launchOptions?.behavior as any)?.botNetworkInfoOverride,
     });
 
-    // Local DNS mode: '' (kernel default = off) / built-in / custom server.
+    // Local DNS mode: '' (kernel default = off) / local (resolve on this machine) / custom server.
     // Explicit-off is omitted: `--bot-local-dns=false` would match the kernel default, so we map it to ''.
-    localDnsMode: '' | 'builtin' | 'custom' = (() => {
+    localDnsMode: '' | 'local' | 'custom' = (() => {
         const v =
             this.#injectedData?.launchOptions?.proxy?.botLocalDns ??
             (this.#injectedData?.launchOptions?.behavior as any)?.botLocalDns;
         if (typeof v === 'string' && v) return 'custom';
-        if (v === true) return 'builtin';
+        if (v === true) return 'local';
         return '';
     })();
     localDnsServer: string = (() => {
@@ -713,7 +713,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         if (this.localDnsMode === '') {
             this.proxyConfigGroup.patchValue({ botLocalDns: null });
             this.localDnsServer = '';
-        } else if (this.localDnsMode === 'builtin') {
+        } else if (this.localDnsMode === 'local') {
             this.proxyConfigGroup.patchValue({ botLocalDns: true });
             this.localDnsServer = '';
         } else if (this.localDnsServer) {

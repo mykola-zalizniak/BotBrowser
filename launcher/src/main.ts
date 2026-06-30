@@ -6,6 +6,11 @@ import * as Neutralino from '@neutralinojs/lib';
 Neutralino.init();
 Neutralino.events.on('windowClose', () => Neutralino.app.exit());
 
+// Maximize the window on startup (guarantees maximize even when useSavedState restores a smaller size)
+Neutralino.events.on('ready', () => {
+    Neutralino.window.maximize().catch((err: unknown) => console.warn('maximize failed:', err));
+});
+
 // macOS: enable Cmd+C/V/X/A keyboard shortcuts
 Neutralino.events.on('ready', () => {
     if (NL_OS !== 'Darwin') return;
