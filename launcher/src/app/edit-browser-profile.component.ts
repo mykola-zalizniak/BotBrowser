@@ -932,9 +932,9 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
                     this.#savedScreenWxh = '';
                     this.#savedScreenJson = '';
                     // No launcher-side window/screen override on file change — leave it to BB.
-                    // (botMobileForceTouch on the other hand has no implicit kernel default,
-                    // so we keep the Android touch hint.)
-                    if (this.#isAndroidProfile(basicInfo)) {
+                    // (botMobileForceTouch has no implicit kernel default, so we enable it for
+                    // touch-first mobile profiles — Android and iOS alike.)
+                    if (this.#isTouchMobileProfile(basicInfo)) {
                         this.behaviorGroup.patchValue({ botMobileForceTouch: true });
                         this.behaviorGroup.markAsDirty();
                     }
@@ -950,8 +950,10 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             );
     }
 
-    #isAndroidProfile(basicInfo: BotProfileBasicInfo): boolean {
-        return basicInfo.userAgent.toLowerCase().includes('android');
+    // Touch-first mobile profiles (Android phones/tablets and iOS devices) default force-touch on.
+    // iPadOS UAs that masquerade as desktop Mac aren't detectable here and are left to the user.
+    #isTouchMobileProfile(basicInfo: BotProfileBasicInfo): boolean {
+        return /android|iphone|ipad|ipod/.test(basicInfo.userAgent.toLowerCase());
     }
 
     #validate(): boolean {
