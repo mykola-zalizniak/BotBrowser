@@ -9,7 +9,7 @@
 ## Prerequisites
 
 - **BotBrowser binary** installed on your system. See [INSTALLATION.md](../../../INSTALLATION.md) for platform-specific setup.
-- **A profile file** (`.enc` for production, `.json` for local development). Download from [GitHub Releases](https://github.com/botswin/BotBrowser/releases) or use the profiles in [profiles/](../../../profiles/).
+- **A profile file** (`.enc` for production, `.json` for local development). Use a profile package that matches your BotBrowser major version. Chrome 150 and newer profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain in [profiles/](../../../profiles/) for older evaluation lines.
 
 All recipes below use `chromium-browser` as the executable name. Replace with the correct path for your platform:
 - **Windows:** `chrome.exe` or full path to the extracted binary

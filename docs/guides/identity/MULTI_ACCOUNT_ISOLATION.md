@@ -10,7 +10,7 @@
 
 - **BotBrowser binary** installed. See [INSTALLATION.md](../../../INSTALLATION.md). Standard Build works for development and most workloads; **Trimmed Build** (ENT Tier3, enterprise channel) is recommended for high-density per-context fleets (62% lower wall time, 85% faster per-context creation on Linux x64). See [Trimmed Build](../../../TRIMMED_BUILD.md).
 - **Node.js** 18 or later with Playwright or Puppeteer.
-- **Multiple profile files** (`.enc` or `.json`). Download from [GitHub Releases](https://github.com/botswin/BotBrowser/releases).
+- **Multiple profile files** (`.enc` or `.json`) that match your BotBrowser major version. Chrome 150 and newer profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support).
 - **ENT Tier3 license** for full per-context fingerprint support.
 
 ---

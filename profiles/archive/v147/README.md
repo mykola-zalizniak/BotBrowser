@@ -4,7 +4,7 @@ This directory contains archived public demo profiles for the Chrome 147 release
 
 Use these profiles only with matching v147 BotBrowser builds.
 
-For current supported public demo profiles, see [stable/](../../stable/).
+For maintained release lines and current profile access notes, see [stable/](../../stable/).
 
 ---
 

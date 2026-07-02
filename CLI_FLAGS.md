@@ -34,7 +34,7 @@ Specifies the path to the BotBrowser profile file (.enc).
 
 **Notes:**
 - The profile determines the fingerprint, OS emulation, and privacy controls
-- Use profiles from the [profiles directory](profiles/) or contact support for custom profiles
+- Use a profile package that matches your BotBrowser major version. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain in the [profiles directory](profiles/) for older evaluation lines.
 - This is the core difference from stock Chromium
 
 ### `--bot-profile-dir`

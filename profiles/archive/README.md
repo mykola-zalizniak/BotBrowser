@@ -2,7 +2,7 @@
 
 This directory contains older BotBrowser profile lines (v135-v147).
 
-For current supported public demo profiles, see [stable/](../stable/). The stable directory can contain more than one Chrome major while a release rollout is active.
+For maintained release lines, see [stable/](../stable/). Chrome 150 and newer profile packages are delivered through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support) rather than public demo bundles.
 
 For pre-stable test bundles, see [canary/](../canary/) when a canary package is explicitly published.
 
