@@ -5,7 +5,7 @@ Chrome 150 profiles are delivered through subscription or support at [support@bo
 | Release line | Matching BotBrowser build | Profile files |
 |--------------|---------------------------|---------------|
 | v150 | [150.0.7871.24](https://github.com/botswin/BotBrowser/releases/tag/150.0.7871.24) | Subscription profiles: [support@botbrowser.io](mailto:support@botbrowser.io), [@botbrowser_support](https://t.me/botbrowser_support) |
-| v149 | [149.0.7827.199](https://github.com/botswin/BotBrowser/releases/tag/149.0.7827.199) | Legacy public demo files: `chrome149_*.enc`, `webkit26_*.enc` |
+| v149 | [149.0.7827.200](https://github.com/botswin/BotBrowser/releases/tag/149.0.7827.200) | Legacy public demo files: `chrome149_*.enc`, `webkit26_*.enc` |
 | v148 | [148.0.7778.97](https://github.com/botswin/BotBrowser/releases/tag/148.0.7778.97) Early Stable Release | Legacy public demo files: `chrome148_*.enc` |
 
 Use a profile package with the matching BotBrowser major version. For example, v149 profiles require a v149 BotBrowser binary, and v150 profiles require a v150 BotBrowser binary.

@@ -3,6 +3,11 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-07-04]
+### Major
+- **Chromium Core -> 149.0.7827.200**: Updated the maintained Chrome 149 line to 149.0.7827.200. Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+
 ## [2026-07-02]
 ### Major
 - **Chromium Core -> 150.0.7871.24**: Started the Chrome 150 release line with upstream Web Platform, rendering, and security updates.
