@@ -60,7 +60,7 @@ These guides cover everything from initial setup to advanced deployment scenario
 | [DRM Fingerprinting](fingerprint/DRM.md) | Keep DRM/EME capability responses consistent with platform identity. |
 | [Stack Depth Fingerprinting](fingerprint/STACK_DEPTH.md) | Control recursive stack-depth signals across JS execution contexts. |
 | [FPS Control](fingerprint/FPS_CONTROL.md) | Tune display frame-rate behavior and video playback cadence for timing consistency and media workload control. |
-| [Storage Quota Fingerprinting](fingerprint/STORAGE_QUOTA.md) | Control storage and memory quota surfaces used for device profiling. |
+| [Storage Quota Fingerprinting](fingerprint/STORAGE_QUOTA.md) | Control storage and memory quota surfaces, including runtime policy overrides. |
 | [Incognito Fingerprinting](fingerprint/INCOGNITO.md) | Keep fingerprint surfaces consistent between regular and private browsing sessions. |
 | [Console Suppression](fingerprint/CONSOLE_SUPPRESSION.md) | Suppress CDP-forwarded console artifacts that can affect runtime consistency checks. |
 | [Active Window Emulation](fingerprint/ACTIVE_WINDOW.md) | Prevent focus-based tracking by keeping windows in an always-active state. |

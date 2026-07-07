@@ -193,12 +193,33 @@ chromium-browser \
 
 ---
 
+<a id="storage-memory-controls"></a>
+
+## Storage and Memory Controls
+
+<a id="recipe-storage-memory-policy"></a>
+### 13. Override memory and storage quota policy
+
+Use profile values by default, or choose native Chromium behavior or explicit byte values for a controlled run:
+
+```bash
+chromium-browser \
+  --bot-profile="/path/to/profile.enc" \
+  --bot-js-heap-size-limit=profile \
+  --bot-storage-quota=10737418240 \
+  --user-data-dir="$(mktemp -d)"
+```
+
+Use `real` for either flag when that surface should follow native Chromium behavior.
+
+---
+
 <a id="webrtc-control"></a>
 
 ## WebRTC Control
 
 <a id="recipe-webrtc-disabled"></a>
-### 13. Disable WebRTC entirely
+### 14. Disable WebRTC entirely
 
 Prevent all WebRTC activity, including ICE candidate gathering:
 
@@ -210,7 +231,7 @@ chromium-browser \
 ```
 
 <a id="recipe-webrtc-ice"></a>
-### 14. Custom WebRTC ICE servers (ENT Tier1)
+### 15. Custom WebRTC ICE servers (ENT Tier1)
 
 Control which STUN/TURN servers are visible to JavaScript:
 
@@ -228,7 +249,7 @@ chromium-browser \
 ## Window and Screen Size
 
 <a id="recipe-custom-window"></a>
-### 15. Custom window and screen dimensions
+### 16. Custom window and screen dimensions
 
 ```bash
 chromium-browser \
@@ -239,7 +260,7 @@ chromium-browser \
 ```
 
 <a id="recipe-profile-window"></a>
-### 16. Force profile-defined dimensions in headful mode
+### 17. Force profile-defined dimensions in headful mode
 
 Desktop profiles default to using real system dimensions in headful mode. To use the profile's values instead:
 
@@ -258,7 +279,7 @@ chromium-browser \
 ## Browser Brand Alignment
 
 <a id="recipe-edge-brand"></a>
-### 17. Present as Microsoft Edge (ENT Tier2)
+### 18. Present as Microsoft Edge (ENT Tier2)
 
 ```bash
 chromium-browser \
@@ -269,7 +290,7 @@ chromium-browser \
 ```
 
 <a id="recipe-webview-brand"></a>
-### 18. Android WebView simulation (ENT Tier3)
+### 19. Android WebView simulation (ENT Tier3)
 
 ```bash
 chromium-browser \
@@ -292,7 +313,7 @@ chromium-browser \
 ## Cookie, Bookmark, and History Seeding
 
 <a id="recipe-cookies"></a>
-### 19. Pre-load cookies (PRO)
+### 20. Pre-load cookies (PRO)
 
 ```bash
 chromium-browser \
@@ -311,7 +332,7 @@ chromium-browser \
 ```
 
 <a id="recipe-bookmarks-history"></a>
-### 20. Pre-populate bookmarks and browsing history
+### 21. Pre-populate bookmarks and browsing history
 
 ```bash
 # Random history (2-7 entries)
@@ -335,7 +356,7 @@ chromium-browser \
 ## Performance Tuning
 
 <a id="recipe-timing-control"></a>
-### 21. Performance timing, frame rate, and video cadence control (ENT Tier2)
+### 22. Performance timing, frame rate, and video cadence control (ENT Tier2)
 
 ```bash
 chromium-browser \
@@ -351,7 +372,7 @@ chromium-browser \
 `--bot-fps` controls display/runtime timing. `--bot-video-fps=1:30` lowers actual video cadence while media reporting uses 30 FPS; use a higher actual value when frame-by-frame video pixels matter.
 
 <a id="recipe-headless-server"></a>
-### 22. Headless server with all protections
+### 23. Headless server with all protections
 
 A production-ready configuration for server deployment:
 
@@ -369,7 +390,7 @@ chromium-browser \
 ```
 
 <a id="recipe-profile-directory"></a>
-### 23. Random profile selection from a directory
+### 24. Random profile selection from a directory
 
 Select a different profile on each startup for fingerprint diversity:
 

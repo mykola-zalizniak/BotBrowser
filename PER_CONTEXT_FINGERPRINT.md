@@ -301,6 +301,7 @@ Most `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) work with per-context con
 | Profile | `--bot-profile` (load a completely different profile per context), `--bot-profile-dir` (select from a directory at context creation) |
 | Noise Seed | [`--bot-noise-seed`](CLI_FLAGS.md#behavior--protection-toggles) for deterministic fingerprint variance |
 | Timing | [`--bot-time-scale`](CLI_FLAGS.md#behavior--protection-toggles) for performance timing control, [`--bot-time-seed`](ADVANCED_FEATURES.md#performance-timing-protection) for deterministic timing diversity, [`--bot-stack-seed`](ADVANCED_FEATURES.md#stack-depth-control) for stack depth variation, [`--bot-fps`](CLI_FLAGS.md#behavior--protection-toggles) for frame rate control |
+| Storage and Memory | [`--bot-js-heap-size-limit`](CLI_FLAGS.md#--bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#--bot-storage-quota) for profile, real, or explicit byte-value policy |
 | Network | [`--bot-network-info-override`](ADVANCED_FEATURES.md#network-info-privacy) for profile-defined `navigator.connection` values |
 | WebRTC | [`--bot-webrtc-ice`](ADVANCED_FEATURES.md#webrtc-leak-protection) for ICE endpoint control |
 | Window | [`--bot-always-active`](ADVANCED_FEATURES.md#active-window-emulation) to maintain active window state |
