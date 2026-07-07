@@ -67,7 +67,7 @@ BotBrowser provides protection across every major fingerprint surface. Each area
 | CSS Features | Media queries, feature support, and system preferences | [CSS](CSS_SIGNAL_CONSISTENCY.md) |
 | Speech Synthesis | Available text-to-speech voices | [Speech](SPEECH_SYNTHESIS.md) |
 | WebAuthn | Authenticator capabilities and platform credential support | - |
-| Storage and Memory | Storage quota and heap size values | [Storage Quota](STORAGE_QUOTA.md) |
+| Storage and Memory | Storage quota, heap size values, and runtime policy overrides | [Storage Quota](STORAGE_QUOTA.md) |
 | Console Behavior | CDP domain activation consistency | [Console Suppression](CONSOLE_SUPPRESSION.md) |
 
 ---

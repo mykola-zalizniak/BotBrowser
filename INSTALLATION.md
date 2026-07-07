@@ -270,7 +270,7 @@ If you encounter installation issues:
 
 1. **Check the troubleshooting table** above for common solutions
 2. **Verify system requirements** match your OS version
-3. **Test with demo profiles** from the profiles directory
+3. **Test with a matching profile package**. Chrome 150 and newer profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain in the profiles directory for older evaluation lines.
 4. **Contact support** with detailed error messages
 
 ### Contact Information

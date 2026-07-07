@@ -165,6 +165,7 @@ Product overview, engineering design, FAQ: [TRIMMED_BUILD.md](TRIMMED_BUILD.md).
 | Performance timing protection (27 browser operations) | [Performance Timing Protection](ADVANCED_FEATURES.md#performance-timing-protection) | [Guide](https://botbrowser.io/docs/fingerprint/performance/) |
 | Video FPS control for media workloads | [--bot-video-fps](CLI_FLAGS.md#--bot-video-fps) | [Guide](docs/guides/fingerprint/FPS_CONTROL.md#video-fps-control) |
 | Stack depth fingerprint control (main/Worker/WASM) | [Stack Depth Control](ADVANCED_FEATURES.md#stack-depth-control) | [Guide](https://botbrowser.io/docs/fingerprint/stack-depth/) |
+| Memory and storage quota control | [--bot-js-heap-size-limit / --bot-storage-quota](CLI_FLAGS.md#--bot-js-heap-size-limit) | [Guide](docs/guides/fingerprint/STORAGE_QUOTA.md#runtime-overrides) |
 | Network information privacy (rtt/downlink/effectiveType) | [Network Info Privacy](ADVANCED_FEATURES.md#network-info-privacy) | [Guide](https://botbrowser.io/docs/fingerprint/navigator-properties/) |
 | CPU core scaling protection | [CPU Core Scaling](ADVANCED_FEATURES.md#cpu-core-scaling) | [Guide](https://botbrowser.io/docs/fingerprint/cpu-core-scaling/) |
 | Cross-platform font engine (Win/Mac/Android) | [Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) | [Guide](https://botbrowser.io/docs/fingerprint/font/) |

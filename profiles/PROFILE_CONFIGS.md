@@ -8,6 +8,8 @@ This guide explains BotBrowser's fingerprint-customization system that prevents 
 
 > **CLI-First Configuration:** Use [`--bot-config-*` flags](../CLI_FLAGS.md#profile-configuration-override-flags) for runtime fingerprint control without editing encrypted profiles. These carry the highest priority.
 
+> **Runtime policy overrides:** Use [`--bot-js-heap-size-limit`](../CLI_FLAGS.md#--bot-js-heap-size-limit) and [`--bot-storage-quota`](../CLI_FLAGS.md#--bot-storage-quota) when a session needs profile, real, or explicit byte-value memory and storage quota behavior without changing profile files.
+
 > **Smart Configuration:** BotBrowser intelligently derives timezone, locale, and languages from proxy IP. Override only when your scenario requires it.
 
 > **Data Privacy:** Profiles use synthetic/aggregated configurations to prevent tracking. BotBrowser does not enable fingerprint collection or tracking system data linkage. Use CLI overrides to keep profiles intact while customizing behavior.

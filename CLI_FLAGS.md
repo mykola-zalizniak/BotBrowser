@@ -34,7 +34,7 @@ Specifies the path to the BotBrowser profile file (.enc).
 
 **Notes:**
 - The profile determines the fingerprint, OS emulation, and privacy controls
-- Use profiles from the [profiles directory](profiles/) or contact support for custom profiles
+- Use a profile package that matches your BotBrowser major version. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain in the [profiles directory](profiles/) for older evaluation lines.
 - This is the core difference from stock Chromium
 
 ### `--bot-profile-dir`
@@ -508,6 +508,10 @@ Runtime toggles that don’t rely on profile `configs` but still override behavi
 - `--bot-fps` (ENT Tier2): Control frame rate behavior at runtime. Accepts `profile` (use profile data, default when capable), `real` (use native frame rate), or a number (e.g., `60`). Guide: [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/)
 <a id="--bot-video-fps"></a>
 - `--bot-video-fps=<actual>[:<reported>]` (ENT Tier2): Control video playback cadence separately from media FPS reporting on profiles with Video FPS Control enabled. Profiles without Video FPS Control enabled ignore the flag. Examples: `--bot-video-fps=1` (actual and reported 1 FPS), `--bot-video-fps=1:30` (actual 1 FPS, reported 30 FPS), `--bot-video-fps=1:real` (actual 1 FPS, report the media's reported cadence where available). Visual frame updates follow the actual FPS. Guide: [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/#video-fps-control)
+<a id="--bot-js-heap-size-limit"></a>
+- `--bot-js-heap-size-limit=profile|real|<bytes>`: Control the JavaScript heap size limit policy. `profile` uses the active profile value, `real` keeps Chromium's native behavior, and a positive byte value sets an explicit limit for newly started sessions or contexts. Guide: [Storage and Memory Consistency](https://botbrowser.io/docs/fingerprint/storage-quota/)
+<a id="--bot-storage-quota"></a>
+- `--bot-storage-quota=profile|real|<bytes>`: Control the storage quota policy. `profile` uses the active profile value, `real` keeps Chromium's native quota behavior, and a positive byte value sets an explicit quota for the session or context. Guide: [Storage and Memory Consistency](https://botbrowser.io/docs/fingerprint/storage-quota/)
 - `--bot-time-scale` (ENT Tier2): Float < 1.0; scales down `performance.now()` intervals to emulate lower load and reduce timing skew signals (typical range 0.80-0.99). Guide: [Performance Fingerprinting](https://botbrowser.io/docs/fingerprint/performance/)
 - `--bot-time-seed` (ENT Tier2): Integer seed (1-UINT32_MAX) for deterministic execution timing diversity across 27 browser operations (Canvas, WebGL, Audio, Font, DOM, and more). `0` disables the feature (default). Each seed produces a unique, stable performance profile that protects against timing-based tracking. Also covers `performance.getEntries()`, `performance.getEntriesByType("navigation")`, and `performance.timing` with authentic per-session redistribution.
 - `--bot-stack-seed` (ENT Tier2): Controls JavaScript recursive call stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile’s exact depth), `real` (use native depth), or a positive integer seed (1-UINT32_MAX) for per-session depth variation. Guide: [Stack Depth Fingerprinting](https://botbrowser.io/docs/fingerprint/stack-depth/)

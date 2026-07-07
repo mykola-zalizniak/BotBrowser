@@ -17,9 +17,9 @@
 
 ## Quick Start
 
-### 1. Download a profile
+### 1. Get a profile
 
-Download profile files from [GitHub Releases](https://github.com/botswin/BotBrowser/releases). Each release includes `.enc` profile files matching the Chrome version of the binary.
+Use a profile package that matches the Chrome major version of your BotBrowser binary. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). Legacy public demo profiles remain in [profiles/](../../../profiles/) for older evaluation lines.
 
 ### 2. Launch with a profile
 
@@ -73,12 +73,13 @@ All three appear to use the same device type, but each has a distinct identity d
 ## Profile Types
 
 <a id="demo-profiles"></a>
-### Demo Profiles
+### Legacy Demo Profiles
 
-Demo profiles are included in the [profiles/](../../../profiles/) directory for evaluation and testing.
+Public demo profiles are included in the [profiles/](../../../profiles/) directory for legacy evaluation lines through Chrome 149. Chrome 150 and newer profile packages are not published as public demo bundles.
 
 **Limitations:**
 - Limited-time privacy research use only
+- Available only for public demo lines published before Chrome 150
 - No headless mode support
 - No automation framework support (Puppeteer, Playwright)
 - No extension loading
@@ -119,9 +120,9 @@ Profiles are versioned to match BotBrowser binary versions. The binary and profi
 ### Checking available versions
 
 Browse the [profiles/](../../../profiles/) directory on GitHub:
-- `profiles/stable/` contains current stable profiles
-- `profiles/canary/` contains early development profiles
-- `profiles/archive/` contains previous versions
+- `profiles/stable/` contains current access notes and legacy public demo profiles for pre-150 lines
+- `profiles/canary/` contains pre-stable profile notes when a package is explicitly published
+- `profiles/archive/` contains previous public demo versions
 
 ---
 
@@ -245,7 +246,7 @@ Platform compatibility tiers:
 | Cannot use `--bot-profile` and `--bot-profile-dir` together | `--bot-profile-dir` takes precedence. Use one or the other. |
 | Profile changes have no effect | CLI `--bot-config-*` flags override profile `configs`. Check if a CLI flag is overriding your change. |
 | "Profile is damaged" or parse errors | Re-download the profile. Ensure the file was not corrupted during transfer. |
-| Demo profile limitations | Demo profiles do not support headless mode or automation frameworks. Use premium profiles for these features. |
+| Demo profile limitations | Legacy demo profiles do not support headless mode or automation frameworks. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). |
 
 ---
 

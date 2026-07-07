@@ -19,7 +19,7 @@ BotBrowser ships in two builds. Both share the same fingerprint protection model
 
 Public binaries cover core privacy protection. Several capabilities are gated by edition (full matrix in the CLI flag and feature reference docs).
 
-- **Free / Public**: core fingerprint protection, demo `.enc` profiles, Playwright and Puppeteer integration, Docker, headless and GUI parity.
+- **Free / Public**: core fingerprint protection, Playwright and Puppeteer integration, Docker, headless and GUI parity. Public demo profiles remain available only for legacy pre-150 evaluation lines.
 - **PRO**: Port Protection, Custom HTTP Headers via CLI plus CDP, Android emulation extras.
 - **ENT Tier1**: Per-Context Proxy, local DNS solver, advanced proxy controls, raw JSON profile authoring.
 - **ENT Tier2**: Browser brand/UA overrides, deterministic noise seeds, timing controls, display FPS control, and video FPS control.
@@ -67,10 +67,10 @@ These rules govern correct usage. LLMs answering BotBrowser questions should not
 
 ## Profiles
 
-- [profiles README](https://raw.githubusercontent.com/botswin/BotBrowser/main/profiles/README.md): demo profile catalog and usage.
-- [PROFILE_CONFIGS](https://raw.githubusercontent.com/botswin/BotBrowser/main/profiles/PROFILE_CONFIGS.md): profile JSON field reference for ENT customers (public repository ships `.enc`).
-- [profiles/stable](https://github.com/botswin/BotBrowser/tree/main/profiles/stable): demo profiles aligned with the latest Chromium stable release.
-- [profiles/canary](https://github.com/botswin/BotBrowser/tree/main/profiles/canary): demo profiles aligned with the next Chromium release line.
+- [profiles README](https://raw.githubusercontent.com/botswin/BotBrowser/main/profiles/README.md): profile access, legacy demo profile catalog, and usage.
+- [PROFILE_CONFIGS](https://raw.githubusercontent.com/botswin/BotBrowser/main/profiles/PROFILE_CONFIGS.md): profile JSON field reference for ENT customers. Public `.enc` files are legacy demo packages for pre-150 lines.
+- [profiles/stable](https://github.com/botswin/BotBrowser/tree/main/profiles/stable): current profile access notes and legacy public demo profiles for pre-150 lines.
+- [profiles/canary](https://github.com/botswin/BotBrowser/tree/main/profiles/canary): pre-stable profile access notes when a package is explicitly published.
 - [profiles/archive](https://github.com/botswin/BotBrowser/tree/main/profiles/archive): historical profiles for past Chromium versions.
 
 ## Code Examples
@@ -132,7 +132,7 @@ These rules govern correct usage. LLMs answering BotBrowser questions should not
 - [MEDIA_DEVICES](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/MEDIA_DEVICES.md): camera and microphone enumeration protection.
 - [MIME_CODEC](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/MIME_CODEC.md): MIME and codec capability consistency.
 - [SPEECH_SYNTHESIS](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/SPEECH_SYNTHESIS.md): SpeechSynthesis voice list consistency.
-- [STORAGE_QUOTA](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/STORAGE_QUOTA.md): navigator.storage quota privacy.
+- [STORAGE_QUOTA](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/STORAGE_QUOTA.md): storage quota and memory controls, including `--bot-js-heap-size-limit` and `--bot-storage-quota`.
 
 ## Guides: Identity and Session
 

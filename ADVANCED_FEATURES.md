@@ -8,7 +8,7 @@ Technical architecture and implementation details behind BotBrowser's fingerprin
 
 ## Capabilities Index
 
-[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#multi-layer-fingerprint-noise), [Canvas replay (ENT Tier4)](#multi-layer-fingerprint-noise), [WebGL/WebGPU param control](#multi-layer-fingerprint-noise), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#browser-os-fingerprinting), [custom User-Agent (ENT Tier3)](CLI_FLAGS.md#profile-configuration-override-flags), [WebKit-family profile consistency (ENT Tier4)](#webkit-family-profile-consistency), [per-context proxy (ENT Tier1) geo](CLI_FLAGS.md#enhanced-proxy-configuration), [DNS-through-proxy](#network-fingerprint-control), [PAC-like request callback (ENT Tier3)](CLI_FLAGS.md#pac-request-policy-ent-tier3), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS behavior consistency](#network-fingerprint-control), [port protection (PRO)](#port-protection), [dynamic proxy switching (ENT Tier3)](#dynamic-proxy-switching), [video FPS control (ENT Tier2)](#video-fps-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency), [CDP quick reference](#cdp-quick-reference)
+[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#multi-layer-fingerprint-noise), [Canvas replay (ENT Tier4)](#multi-layer-fingerprint-noise), [WebGL/WebGPU param control](#multi-layer-fingerprint-noise), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#browser-os-fingerprinting), [custom User-Agent (ENT Tier3)](CLI_FLAGS.md#profile-configuration-override-flags), [WebKit-family profile consistency (ENT Tier4)](#webkit-family-profile-consistency), [per-context proxy (ENT Tier1) geo](CLI_FLAGS.md#enhanced-proxy-configuration), [DNS-through-proxy](#network-fingerprint-control), [PAC-like request callback (ENT Tier3)](CLI_FLAGS.md#pac-request-policy-ent-tier3), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS behavior consistency](#network-fingerprint-control), [port protection (PRO)](#port-protection), [dynamic proxy switching (ENT Tier3)](#dynamic-proxy-switching), [memory and storage quota controls](CLI_FLAGS.md#--bot-js-heap-size-limit), [video FPS control (ENT Tier2)](#video-fps-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency), [CDP quick reference](#cdp-quick-reference)
 
 ---
 
@@ -283,6 +283,10 @@ Comprehensive hardware emulation and fingerprint management.
 
 **Network Information Privacy**: `navigator.connection` properties (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers can reveal server-side network characteristics that contradict the profile's geographic identity. Enable [`--bot-network-info-override`](CLI_FLAGS.md#behavior--protection-toggles) or `configs.networkInfoOverride` to return profile-defined values.
 
+<a id="memory-storage-quota-controls"></a>
+
+**Memory and Storage Quota Controls**: [`--bot-js-heap-size-limit`](CLI_FLAGS.md#--bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#--bot-storage-quota) let a session or context use profile values, native Chromium behavior, or explicit byte values for memory and storage quota policy.
+
 <a id="cpu-core-scaling"></a>
 
 **CPU Core Scaling Protection**: When `navigator.hardwareConcurrency` is set by the profile, Worker threads are automatically constrained to match the claimed core count via CPU affinity on Linux and Windows. This ensures parallel computation scaling curves align with the claimed value.
@@ -291,7 +295,7 @@ Comprehensive hardware emulation and fingerprint management.
 
 **Video FPS Control** (ENT Tier2): [`--bot-video-fps=<actual>[:<reported>]`](CLI_FLAGS.md#--bot-video-fps) separates video playback cadence from media FPS reporting for video-heavy workloads on profiles with Video FPS Control enabled. Use it when lower actual video cadence is acceptable and CPU density matters. For example, `--bot-video-fps=1:30` updates video frames at 1 FPS while keeping media reporting at 30 FPS. Visual pixel updates follow the actual cadence.
 
-**Related guides:** [Performance](https://botbrowser.io/docs/fingerprint/performance/) · [Stack Depth](https://botbrowser.io/docs/fingerprint/stack-depth/) · [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/) · [Navigator Properties](https://botbrowser.io/docs/fingerprint/navigator-properties/)
+**Related guides:** [Performance](https://botbrowser.io/docs/fingerprint/performance/) · [Stack Depth](https://botbrowser.io/docs/fingerprint/stack-depth/) · [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/) · [Storage and Memory Consistency](https://botbrowser.io/docs/fingerprint/storage-quota/) · [Navigator Properties](https://botbrowser.io/docs/fingerprint/navigator-properties/)
 
 <details>
 <summary><strong>Full details: Deep System Integration</strong></summary>
@@ -315,6 +319,7 @@ Comprehensive hardware emulation and fingerprint management.
 - Stack depth control via [`--bot-stack-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2): `profile`, `real`, or integer seed for stack depth across main thread, Worker, and WASM contexts
 - Runtime timing scaling via [`--bot-time-scale`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2) to compress `performance.now()` deltas
 - Network information privacy via [`--bot-network-info-override`](CLI_FLAGS.md#behavior--protection-toggles): profile-defined `navigator.connection` values and Client Hints headers
+- Memory and storage quota controls via [`--bot-js-heap-size-limit`](CLI_FLAGS.md#--bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#--bot-storage-quota): `profile`, `real`, or explicit byte values
 - CPU core scaling: Worker threads automatically constrained to match `navigator.hardwareConcurrency` on Linux and Windows
 
 ### Extended Media Types & WebCodecs APIs

@@ -2,9 +2,9 @@
 
 No public canary profile bundle is currently published in this repository.
 
-Chrome 147 and Chrome 148 public demo profiles are published under [stable](../stable/). Chrome Early Stable builds are treated as part of the current stable profile line when BotBrowser publishes a matching public build.
+Chrome 150 and newer profile packages are delivered through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support), not as public demo bundles. Legacy public demo profiles remain under [stable](../stable/) for published pre-150 lines.
 
-> **Usage:** Run demo profiles via [CLI](../../INSTALLATION.md#download--installation) or [Launcher](../../launcher/). Automation framework integration (Puppeteer, Playwright) requires [premium profiles](../README.md#premium-profiles).
+> **Usage:** Use a profile package that matches your BotBrowser major version. Automation framework integration (Puppeteer, Playwright) requires [premium profiles](../README.md#premium-profiles).
 
 ---
 

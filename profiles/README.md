@@ -6,9 +6,9 @@ Academic Framework for Browser-Environment Simulation.
 
 | Channel | Version | Description |
 |---------|---------|------------------------|
-| [stable](stable/) | v148, v149 | Current supported Chrome release lines. Chrome 149 is the current stable release, and Chrome 148 remains available during the rollout window. |
-| [canary](canary/) | none | Reserved for explicitly published pre-stable test profiles. Chrome Early Stable profiles are published under stable. |
-| [archive](archive/) | v135-v147 | Older profile lines outside the current stable support window. |
+| [stable](stable/) | v150 access, v148-v149 legacy demo | Chrome 150 profiles are delivered through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). The directory keeps the last public demo bundles for legacy evaluation. |
+| [canary](canary/) | none | Reserved for explicitly published pre-stable test profiles. |
+| [archive](archive/) | v135-v147 | Older public demo profile lines outside the current stable support window. |
 
 In BotBrowser, everything starts with a profile. Browser fingerprinting is recognized as a privacy threat by [W3C, major browser vendors, and EU regulators](../FINGERPRINT_PRIVACY.md), and profiles are the foundation of protection against such tracking. Profiles are provided to authorized researchers, so review the project [Legal Disclaimer](../DISCLAIMER.md) and [Responsible Use Guidelines](../RESPONSIBLE_USE.md) for access policies.
 
@@ -54,12 +54,15 @@ All appear as different users on the same device type.
 
 ## Profile Types
 
-### Demo Profiles (Privacy Research Only)
+### Public Demo Profiles (v149 and earlier)
 
-Run demo profiles via [CLI](../INSTALLATION.md#download--installation) or [Launcher](../launcher/). Automation framework integration (Puppeteer, Playwright) requires [premium profiles](#premium-profiles).
+Public demo profiles remain available for legacy evaluation lines through Chrome 149. Starting with Chrome 150, BotBrowser does not publish demo profile bundles in this repository. Use a subscription profile package or contact [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support) for the profile line that matches your BotBrowser build.
+
+Run legacy demo profiles via [CLI](../INSTALLATION.md#download--installation) or [Launcher](../launcher/). Automation framework integration (Puppeteer, Playwright) requires [premium profiles](#premium-profiles).
 
 **Limitations**
 - Limited-time privacy research use only
+- Available only for public demo lines published before Chrome 150
 - No headless mode support
 - No automation framework support (Puppeteer, Playwright)
 - No extension loading

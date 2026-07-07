@@ -27,6 +27,30 @@ Storage and memory APIs can expose hardware characteristics that vary per machin
 
 ---
 
+<a id="runtime-overrides"></a>
+
+## Runtime Overrides
+
+The default policy is `profile`: BotBrowser uses the active profile for storage quota and memory values. Use these flags when a workflow needs an explicit policy without modifying the profile file:
+
+```bash
+# Use profile values, the default behavior
+--bot-js-heap-size-limit=profile
+--bot-storage-quota=profile
+
+# Use native Chromium behavior for one surface
+--bot-js-heap-size-limit=real
+--bot-storage-quota=real
+
+# Set explicit byte values
+--bot-js-heap-size-limit=4294967296
+--bot-storage-quota=10737418240
+```
+
+`--bot-js-heap-size-limit` is applied to newly started sessions or contexts. Start a new browser session or create a fresh context when changing this value. `--bot-storage-quota` can be used at launch and in per-context flag workflows.
+
+---
+
 <a id="what-botbrowser-controls"></a>
 
 ## What BotBrowser Controls
@@ -88,7 +112,7 @@ To verify storage and memory protection is active:
 
 | Problem | Solution |
 |---|---|
-| Observed value does not match the profile expectation | Verify profile path, active overrides, and any framework-injected settings. |
+| Observed value does not match the profile expectation | Verify profile path, active overrides such as `--bot-js-heap-size-limit` or `--bot-storage-quota`, and any framework-injected settings. |
 | Same setup behaves differently on another machine | Compare BotBrowser build, profile version, host OS target, and full launch args. |
 | Test results fluctuate between runs | Keep proxy, locale/timezone, and runtime load stable during comparison tests. |
 
