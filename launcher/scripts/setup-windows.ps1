@@ -8,6 +8,7 @@ $NODE_URL = "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-win-
 $REPO_ZIP_URL = "https://github.com/botswin/BotBrowser/archive/refs/heads/main.zip"
 $INSTALL_DIR = "$env:LOCALAPPDATA\BotBrowser"
 $NODE_DIR = "$INSTALL_DIR\node"
+$NPM_CACHE_DIR = "$INSTALL_DIR\npm-cache"
 $REPO_DIR = "$INSTALL_DIR\BotBrowser"
 $DIST_DIR = "$REPO_DIR\launcher\dist\BotBrowserLauncher"
 $EXE_PATH = "$DIST_DIR\BotBrowserLauncher-win_x64.exe"
@@ -62,6 +63,11 @@ function Build-Application {
     Push-Location "$REPO_DIR\launcher"
 
     Write-Host "Installing dependencies..." -ForegroundColor Yellow
+    if (!(Test-Path $NPM_CACHE_DIR)) {
+        New-Item -ItemType Directory -Path $NPM_CACHE_DIR | Out-Null
+    }
+    $env:NPM_CONFIG_CACHE = $NPM_CACHE_DIR
+    $env:NPM_CONFIG_UPDATE_NOTIFIER = "false"
     & "$NODE_DIR\npm.cmd" ci
 
     Write-Host "Building application..." -ForegroundColor Yellow

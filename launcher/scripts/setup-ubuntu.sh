@@ -8,6 +8,7 @@ NODE_VERSION="24.15.0"
 REPO_ZIP_URL="https://github.com/botswin/BotBrowser/archive/refs/heads/main.zip"
 INSTALL_DIR="$HOME/.botbrowser"
 NODE_DIR="$INSTALL_DIR/node"
+NPM_CACHE_DIR="$INSTALL_DIR/npm-cache"
 REPO_DIR="$INSTALL_DIR/BotBrowser"
 DIST_DIR="$REPO_DIR/launcher/dist/BotBrowserLauncher"
 ICON_PATH="$REPO_DIR/launcher/public/logo.svg"
@@ -78,6 +79,9 @@ build_application() {
     cd "$REPO_DIR/launcher"
 
     echo "Installing dependencies..."
+    mkdir -p "$NPM_CACHE_DIR"
+    export NPM_CONFIG_CACHE="$NPM_CACHE_DIR"
+    export NPM_CONFIG_UPDATE_NOTIFIER=false
     "$NODE_DIR/bin/npm" ci
 
     echo "Building application..."
