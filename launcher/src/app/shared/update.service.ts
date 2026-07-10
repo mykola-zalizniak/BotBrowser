@@ -174,10 +174,16 @@ export class UpdateService {
         this.status.set('building');
         const launcherDir = this.#isWindows ? `${this.#repoDir}\\launcher` : `${this.#repoDir}/launcher`;
         const npmCmd = this.#isWindows ? `"${this.#nodeDir}\\npm.cmd"` : `"${this.#nodeDir}/bin/npm"`;
+        const npmCacheDir = this.#isWindows ? `${this.#installDir}\\npm-cache` : `${this.#installDir}/npm-cache`;
         const pathEnv = this.#isWindows
-            ? `set "PATH=${this.#nodeDir};%PATH%" &&`
-            : `export PATH="${this.#nodeDir}/bin:$PATH" &&`;
+            ? `set "PATH=${this.#nodeDir};%PATH%" && set "NPM_CONFIG_CACHE=${npmCacheDir}" && set "NPM_CONFIG_UPDATE_NOTIFIER=false" &&`
+            : `export PATH="${this.#nodeDir}/bin:$PATH" NPM_CONFIG_CACHE="${npmCacheDir}" NPM_CONFIG_UPDATE_NOTIFIER=false &&`;
 
+        if (this.#isWindows) {
+            await this.#shell.exec(`if not exist "${npmCacheDir}" mkdir "${npmCacheDir}"`);
+        } else {
+            await this.#shell.exec(`mkdir -p "${npmCacheDir}"`);
+        }
         await this.#shell.exec(`${pathEnv} cd "${launcherDir}" && ${npmCmd} ci && ${npmCmd} run build`);
 
         // Step 4: Save commit hash
