@@ -255,7 +255,7 @@ export class AppComponent implements AfterViewInit {
         this.highlightedId = browserProfile.id;
         this.#dialog
             .open(QuickProxyChangeComponent, {
-                width: '560px',
+                width: '620px',
                 maxWidth: '95vw',
                 data: browserProfile,
             })

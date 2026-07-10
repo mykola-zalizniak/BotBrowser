@@ -16,21 +16,23 @@ export interface ProxyCheckResult {
 export class ProxyCheckService {
     readonly #shell = inject(ShellService);
 
-    async checkProxy(proxy: ParsedProxy): Promise<ProxyCheckResult> {
+    async checkProxy(proxy: ParsedProxy, signal?: AbortSignal): Promise<ProxyCheckResult> {
         const proxyUrl = this.#buildProxyArg(proxy);
         const apiUrl = 'http://ip-api.com/json?fields=query,country,regionName,city,isp,org,hosting';
 
+        // --max-time caps the whole request so a stalled transfer can't hang forever.
         let curlCmd: string;
         if (proxy.type === 'socks5' || proxy.type === 'socks5h') {
-            curlCmd = `curl --socks5-hostname "${proxyUrl}" "${apiUrl}" --connect-timeout 10 -s`;
+            curlCmd = `curl --socks5-hostname "${proxyUrl}" "${apiUrl}" --connect-timeout 10 --max-time 30 -s`;
         } else {
-            curlCmd = `curl -x "${proxyUrl}" "${apiUrl}" --connect-timeout 10 -s`;
+            curlCmd = `curl -x "${proxyUrl}" "${apiUrl}" --connect-timeout 10 --max-time 30 -s`;
         }
 
         let result: { exitCode: number; stdOut: string; stdErr: string };
         try {
-            result = await this.#shell.run(curlCmd);
+            result = await this.#shell.run(curlCmd, { signal });
         } catch (error) {
+            if (error instanceof DOMException && error.name === 'AbortError') throw error;
             throw new Error(`Failed to execute curl: ${error instanceof Error ? error.message : error}`);
         }
 

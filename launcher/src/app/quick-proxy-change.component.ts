@@ -52,10 +52,6 @@ import { ProxyService } from './shared/proxy.service';
     `,
     changeDetection: ChangeDetectionStrategy.Eager,
     styles: `
-        mat-dialog-content {
-            min-width: 450px;
-        }
-
         mat-form-field {
             width: 100%;
         }

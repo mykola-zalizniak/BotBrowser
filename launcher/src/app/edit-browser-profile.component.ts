@@ -52,6 +52,7 @@ import {
     type IdentityLocaleConfig,
     type LaunchOptions,
     type AdvancedConfig,
+    type MemoryStorageConfig,
     type NoiseConfig,
     type ProxyConfig,
     type RenderingMediaConfig,
@@ -415,6 +416,31 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
         botAudioRecordFile: this.#injectedData?.launchOptions?.forensics?.botAudioRecordFile,
     });
 
+    // Memory & Storage runtime policy. Values: '' (no override) / 'profile' / 'real' / byte value.
+    readonly memoryStorageGroup = this.#formBuilder.group<MemoryStorageConfig>({
+        botJsHeapSizeLimit: this.#injectedData?.launchOptions?.memoryStorage?.botJsHeapSizeLimit,
+        botStorageQuota: this.#injectedData?.launchOptions?.memoryStorage?.botStorageQuota,
+    });
+
+    // Mode derived from stored value: 'profile' / 'real' / 'bytes' (explicit) / '' (default, no override).
+    #deriveMemoryMode(v: string | number | undefined): '' | 'profile' | 'real' | 'bytes' {
+        if (v === 'profile' || v === 'real') return v;
+        if (v) return 'bytes';
+        return '';
+    }
+
+    // Byte inputs are type=number (value may arrive as number or numeric string). Reject ''/0/negatives/decimals.
+    #isPositiveIntBytes(v: unknown): boolean {
+        const n = typeof v === 'number' ? v : Number(v);
+        return Number.isInteger(n) && n > 0;
+    }
+    jsHeapMode: '' | 'profile' | 'real' | 'bytes' = this.#deriveMemoryMode(
+        this.#injectedData?.launchOptions?.memoryStorage?.botJsHeapSizeLimit
+    );
+    storageQuotaMode: '' | 'profile' | 'real' | 'bytes' = this.#deriveMemoryMode(
+        this.#injectedData?.launchOptions?.memoryStorage?.botStorageQuota
+    );
+
     // Advanced section modes
     executableMode: 'kernel' | 'custom' = this.#injectedData?.binaryPath ? 'custom' : 'kernel';
 
@@ -540,6 +566,18 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             this.noiseGroup.patchValue({ botStackSeed: '' });
         }
         this.noiseGroup.markAsDirty();
+    }
+
+    onJsHeapModeChange(): void {
+        const v = this.jsHeapMode === 'profile' || this.jsHeapMode === 'real' ? this.jsHeapMode : '';
+        this.memoryStorageGroup.patchValue({ botJsHeapSizeLimit: v });
+        this.memoryStorageGroup.markAsDirty();
+    }
+
+    onStorageQuotaModeChange(): void {
+        const v = this.storageQuotaMode === 'profile' || this.storageQuotaMode === 'real' ? this.storageQuotaMode : '';
+        this.memoryStorageGroup.patchValue({ botStorageQuota: v });
+        this.memoryStorageGroup.markAsDirty();
     }
 
     onHistoryModeChange(): void {
@@ -890,7 +928,8 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             this.proxyConfigGroup.dirty ||
             this.advancedConfigGroup.dirty ||
             this.advancedGroup.dirty ||
-            this.forensicsGroup.dirty
+            this.forensicsGroup.dirty ||
+            this.memoryStorageGroup.dirty
         );
     }
 
@@ -1012,6 +1051,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
                 proxy: this.#cleanObject(this.proxyConfigGroup.value) as ProxyConfig | undefined,
                 advanced: this.#cleanObject(this.advancedConfigGroup.value) as AdvancedConfig | undefined,
                 forensics: this.#cleanObject(this.forensicsGroup.value) as ForensicsConfig | undefined,
+                memoryStorage: this.#cleanObject(this.memoryStorageGroup.value) as MemoryStorageConfig | undefined,
             },
         };
         const flags = BrowserLauncherService.buildProfileFlags(tempProfile);
@@ -1078,6 +1118,21 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             return;
         }
 
+        // Custom (bytes) modes require a positive integer, else a malformed value (-5, 2.5) leaks to the
+        // CLI or an empty/0 value is silently lost on reload.
+        if (this.jsHeapMode === 'bytes' && !this.#isPositiveIntBytes(this.memoryStorageGroup.get('botJsHeapSizeLimit')?.value)) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: { message: 'JS Heap Size Limit (Custom) must be a positive integer number of bytes (e.g. 2147483648).' },
+            });
+            return;
+        }
+        if (this.storageQuotaMode === 'bytes' && !this.#isPositiveIntBytes(this.memoryStorageGroup.get('botStorageQuota')?.value)) {
+            this.#dialog.open(AlertDialogComponent, {
+                data: { message: 'Storage Quota (Custom) must be a positive integer number of bytes (e.g. 1073741824).' },
+            });
+            return;
+        }
+
         if (!this.botProfileInfoGroup.value?.content) {
             console.log('botProfileInfoGroup content missing');
             this.#dialog.open(AlertDialogComponent, {
@@ -1097,6 +1152,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
             proxy: this.#cleanObject(this.proxyConfigGroup.value) as ProxyConfig | undefined,
             advanced: this.#cleanObject(this.advancedConfigGroup.value) as AdvancedConfig | undefined,
             forensics: this.#cleanObject(this.forensicsGroup.value) as ForensicsConfig | undefined,
+            memoryStorage: this.#cleanObject(this.memoryStorageGroup.value) as MemoryStorageConfig | undefined,
         };
 
         const browserProfile: BrowserProfile = {

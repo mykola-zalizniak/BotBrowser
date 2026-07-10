@@ -28,15 +28,35 @@ export class ShellService {
      * Uses spawnProcess + event buffering to avoid the race condition where
      * fast-exiting processes send events before processId is assigned.
      */
-    async run(command: string): Promise<CommandResult> {
+    async run(command: string, options?: { signal?: AbortSignal }): Promise<CommandResult> {
         // Buffer all events until we know our processId
         const bufferedEvents: CustomEvent[] = [];
         let processId: number | null = null;
         let stdOut = '';
         let stdErr = '';
+        const signal = options?.signal;
 
         return new Promise((resolve, reject) => {
-            let resolved = false;
+            let settled = false;
+            let aborted = false;
+
+            const killProcess = () => {
+                if (processId !== null) Neutralino.os.updateSpawnedProcess(processId, 'exit').catch(() => {});
+            };
+
+            const cleanup = () => {
+                Neutralino.events.off('spawnedProcess', handler);
+                signal?.removeEventListener('abort', onAbort);
+            };
+
+            const onAbort = () => {
+                aborted = true;
+                killProcess();
+                if (settled) return;
+                settled = true;
+                cleanup();
+                reject(new DOMException('Aborted', 'AbortError'));
+            };
 
             const processEvent = (evt: CustomEvent) => {
                 switch (evt.detail.action) {
@@ -47,8 +67,9 @@ export class ShellService {
                         stdErr += evt.detail.data;
                         break;
                     case 'exit':
-                        Neutralino.events.off('spawnedProcess', handler);
-                        resolved = true;
+                        if (settled) break;
+                        settled = true;
+                        cleanup();
                         resolve({ exitCode: Number(evt.detail.data), stdOut, stdErr });
                         break;
                 }
@@ -65,22 +86,35 @@ export class ShellService {
                 }
             };
 
+            if (signal?.aborted) {
+                reject(new DOMException('Aborted', 'AbortError'));
+                return;
+            }
+            signal?.addEventListener('abort', onAbort);
+
             Neutralino.events.on('spawnedProcess', handler);
 
             Neutralino.os
                 .spawnProcess(command)
                 .then((proc) => {
                     processId = proc.id;
+                    // Aborted while spawning — the process id was unknown then, kill it now.
+                    if (aborted) {
+                        killProcess();
+                        return;
+                    }
                     // Replay buffered events that match our processId
                     for (const evt of bufferedEvents) {
-                        if (evt.detail.id === processId && !resolved) {
+                        if (evt.detail.id === processId && !settled) {
                             processEvent(evt);
                         }
                     }
                     bufferedEvents.length = 0;
                 })
                 .catch((err) => {
-                    Neutralino.events.off('spawnedProcess', handler);
+                    if (settled) return;
+                    settled = true;
+                    cleanup();
                     reject(err);
                 });
         });

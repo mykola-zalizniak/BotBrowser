@@ -704,6 +704,45 @@
                 </mat-form-field>
             </form>
 
+            <!-- Memory & Storage -->
+            <div class="section-title">Memory & Storage</div>
+            <form [formGroup]="memoryStorageGroup">
+                <div class="form-row">
+                    <mat-form-field class="flex-1">
+                        <mat-label>JS Heap Size Limit</mat-label>
+                        <mat-select [(value)]="jsHeapMode" (selectionChange)="onJsHeapModeChange()">
+                            <mat-option value="">Default</mat-option>
+                            <mat-option value="profile">profile</mat-option>
+                            <mat-option value="real">real</mat-option>
+                            <mat-option value="bytes">Custom (bytes)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    @if (jsHeapMode === 'bytes') {
+                        <mat-form-field class="flex-1">
+                            <mat-label>Heap Limit (bytes)</mat-label>
+                            <input matInput type="number" min="1" placeholder="e.g. 2147483648" formControlName="botJsHeapSizeLimit" />
+                        </mat-form-field>
+                    }
+
+                    <mat-form-field class="flex-1">
+                        <mat-label>Storage Quota</mat-label>
+                        <mat-select [(value)]="storageQuotaMode" (selectionChange)="onStorageQuotaModeChange()">
+                            <mat-option value="">Default</mat-option>
+                            <mat-option value="profile">profile</mat-option>
+                            <mat-option value="real">real</mat-option>
+                            <mat-option value="bytes">Custom (bytes)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    @if (storageQuotaMode === 'bytes') {
+                        <mat-form-field class="flex-1">
+                            <mat-label>Quota (bytes)</mat-label>
+                            <input matInput type="number" min="1" placeholder="e.g. 1073741824" formControlName="botStorageQuota" />
+                        </mat-form-field>
+                    }
+                </div>
+                <mat-hint class="section-hint">Default = no override (uses profile) · profile = profile value · real = Chromium native · Custom = explicit byte value</mat-hint>
+            </form>
+
             <!-- Bot Script -->
             <div class="section-title">Bot Script</div>
             <form [formGroup]="advancedConfigGroup">
