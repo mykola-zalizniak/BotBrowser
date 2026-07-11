@@ -3,6 +3,23 @@
 > **Research scope:** Entries in this changelog describe features evaluated in authorized labs and defensive benchmarking programs. Follow the [Legal Disclaimer](DISCLAIMER.md) and [Responsible Use Guidelines](RESPONSIBLE_USE.md). We work with security vendors to investigate any misuse, so report concerns to [support@botbrowser.io](mailto:support@botbrowser.io).
 
 
+## [2026-07-11]
+### Major
+- **Chromium Core -> 150.0.7871.46**: Updated the Chrome 150 release line to 150.0.7871.46. Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+
+### New
+- **PAC Synthetic Responses (`RESPONSE`, `RESPONSE_FILE`, ENT Tier3)**: Trusted `BotBrowserFindProxyForRequest(...)` callbacks can now provide controlled HTTP responses directly from approved file or embedded PAC sources.
+- **Mobile Keyboard Viewport Control (`--bot-mobile-keyboard`)**: Added opt-in mobile keyboard behavior that updates the visual viewport for Android and WebKit-family mobile profile workflows.
+
+### Improvements
+- **WebKit-Family Profile Consistency**: Expanded desktop and mobile browser-family consistency across runtime, CSS, font, canvas, permission, worker, and navigation surfaces.
+- **Authenticated PAC Routing**: Improved standard and request-aware PAC routing for authenticated proxy results, including per-context workflows.
+- **Per-Context Identity Lifecycle**: Strengthened profile application rules so identity-bearing settings are established before the first page or worker starts while supported live session controls remain available afterward.
+- **Profile-Backed Permission, Font, and Canvas Behavior**: Improved permission-state replay, local font handling, multilingual fallback, and wide-gamut Canvas 2D consistency.
+- **High-Concurrency and Headless Stability**: Improved per-context stability under heavy load, kept headless profile guidance in terminal output without visible windows, and reduced benign Linux container startup diagnostics.
+- **Profile Package Guidance**: Improved startup guidance for missing, invalid, expired, and version-mismatched profile packages, with clearer access paths for Chrome 150 profiles.
+
+
 ## [2026-07-06]
 ### New
 - **Memory and Storage Quota Controls (`--bot-js-heap-size-limit`, `--bot-storage-quota`)**: Added explicit `profile`, `real`, and byte-value controls for profile-backed memory and storage quota behavior in Chrome 149 sessions.

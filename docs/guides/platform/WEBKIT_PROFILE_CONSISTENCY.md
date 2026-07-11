@@ -6,7 +6,7 @@
 
 WebKit-family Profile Consistency is profile-backed. The encrypted profile carries the browser-family data, and the browser loads it before the page starts.
 
-The profile coordinates selected WebKit-family browser surfaces, TLS ClientHello behavior, and HTTP/2 behavior so the selected browser-family identity remains consistent across supported hosts.
+The profile coordinates selected WebKit-family browser surfaces, TLS ClientHello behavior, and HTTP/2 behavior so the selected browser-family identity remains consistent across supported hosts. Chrome 150.0.7871.46 expands this coverage across worker identity, runtime behavior, CSS and system UI values, font loading, canvas output, permission states, property ordering, and mobile profile surfaces.
 
 Use this profile line for desktop and mobile WebKit-family bundles. Use Chromium-family profiles for Chrome, Chromium, Edge, Brave, Opera, Android, and Android WebView.
 
@@ -14,7 +14,7 @@ For the product page, see [WebKit-family Profile Consistency](../../../WEBKIT_PR
 
 ## Requirements
 
-- BotBrowser 149.0.7827.102 or newer.
+- BotBrowser 150.0.7871.46 or newer for the current Chrome 150 profile line.
 - ENT Tier4 access.
 - A WebKit-family `.enc` profile issued through the enterprise channel.
 - A separate `--user-data-dir` for each browser instance.
@@ -31,11 +31,13 @@ chromium-browser \
 
 For Per-Context Fingerprint, pass the profile when the BrowserContext is created. The profile should be present before the first page in that context starts. See [Per-Context Fingerprint](../../../PER_CONTEXT_FINGERPRINT.md) for the CDP flow.
 
+For WebKit-family mobile profile workflows, add `--bot-mobile-keyboard` when editable-field focus should reduce the visual viewport. The option is disabled by default and does not affect desktop profile bundles. See [Device Emulation](DEVICE_EMULATION.md#mobile-keyboard-visual-viewport).
+
 ## Notes
 
 - Do not use `browserBrand` or User-Agent overrides to build this profile line by hand.
 - Keep proxy settings with the browser instance or BrowserContext that uses the profile.
-- Use BotBrowser 149.0.7827.102 or newer for the current WebKit-family network compatibility updates.
+- Use BotBrowser 150.0.7871.46 or newer with a matching Chrome 150 profile package for the current WebKit-family consistency updates.
 - Validate desktop and mobile profile bundles separately.
 - Keep raw validation captures and profile internals out of public documents.
 

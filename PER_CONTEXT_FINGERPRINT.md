@@ -99,7 +99,7 @@ No additional configuration needed. Fingerprint consistency is maintained across
 
 Configure fingerprint flags on an existing BrowserContext.
 
-> **Critical**: `BotBrowser.setBrowserContextFlags` must be called on a **browser-level** CDP session, and **before** any page is created in that context. The renderer process reads its flags at startup. If a page already exists, the flags will not take effect.
+> **Critical**: `BotBrowser.setBrowserContextFlags` must be called on a **browser-level** CDP session, and identity-bearing flags must be set **before** any page is created in that context. The first renderer seals the context identity. Later profile or identity changes are rejected to prevent mixed identity surfaces.
 
 ```javascript
 const puppeteer = require('puppeteer-core');
@@ -302,7 +302,7 @@ Most `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) work with per-context con
 | Noise Seed | [`--bot-noise-seed`](CLI_FLAGS.md#behavior--protection-toggles) for deterministic fingerprint variance |
 | Timing | [`--bot-time-scale`](CLI_FLAGS.md#behavior--protection-toggles) for performance timing control, [`--bot-time-seed`](ADVANCED_FEATURES.md#performance-timing-protection) for deterministic timing diversity, [`--bot-stack-seed`](ADVANCED_FEATURES.md#stack-depth-control) for stack depth variation, [`--bot-fps`](CLI_FLAGS.md#behavior--protection-toggles) for frame rate control |
 | Storage and Memory | [`--bot-js-heap-size-limit`](CLI_FLAGS.md#--bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#--bot-storage-quota) for profile, real, or explicit byte-value policy |
-| Network | [`--bot-network-info-override`](ADVANCED_FEATURES.md#network-info-privacy) for profile-defined `navigator.connection` values |
+| Network | [`--bot-network-info-override`](ADVANCED_FEATURES.md#network-info-privacy) for profile-defined `navigator.connection` values, [`--bot-local-dns`](CLI_FLAGS.md#--bot-local-dns-ent-tier1) for context DNS policy |
 | WebRTC | [`--bot-webrtc-ice`](ADVANCED_FEATURES.md#webrtc-leak-protection) for ICE endpoint control |
 | Window | [`--bot-always-active`](ADVANCED_FEATURES.md#active-window-emulation) to maintain active window state |
 | Session | `--bot-inject-random-history` for session authenticity (supports precise count, e.g., `=15`), `--bot-cookies` for context-scoped cookie import at creation time |
@@ -313,6 +313,14 @@ Most `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) work with per-context con
 | Config | [`--bot-config-platform`, `--bot-config-timezone`, `--bot-config-noise-canvas`, `--bot-config-webgl=disabled`, `--bot-config-webgpu=disabled`, etc.](CLI_FLAGS.md#profile-configuration-override-flags) |
 
 See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
+
+## Context Identity Lifecycle
+
+A BrowserContext accepts its full profile and identity configuration until its first renderer starts. This includes profile, browser and platform identity, locale, screen and window metrics, and other fingerprint-bearing settings.
+
+After the first page or worker starts, the context identity is sealed. Later identity-bearing changes are rejected instead of partially updating an active context. Create a new BrowserContext when a different profile or device identity is required.
+
+Supported live session controls remain available after identity sealing when they do not replace the context identity. These include dynamic proxy routing through the dedicated proxy commands, route-only proxy updates, custom headers, color scheme, storage quota policy, and LocalDNS policy where supported.
 
 ## Use Cases
 
@@ -335,17 +343,21 @@ See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
 
 ⚠️ `BotBrowser.setBrowserContextFlags` must be called on a **browser-level CDP session** (`browser.target().createCDPSession()` in Puppeteer, `browser.newBrowserCDPSession()` in Playwright). Page-level CDP sessions (`page.createCDPSession()`) do not have access to the `BotBrowser` domain.
 
-⚠️ `setBrowserContextFlags` must be called **before** creating any page in that context. The renderer process reads its flags at startup. If a page already exists, the new flags will not apply to that renderer. Correct order: `createBrowserContext` → `setBrowserContextFlags` → `newPage`.
+⚠️ `setBrowserContextFlags` must be called **before** creating any page in that context. The first renderer seals identity-bearing settings. Later profile and identity changes are rejected. Correct order: `createBrowserContext` → `setBrowserContextFlags` → `newPage`.
 
 ⚠️ Per-context proxy via `botbrowserFlags` or `createBrowserContext` must be set before navigation. To switch proxies at runtime, use `BotBrowser.setBrowserContextProxy` (ENT Tier3). See [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching).
 
-⚠️ Some network-layer settings ([`--bot-local-dns`](CLI_FLAGS.md#--bot-local-dns-ent-tier1), UDP proxy support) apply at the browser level and cannot be configured per-context.
+⚠️ UDP proxy support applies at the browser level and cannot be configured per-context. LocalDNS policy can be assigned per context and remains a supported live-safe policy after identity sealing.
 
 ⚠️ Each context can load a completely different profile (`--bot-profile`), or use `--bot-config-*` flags to override specific settings from the browser's base profile.
 
 ⚠️ Proxy merge semantics are explicit: `--proxy-server` in `botbrowserFlags` sets or replaces the context proxy route, while `--proxy-ip` only supplies the exit IP for geo-detection. If a context was created with `createBrowserContext({ proxyServer })`, a later `setBrowserContextFlags` call with only `--proxy-ip` preserves that proxy route.
 
+⚠️ After identity sealing, dedicated proxy commands may update the route server or bypass rules while preserving the existing proxy IP identity. Changing or clearing `proxyIp` is rejected because it would change geo-derived identity. Create a new BrowserContext when the exit identity must change.
+
 ## High-Concurrency Tuning
+
+Chrome 150.0.7871.46 improves stability for rapid BrowserContext churn and shared graphics and request workloads under load.
 
 When running many per-context fingerprints under one browser instance (for example, 20+ concurrent BrowserContexts), launch with [`--bot-gpu-emulation=priority`](CLI_FLAGS.md#--bot-gpu-emulation) to prioritize GPU and WebGPU command-buffer scheduling across sibling contexts. Default behavior is unchanged; this is an opt-in mode for high-concurrency workloads. See [`--bot-gpu-emulation` modes](docs/guides/deployment/LINUX_GPU_BACKEND.md#gpu-emulation-modes).
 
@@ -354,6 +366,7 @@ When running many per-context fingerprints under one browser instance (for examp
 - [Guides](https://botbrowser.io/docs/) - Comprehensive guides for all BotBrowser features
 - [CLI Flags Reference](CLI_FLAGS.md)
 - [Advanced Features](ADVANCED_FEATURES.md)
+- [Permission State Consistency](docs/guides/fingerprint/PERMISSIONS.md)
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md)
 - [Per-Context Fingerprint Example (Puppeteer)](examples/puppeteer/per_context_fingerprint.js)
 - [Per-Context Fingerprint Example (Playwright)](examples/playwright/nodejs/per_context_fingerprint.js)

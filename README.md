@@ -73,7 +73,7 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 
 **Step 1: Download**
 - [Latest release](https://github.com/botswin/BotBrowser/releases) for your OS
-- [Demo profile](profiles/) (any `.enc` file)
+- A matching profile package. Chrome 150 profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain available for earlier evaluation lines.
 
 **Step 2: Launch**
 - **GUI:** Use [BotBrowserLauncher](launcher/) for one-click profile selection and multi-instance management
@@ -149,7 +149,7 @@ Product overview, engineering design, FAQ: [TRIMMED_BUILD.md](TRIMMED_BUILD.md).
 | Per-context proxy with auto geo-detection | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [Guide](https://botbrowser.io/docs/network/per-context-proxy/) |
 | Dynamic proxy switching at runtime | [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching) | [Guide](https://botbrowser.io/docs/network/dynamic-proxy-switching/) |
 | UDP over SOCKS5 (QUIC/STUN tunneling) | [UDP over SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) | [Guide](https://botbrowser.io/docs/network/udp-over-socks5/) |
-| PAC-like request callback (ENT Tier3) | [PAC-Like Request Callback](CLI_FLAGS.md#pac-request-policy-ent-tier3) | [Guide](docs/guides/network/PAC_REQUEST_POLICY.md) |
+| PAC-like request callback and synthetic responses (ENT Tier3) | [PAC-Like Request Callback](CLI_FLAGS.md#pac-request-policy-ent-tier3) | [Guide](docs/guides/network/PAC_REQUEST_POLICY.md) |
 | Local DNS solver | [--bot-local-dns](CLI_FLAGS.md#--bot-local-dns-ent-tier1) | [Guide](https://botbrowser.io/docs/network/dns-leak-prevention/) |
 | Port protection for local services | [--bot-port-protection](CLI_FLAGS.md#--bot-port-protection-pro) | [Guide](https://botbrowser.io/docs/network/port-protection/) |
 | WebRTC leak protection (SDP/ICE control) | [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection) | [Guide](https://botbrowser.io/docs/network/webrtc-leak-prevention/) |
@@ -169,6 +169,7 @@ Product overview, engineering design, FAQ: [TRIMMED_BUILD.md](TRIMMED_BUILD.md).
 | Network information privacy (rtt/downlink/effectiveType) | [Network Info Privacy](ADVANCED_FEATURES.md#network-info-privacy) | [Guide](https://botbrowser.io/docs/fingerprint/navigator-properties/) |
 | CPU core scaling protection | [CPU Core Scaling](ADVANCED_FEATURES.md#cpu-core-scaling) | [Guide](https://botbrowser.io/docs/fingerprint/cpu-core-scaling/) |
 | Cross-platform font engine (Win/Mac/Android) | [Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) | [Guide](https://botbrowser.io/docs/fingerprint/font/) |
+| Profile-backed permission states | [Complete Fingerprint Control](ADVANCED_FEATURES.md#complete-fingerprint-control) | [Guide](docs/guides/fingerprint/PERMISSIONS.md) |
 | GPU simulation on headless servers | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) | [Guide](https://botbrowser.io/docs/fingerprint/incognito/) |
 
 ### Identity & Platform
@@ -212,6 +213,7 @@ Product overview, engineering design, FAQ: [TRIMMED_BUILD.md](TRIMMED_BUILD.md).
 | Timing scale (performance.now compression) | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](https://botbrowser.io/docs/fingerprint/performance/) |
 | Window/screen dimension control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](https://botbrowser.io/docs/platform/device-emulation/) |
 | Mobile screen orientation control | [--bot-config-orientation](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](https://botbrowser.io/docs/platform/device-emulation/) |
+| Mobile keyboard visual viewport control | [--bot-mobile-keyboard](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](docs/guides/platform/DEVICE_EMULATION.md#mobile-keyboard-visual-viewport) |
 
 <details>
 <summary><strong>Fingerprint Protection Implementation: Privacy Controls → Technical Design → Validation</strong></summary>

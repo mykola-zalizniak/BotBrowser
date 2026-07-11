@@ -40,7 +40,7 @@ Smart auto-configuration: timezone, locale, and languages derive from your proxy
 - DNS-through-proxy plus credentialed proxy URLs keep browser-level geo signals protected
 - UDP-over-SOCKS5 tunnel (ENT Tier3) for QUIC/STUN so ICE presets are only needed when UDP is unavailable
 - The standard `--disable-quic` flag remains available for deployments that prefer TCP-based HTTP protocols while keeping SOCKS5 proxying
-- PAC-like request callback (ENT Tier3) for trusted PAC sources and approved request-aware policy workflows while preserving standard PAC routing behavior and helping maintain HTTP/2 continuity in automation-heavy sessions
+- PAC-like request callback (ENT Tier3) for trusted PAC sources, authenticated PAC proxy routes, controlled synthetic responses, and request-aware policy workflows that preserve standard PAC routing behavior and help maintain HTTP/2 continuity in automation-heavy sessions
 - Optional ICE control via [`--bot-webrtc-ice`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier1) when the proxy lacks UDP support
 - Chromium-level implementation: tunneling lives inside the network stack, no external proxy-chain hijacking
 
@@ -206,6 +206,7 @@ Advanced font rendering with consistent results across hosts.
 - Rare symbol and Unicode character support
 - Cross-worker consistency
 - HarfBuzz text shaping integration
+- Profile-backed local font requests and request-by-name loading
 
 **Text-Rendering Features:**
 - Skia anti-aliasing integration
@@ -256,6 +257,7 @@ Comprehensive hardware emulation and fingerprint management.
 - Screen resolution and color depth control
 - Multi-monitor configuration simulation
 - Refresh rate and orientation control via [`--bot-config-orientation`](CLI_FLAGS.md#profile-configuration-override-flags) for mobile profiles, covering all orientation APIs and CSS media queries
+- Opt-in mobile keyboard visual viewport behavior via [`--bot-mobile-keyboard`](CLI_FLAGS.md#profile-configuration-override-flags) for Android and WebKit-family mobile profiles
 
 **Device-Behavior Simulation:**
 - Authentic device memory reporting
@@ -368,7 +370,7 @@ Comprehensive hardware emulation and fingerprint management.
 <a id="webkit-family-profile-consistency"></a>
 ### WebKit-Family Profile Consistency (ENT Tier4)
 
-WebKit-family Profile Consistency extends premium profiles beyond browser-brand metadata. The browser runtime, CSS behavior, media capability behavior, navigation headers, TLS behavior, HTTP/2 behavior, and per-context isolation are shaped to match the selected WebKit-family profile across supported host platforms.
+WebKit-family Profile Consistency extends premium profiles beyond browser-brand metadata. The browser runtime, workers, CSS behavior, fonts, canvas output, permission states, navigation headers, TLS behavior, HTTP/2 behavior, and per-context isolation are shaped to match the selected WebKit-family profile across supported host platforms.
 
 Supported profile bundles cover desktop and mobile WebKit-family identities. Use this capability for authorized privacy validation when a workflow needs browser-family consistency while keeping BotBrowser's profile, automation, and per-context control model.
 
@@ -396,10 +398,10 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 | Component | Capabilities |
 |-----------|-------------|
 | **Keyboard** | Layout emulation, key timing, input method simulation |
-| **Touch Interface** | Touch event simulation, gesture recognition, mobile patterns |
+| **Touch Interface** | Touch event simulation, gesture recognition, mobile patterns, opt-in mobile keyboard visual viewport behavior |
 | **Mouse Patterns** | Movement algorithms, click timing, scroll behavior |
 | **Languages** | Accept-Language headers, navigator.languages, speech recognition |
-| **Permissions** | API permission simulation, notification handling, media access |
+| **Permissions** | Profile-backed permission states, notification handling, media access, and per-context consistency |
 | **Navigation** | History management, referrer control, navigation timing |
 
 <a id="graphics-rendering-engine"></a>
@@ -407,7 +409,7 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 
 | Component | Capabilities |
 |-----------|-------------|
-| **Canvas** | 2D context noise, consistent image data, cross-worker consistency |
+| **Canvas** | 2D context noise, standard and wide-gamut color-space consistency, consistent image data, cross-worker consistency |
 | **WebGL** | Precision GPU micro-benchmarks, driver-specific behavior, extension simulation |
 | **WebGPU** | Modern GPU API support, compute shader capabilities, buffer management |
 | **Text Rendering** | HarfBuzz text shaping, cross-platform fonts, emoji rendering consistency |
@@ -417,7 +419,7 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 
 | Component | Capabilities |
 |-----------|-------------|
-| **Proxy** | Authentication embedding, credential management, geo-detection, PAC-like request callback |
+| **Proxy** | Authentication embedding, credential management, geo-detection, authenticated PAC routing, PAC-like request callback, controlled synthetic responses |
 | **WebRTC** | SDP control, ICE candidate filtering, media stream simulation |
 | **HTTP Headers** | Google-specific headers (ENT Tier2), Chrome behavior patterns, request timing |
 | **Media Devices** | AudioContext simulation, speech synthesis, device enumeration |

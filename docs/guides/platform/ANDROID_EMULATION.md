@@ -91,6 +91,7 @@ BotBrowser configures all platform-related surfaces to report Android identity: 
 - **Mobile viewport.** The viewport matches the Android device's screen dimensions from the profile.
 - **Device pixel ratio.** Reflects the profile's DPR (commonly 2.0 or 3.0 for mobile devices).
 - **Screen orientation.** Reports the profile-defined orientation. Use `--bot-config-orientation=landscape|portrait` to control orientation at launch for both phone and tablet profiles.
+- **Virtual keyboard viewport.** Use `--bot-mobile-keyboard` when editable-field focus should reduce the mobile visual viewport. The layout viewport remains unchanged.
 
 ### DevTools Interface
 
@@ -180,6 +181,25 @@ const browser = await chromium.launch({
 });
 ```
 
+<a id="mobile-keyboard-visual-viewport"></a>
+
+### Mobile keyboard visual viewport
+
+The mobile keyboard model is opt-in and applies only to mobile profiles:
+
+```javascript
+const browser = await chromium.launch({
+  executablePath: process.env.BOTBROWSER_EXEC_PATH,
+  headless: true,
+  args: [
+    "--bot-profile=/path/to/android-profile.enc",
+    "--bot-mobile-keyboard",
+  ],
+});
+```
+
+Trusted user focus on an editable field reduces `visualViewport.height` while keeping `window.innerHeight` stable. Blur restores the visual viewport. Use `--bot-mobile-keyboard=false` to keep the default disabled behavior explicitly.
+
 ---
 
 <a id="troubleshooting"></a>
@@ -191,6 +211,7 @@ const browser = await chromium.launch({
 | `navigator.userAgentData.mobile` is `false` | Use `--bot-config-mobile=true` to force phone mode, or verify the profile is configured for phone (not tablet). |
 | Touch events not firing | Ensure the profile is an Android profile and `--bot-mobile-force-touch` is set if needed. |
 | Viewport too large for mobile | Do not set explicit viewport options in Playwright. Let the Android profile control dimensions. |
+| Editable-field focus does not resize the visual viewport | Add `--bot-mobile-keyboard` and confirm the loaded profile is mobile. The feature is disabled by default and does not apply to desktop profiles. |
 | Android profile not loading | Verify your license supports PRO features. Android profiles require PRO or higher. |
 | Tablet orientation not changing | Use `--bot-config-orientation=landscape` or `portrait`. This works for both phone and tablet Android profiles. |
 

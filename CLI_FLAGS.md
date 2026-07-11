@@ -120,7 +120,7 @@ function BotBrowserFindProxyForRequest(url, host, method, headersB64, bodyB64, b
 }
 ```
 
-The callback can return `CONTINUE`, `BLOCK`, `CAPTURE`, `CAPTURE_TAG <tag>`, `CAPTURE_FILE <path>`, or a standard PAC route such as `DIRECT`, `PROXY`, `HTTPS`, `SOCKS`, `SOCKS4`, or `SOCKS5`. Capture records are written only when `CAPTURE` and `CAPTURE_FILE <path>` are returned together. Guide: [PAC-Like Request Callback](docs/guides/network/PAC_REQUEST_POLICY.md)
+The callback can return `CONTINUE`, `BLOCK`, `CAPTURE`, `CAPTURE_TAG <tag>`, `CAPTURE_FILE <path>`, `RESPONSE <raw_http_response_b64>`, `RESPONSE_FILE <path>`, or a standard PAC route such as `DIRECT`, `PROXY`, `HTTPS`, `SOCKS`, `SOCKS4`, or `SOCKS5`. Standard PAC routes and request callback routes can include credentials, for example `SOCKS5 user:pass@proxy.example.com:1080`. Capture records are written only when `CAPTURE` and `CAPTURE_FILE <path>` are returned together. Synthetic responses are limited to approved `file:` and `data:` PAC sources and fail closed when response input is invalid. Guide: [PAC-Like Request Callback](docs/guides/network/PAC_REQUEST_POLICY.md)
 
 Use this when request-aware policy should stay in PAC routing instead of CDP-level request interception, especially for workflows that need help preserving HTTP/2 connection and stream continuity while directing selected requests to different routes.
 
@@ -471,6 +471,7 @@ BotBrowser auto-generates matching `navigator.userAgentData` (brands, fullVersio
 
 - `--bot-config-keyboard=profile`: Keyboard settings: profile (emulated), real (system keyboard)
 - `--bot-config-fonts=profile`: Font settings: profile (embedded), expand (profile + fallback), real (system fonts)
+- `--bot-mobile-keyboard[=true|false]`: Opt-in mobile keyboard visual viewport behavior. When enabled for a mobile profile, trusted user focus on an editable field reduces `visualViewport.height` while leaving the layout viewport unchanged. Default: false.
 - `--bot-config-orientation=<value>`: Screen orientation for mobile profiles. Desktop profiles ignore this flag.
   - `profile` - Auto-detect from profile dimensions (default)
   - `landscape` / `portrait` - Force orientation, automatically adjusting all related dimensions to match

@@ -115,7 +115,21 @@ Profiles are versioned to match BotBrowser binary versions. The binary and profi
 | **canary** | Early development release for testing upcoming features |
 | **archive** | Previous versions for compatibility testing |
 
-**Version matching rule:** A BotBrowser v146 binary requires v146 profiles. Using mismatched versions will result in a silent failure where the browser runs without fingerprint protection.
+**Version matching rule:** A BotBrowser v150 binary requires a v150 profile package. A missing, invalid, expired, or major-version-mismatched profile stops profile-backed startup and reports the corresponding profile state.
+
+<a id="startup-profile-states"></a>
+
+### Startup profile states
+
+BotBrowser distinguishes the main profile startup conditions:
+
+- **Missing profile**: no profile path was supplied or the file cannot be found.
+- **Invalid profile**: the package cannot be read or validated.
+- **Expired profile**: the subscription profile is outside its active period.
+- **Legacy demo profile**: the package belongs to a published pre-150 evaluation line and keeps its documented limitations.
+- **Version mismatch**: the profile major version does not match the BotBrowser release line.
+
+Headful launches show user-facing guidance for these states. Headless Chrome 150 writes the guidance to terminal output without opening a visible window, then follows the startup failure path.
 
 ### Checking available versions
 
@@ -242,7 +256,7 @@ Platform compatibility tiers:
 | Problem | Solution |
 |---------|----------|
 | "Profile not found" error | Use an absolute path for `--bot-profile`. Relative paths resolve from the browser binary's directory. |
-| Browser runs without fingerprint protection | Verify the profile version matches the binary version. A v146 binary needs v146 profiles. |
+| Browser exits before navigation | Read the startup profile message and check for a missing, invalid, expired, or version-mismatched package. A v150 binary needs a v150 profile. |
 | Cannot use `--bot-profile` and `--bot-profile-dir` together | `--bot-profile-dir` takes precedence. Use one or the other. |
 | Profile changes have no effect | CLI `--bot-config-*` flags override profile `configs`. Check if a CLI flag is overriding your change. |
 | "Profile is damaged" or parse errors | Re-download the profile. Ensure the file was not corrupted during transfer. |

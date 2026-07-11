@@ -111,6 +111,20 @@ chromium-browser \
   --bot-mobile-force-touch
 ```
 
+<a id="mobile-keyboard-visual-viewport"></a>
+
+### Mobile Keyboard Visual Viewport
+
+Use `--bot-mobile-keyboard` with a matching Android or WebKit-family mobile profile when editable-field focus should follow mobile visual viewport behavior:
+
+```bash
+chromium-browser \
+  --bot-profile="/path/to/android-profile.enc" \
+  --bot-mobile-keyboard
+```
+
+The option is disabled by default. On supported mobile profiles, trusted user focus reduces `visualViewport.height` without changing the layout viewport or `window.innerHeight`. Blur restores the visual viewport. Desktop profiles ignore this option.
+
 ### Headful vs. Headless Defaults
 
 | Mode | Window Default | Screen Default |
@@ -171,6 +185,22 @@ const browser = await chromium.launch({
 });
 ```
 
+<a id="mobile-form-keyboard-viewport"></a>
+
+### Mobile form with keyboard viewport behavior
+
+```javascript
+const browser = await chromium.launch({
+  executablePath: process.env.BOTBROWSER_EXEC_PATH,
+  headless: true,
+  args: [
+    "--bot-profile=/path/to/android-profile.enc",
+    "--bot-mobile-force-touch",
+    "--bot-mobile-keyboard",
+  ],
+});
+```
+
 ### Per-context device metrics (ENT Tier3)
 
 ```javascript
@@ -220,6 +250,7 @@ To verify device emulation is working correctly:
 | DPR is wrong | Set DPR via the JSON format of `--bot-config-window` (include `devicePixelRatio` in the JSON object). |
 | Playwright overrides dimensions | Do not set explicit viewport options in Playwright. Let the profile control viewport dimensions. |
 | Touch events not available | Use `--bot-mobile-force-touch` or ensure the profile is an Android/mobile profile. |
+| Mobile keyboard does not change the visual viewport | Add `--bot-mobile-keyboard`, use a mobile profile, and focus an editable field through a trusted user action. |
 
 ---
 
