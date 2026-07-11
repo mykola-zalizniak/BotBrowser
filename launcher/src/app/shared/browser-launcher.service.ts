@@ -586,6 +586,20 @@ export class BrowserLauncherService {
         if (opts?.forensics?.botAudioRecordFile)
             args.push(`--bot-audio-record-file=${shQuote(opts.forensics.botAudioRecordFile)}`);
 
+        // Memory & Storage — emit 'profile'/'real' or a positive-integer byte count only.
+        // Re-validated here (not just in the editor) so malformed hand-edited/imported JSON
+        // can't leak an invalid value or inject extra CLI args at launch.
+        const emitBytePolicy = (flag: string, v: unknown) => {
+            if (v === 'profile' || v === 'real') {
+                args.push(`${flag}=${v}`);
+                return;
+            }
+            const n = typeof v === 'number' ? v : Number(v);
+            if (v != null && v !== '' && Number.isInteger(n) && n > 0) args.push(`${flag}=${n}`);
+        };
+        emitBytePolicy('--bot-js-heap-size-limit', opts?.memoryStorage?.botJsHeapSizeLimit);
+        emitBytePolicy('--bot-storage-quota', opts?.memoryStorage?.botStorageQuota);
+
         return args;
     }
 

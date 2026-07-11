@@ -230,13 +230,8 @@ export class AppComponent implements AfterViewInit {
 
     editProfile(browserProfile: BrowserProfile): void {
         this.highlightedId = browserProfile.id;
-        const status = this.browserLauncherService.getRunningStatus(browserProfile);
-        if (status !== BrowserProfileStatus.Idle && status !== BrowserProfileStatus.LaunchFailed) {
-            this.#dialog.open(AlertDialogComponent, {
-                data: { message: 'Cannot edit a profile while it is running. Please stop the browser first.' },
-            });
-            return;
-        }
+        // Editing a running profile is allowed; saved changes apply on the next launch
+        // (the editor shows a banner and confirms this on save).
         this.#dialog
             .open(EditBrowserProfileComponent, {
                 width: '1100px',
@@ -255,7 +250,7 @@ export class AppComponent implements AfterViewInit {
         this.highlightedId = browserProfile.id;
         this.#dialog
             .open(QuickProxyChangeComponent, {
-                width: '560px',
+                width: '620px',
                 maxWidth: '95vw',
                 data: browserProfile,
             })

@@ -184,6 +184,13 @@ export interface ForensicsConfig {
     botAudioRecordFile?: string;
 }
 
+// Memory & Storage runtime policy overrides. Each: 'profile' | 'real' | positive byte value.
+// Byte values arrive from a type=number input as a JS number, so allow both.
+export interface MemoryStorageConfig {
+    botJsHeapSizeLimit?: string | number;
+    botStorageQuota?: string | number;
+}
+
 // Launch options (all CLI flags combined)
 export interface LaunchOptions {
     behavior?: BehaviorToggles;
@@ -195,6 +202,7 @@ export interface LaunchOptions {
     proxy?: ProxyConfig;
     advanced?: AdvancedConfig;
     forensics?: ForensicsConfig;
+    memoryStorage?: MemoryStorageConfig;
 }
 
 export interface BrowserProfile {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, NgZone, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, inject, Input, NgZone, type OnDestroy, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -99,14 +99,16 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
                         <button mat-stroked-button color="warn" (click)="onClearProxy()">Clear proxy</button>
                     }
                     @if (showCheckButton) {
-                        <button mat-stroked-button (click)="onCheckIp()" [disabled]="checking || !getValue()">
-                            @if (checking) {
-                                <mat-spinner diameter="18"></mat-spinner>
-                                <span>Checking...</span>
-                            } @else {
-                                <span>Check IP</span>
-                            }
-                        </button>
+                        @if (checking) {
+                            <button mat-stroked-button color="warn" (click)="cancelCheck()" matTooltip="Stop the IP check">
+                                <span class="btn-inline">
+                                    <mat-spinner diameter="18" color="warn"></mat-spinner>
+                                    Stop
+                                </span>
+                            </button>
+                        } @else {
+                            <button mat-stroked-button (click)="onCheckIp()" [disabled]="!getValue()">Check IP</button>
+                        }
                     }
                     @if (showSaveButton && getValue()) {
                         <button mat-stroked-button (click)="onSaveToList()">Save to proxy list</button>
@@ -226,9 +228,10 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
                 display: flex;
                 gap: 8px;
                 align-items: center;
+                flex-wrap: wrap;
             }
 
-            button {
+            .btn-inline {
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
@@ -298,7 +301,7 @@ import { ProxyParserService, type ParsedProxy } from './proxy-parser.service';
         }
     `,
 })
-export class ProxyInputComponent {
+export class ProxyInputComponent implements OnDestroy {
     readonly #proxyParser = inject(ProxyParserService);
     readonly #proxyCheck = inject(ProxyCheckService);
     readonly #formBuilder = inject(FormBuilder);
@@ -313,6 +316,9 @@ export class ProxyInputComponent {
     @Input() showSaveButton = false;
     @Input() showClearButton = false;
     @Input() set value(v: ParsedProxy | null) {
+        // Parent switching to a different proxy invalidates a shown check result (setter uses emitEvent:false,
+        // so onFormChange won't fire). Compare against the current form before patching.
+        const identityChanged = this.#proxySig(v) !== this.#proxySig(this.getValue());
         if (v) {
             this.formGroup.patchValue(
                 {
@@ -330,6 +336,7 @@ export class ProxyInputComponent {
                 { emitEvent: false }
             );
         }
+        if (identityChanged) this.#clearCheckState();
     }
 
     @Output() valueChange = new EventEmitter<ParsedProxy | null>();
@@ -343,6 +350,7 @@ export class ProxyInputComponent {
     checking = false;
     checkResult: ProxyCheckResult | null = null;
     checkError = '';
+    #checkController: AbortController | null = null;
 
     readonly formGroup = this.#formBuilder.group({
         type: 'http' as ProxyType,
@@ -370,6 +378,7 @@ export class ProxyInputComponent {
                 password: result.password || '',
             });
             this.parseSuccess = true;
+            this.#clearCheckState();
             this.#emitValue();
         } else {
             this.parseError = 'Could not parse proxy string';
@@ -377,6 +386,8 @@ export class ProxyInputComponent {
     }
 
     onFormChange(): void {
+        // A changed proxy invalidates any result/error still shown from a prior check.
+        this.#clearCheckState();
         this.#emitValue();
     }
 
@@ -387,20 +398,42 @@ export class ProxyInputComponent {
         this.checking = true;
         this.checkResult = null;
         this.checkError = '';
+        const controller = new AbortController();
+        this.#checkController = controller;
+        const checkedSig = this.#proxySig(proxy);
 
         try {
-            const result = await this.#proxyCheck.checkProxy(proxy);
+            const result = await this.#proxyCheck.checkProxy(proxy, controller.signal);
             this.#ngZone.run(() => {
+                // Skip a result that resolved after the user aborted (race: abort can't un-settle a done promise)
+                // or after the proxy was edited mid-check (result would belong to the old proxy).
+                if (controller.signal.aborted) return;
+                const cur = this.getValue();
+                if (!cur || this.#proxySig(cur) !== checkedSig) return;
                 this.checkResult = result;
-                this.checking = false;
                 this.ipCheckResult.emit(result);
             });
         } catch (error) {
             this.#ngZone.run(() => {
-                this.checkError = error instanceof Error ? error.message : 'Check failed';
+                // User-cancelled aborts leave no error message.
+                if (!controller.signal.aborted) {
+                    this.checkError = error instanceof Error ? error.message : 'Check failed';
+                }
+            });
+        } finally {
+            this.#ngZone.run(() => {
                 this.checking = false;
             });
+            if (this.#checkController === controller) this.#checkController = null;
         }
+    }
+
+    cancelCheck(): void {
+        this.#checkController?.abort();
+    }
+
+    ngOnDestroy(): void {
+        this.#checkController?.abort();
     }
 
     async copyToClipboard(text: string): Promise<void> {
@@ -444,6 +477,7 @@ export class ProxyInputComponent {
             .afterClosed()
             .subscribe((confirmed: boolean) => {
                 if (!confirmed) return;
+                this.cancelCheck(); // tear down any in-flight check so its stale result can't repopulate the cleared form
                 this.formGroup.reset({ type: 'http', host: '', port: 8080, username: '', password: '' });
                 this.checkResult = null;
                 this.checkError = '';
@@ -469,5 +503,15 @@ export class ProxyInputComponent {
 
     #emitValue(): void {
         this.valueChange.emit(this.getValue());
+    }
+
+    // Stable identity of a proxy, used to detect when the form no longer matches a shown check result.
+    #proxySig(p: ParsedProxy | null): string {
+        return p ? `${p.type}|${p.host}|${p.port}|${p.username ?? ''}|${p.password ?? ''}` : '';
+    }
+
+    #clearCheckState(): void {
+        this.checkResult = null;
+        this.checkError = '';
     }
 }

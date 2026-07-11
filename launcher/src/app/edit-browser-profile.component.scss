@@ -9,6 +9,27 @@ mat-dialog-content {
     padding: 0 !important;
 }
 
+// Running-profile notice (changes apply on next launch)
+.running-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 24px 12px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    color: #b26a00;
+    font-size: 13px;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+}
+
 // Left nav + right content layout
 .dialog-layout {
     display: flex;
@@ -24,6 +45,49 @@ mat-dialog-content {
     flex-direction: column;
     gap: 2px;
     overflow-y: auto;
+
+    .nav-search {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0 8px 8px;
+        padding: 2px 6px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 4px;
+
+        mat-icon {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+            color: rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .nav-search-clear {
+            cursor: pointer;
+
+            &:hover {
+                color: rgba(0, 0, 0, 0.7);
+            }
+        }
+
+        input {
+            width: 100%;
+            min-width: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 12px;
+            padding: 4px 0;
+            color: rgba(0, 0, 0, 0.87);
+        }
+    }
+
+    .nav-empty {
+        padding: 8px 16px;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.38);
+    }
 
     .nav-item {
         display: block;
@@ -57,6 +121,20 @@ mat-dialog-content {
     overflow-x: hidden;
     padding: 0 24px;
     scroll-behavior: smooth;
+}
+
+// Search highlight for titles/toggles (plain text) and form fields (outline).
+.section-header.search-hit,
+.section-title.search-hit,
+mat-slide-toggle.search-hit {
+    background: rgba(255, 214, 0, 0.35);
+    border-radius: 3px;
+    box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.35);
+}
+
+mat-form-field.search-hit {
+    border-radius: 6px;
+    box-shadow: 0 0 0 2px #fbc02d;
 }
 
 mat-form-field {

@@ -1,12 +1,34 @@
 <h2 mat-dialog-title>{{ isEdit ? 'Edit' : 'Create' }} Browser Profile</h2>
+@if (isRunning) {
+    <div class="running-banner">
+        <mat-icon>info</mat-icon>
+        <span>This profile is currently running. Changes will take effect the next time you launch it.</span>
+    </div>
+}
 <mat-dialog-content class="mat-typography dialog-layout">
     <nav class="section-nav">
-        @for (nav of navItems; track nav.id) {
+        <div class="nav-search">
+            <mat-icon>search</mat-icon>
+            <input
+                type="text"
+                placeholder="Filter"
+                [(ngModel)]="navQuery"
+                [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="onNavQueryChange()"
+            />
+            @if (navQuery) {
+                <mat-icon class="nav-search-clear" (click)="clearNavQuery()">close</mat-icon>
+            }
+        </div>
+        @for (nav of filteredNavItems(); track nav.id) {
             <a
                 class="nav-item"
                 [class.active]="activeSection === nav.id"
                 (click)="scrollToSection(nav.id)"
             >{{ nav.label }}</a>
+        }
+        @if (!filteredNavItems().length) {
+            <div class="nav-empty">No match</div>
         }
     </nav>
 
@@ -702,6 +724,45 @@
                         <mat-error>Enter a positive integer between 1 and 999</mat-error>
                     }
                 </mat-form-field>
+            </form>
+
+            <!-- Memory & Storage -->
+            <div class="section-title">Memory & Storage</div>
+            <form [formGroup]="memoryStorageGroup">
+                <div class="form-row">
+                    <mat-form-field class="flex-1">
+                        <mat-label>JS Heap Size Limit</mat-label>
+                        <mat-select [(value)]="jsHeapMode" (selectionChange)="onJsHeapModeChange()">
+                            <mat-option value="">Default</mat-option>
+                            <mat-option value="profile">profile</mat-option>
+                            <mat-option value="real">real</mat-option>
+                            <mat-option value="bytes">Custom (bytes)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    @if (jsHeapMode === 'bytes') {
+                        <mat-form-field class="flex-1">
+                            <mat-label>Heap Limit (bytes)</mat-label>
+                            <input matInput type="number" min="1" placeholder="e.g. 2147483648" formControlName="botJsHeapSizeLimit" />
+                        </mat-form-field>
+                    }
+
+                    <mat-form-field class="flex-1">
+                        <mat-label>Storage Quota</mat-label>
+                        <mat-select [(value)]="storageQuotaMode" (selectionChange)="onStorageQuotaModeChange()">
+                            <mat-option value="">Default</mat-option>
+                            <mat-option value="profile">profile</mat-option>
+                            <mat-option value="real">real</mat-option>
+                            <mat-option value="bytes">Custom (bytes)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    @if (storageQuotaMode === 'bytes') {
+                        <mat-form-field class="flex-1">
+                            <mat-label>Quota (bytes)</mat-label>
+                            <input matInput type="number" min="1" placeholder="e.g. 1073741824" formControlName="botStorageQuota" />
+                        </mat-form-field>
+                    }
+                </div>
+                <mat-hint class="section-hint">Default = no override (uses profile) · profile = profile value · real = Chromium native · Custom = explicit byte value</mat-hint>
             </form>
 
             <!-- Bot Script -->
