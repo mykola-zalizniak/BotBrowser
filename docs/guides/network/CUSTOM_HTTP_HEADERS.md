@@ -204,7 +204,7 @@ await client.send("BotBrowser.setBrowserContextFlags", {
 
 ---
 
-**Related documentation:** [CLI Flags: Custom Headers](../../../CLI_FLAGS.md#--bot-custom-headers-pro) | [Advanced Features](../../../ADVANCED_FEATURES.md) | [CDP Quick Reference](../../../ADVANCED_FEATURES.md#cdp-quick-reference)
+**Related documentation:** [Advanced Features](../../../ADVANCED_FEATURES.md) | [CDP Quick Reference](../../../ADVANCED_FEATURES.md#cdp-quick-reference)
 
 ---
 

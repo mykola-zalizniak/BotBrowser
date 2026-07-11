@@ -299,17 +299,17 @@ Most `--bot-*` flags from [CLI_FLAGS.md](CLI_FLAGS.md) work with per-context con
 | Category | Example Flags |
 |----------|---------------|
 | Profile | `--bot-profile` (load a completely different profile per context), `--bot-profile-dir` (select from a directory at context creation) |
-| Noise Seed | [`--bot-noise-seed`](CLI_FLAGS.md#behavior--protection-toggles) for deterministic fingerprint variance |
-| Timing | [`--bot-time-scale`](CLI_FLAGS.md#behavior--protection-toggles) for performance timing control, [`--bot-time-seed`](ADVANCED_FEATURES.md#performance-timing-protection) for deterministic timing diversity, [`--bot-stack-seed`](ADVANCED_FEATURES.md#stack-depth-control) for stack depth variation, [`--bot-fps`](CLI_FLAGS.md#behavior--protection-toggles) for frame rate control |
-| Storage and Memory | [`--bot-js-heap-size-limit`](CLI_FLAGS.md#--bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#--bot-storage-quota) for profile, real, or explicit byte-value policy |
-| Network | [`--bot-network-info-override`](ADVANCED_FEATURES.md#network-info-privacy) for profile-defined `navigator.connection` values, [`--bot-local-dns`](CLI_FLAGS.md#--bot-local-dns-ent-tier1) for context DNS policy |
+| Noise Seed | [`--bot-noise-seed`](CLI_FLAGS.md#flag-bot-noise-seed) for deterministic fingerprint variance |
+| Timing | [`--bot-time-scale`](CLI_FLAGS.md#flag-bot-time-scale) for performance timing control, [`--bot-time-seed`](CLI_FLAGS.md#flag-bot-time-seed) for deterministic timing diversity, [`--bot-stack-seed`](CLI_FLAGS.md#flag-bot-stack-seed) for stack depth variation, [`--bot-fps`](CLI_FLAGS.md#flag-bot-fps) for frame rate control |
+| Storage and Memory | [`--bot-js-heap-size-limit`](CLI_FLAGS.md#flag-bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#flag-bot-storage-quota) for profile, real, or explicit byte-value policy |
+| Network | [`--bot-network-info-override`](CLI_FLAGS.md#flag-bot-network-info-override) for profile-defined `navigator.connection` values, [`--bot-local-dns`](CLI_FLAGS.md#flag-bot-local-dns) for context DNS policy |
 | WebRTC | [`--bot-webrtc-ice`](ADVANCED_FEATURES.md#webrtc-leak-protection) for ICE endpoint control |
 | Window | [`--bot-always-active`](ADVANCED_FEATURES.md#active-window-emulation) to maintain active window state |
 | Session | `--bot-inject-random-history` for session authenticity (supports precise count, e.g., `=15`), `--bot-cookies` for context-scoped cookie import at creation time |
 | Automation | `--bot-script` for context-scoped framework-less automation bootstrap at creation time |
-| Google Headers | [`--bot-enable-variations-in-context`](CLI_FLAGS.md#behavior--protection-toggles) for `X-Client-Data` consistency in incognito contexts (ENT Tier2) |
-| Proxy | [`--proxy-server`](CLI_FLAGS.md#enhanced-proxy-configuration) (configure proxy per-context via `botbrowserFlags`), `--proxy-ip` to skip IP lookups |
-| HTTP | [`--bot-custom-headers`](CLI_FLAGS.md#--bot-custom-headers-pro) for custom HTTP request headers per context |
+| Google Headers | [`--bot-enable-variations-in-context`](CLI_FLAGS.md#flag-bot-enable-variations-in-context) for `X-Client-Data` consistency in incognito contexts (ENT Tier2) |
+| Proxy | [`--proxy-server`](CLI_FLAGS.md#flag-proxy-server) (configure proxy per-context via `botbrowserFlags`), [`--proxy-ip`](CLI_FLAGS.md#flag-proxy-ip) to skip IP lookups |
+| HTTP | [`--bot-custom-headers`](CLI_FLAGS.md#flag-bot-custom-headers) for custom HTTP request headers per context |
 | Config | [`--bot-config-platform`, `--bot-config-timezone`, `--bot-config-noise-canvas`, `--bot-config-webgl=disabled`, `--bot-config-webgpu=disabled`, etc.](CLI_FLAGS.md#profile-configuration-override-flags) |
 
 See [CLI_FLAGS.md](CLI_FLAGS.md) for the complete flag reference.
@@ -359,11 +359,11 @@ Supported live session controls remain available after identity sealing when the
 
 Chrome 150.0.7871.46 improves stability for rapid BrowserContext churn and shared graphics and request workloads under load.
 
-When running many per-context fingerprints under one browser instance (for example, 20+ concurrent BrowserContexts), launch with [`--bot-gpu-emulation=priority`](CLI_FLAGS.md#--bot-gpu-emulation) to prioritize GPU and WebGPU command-buffer scheduling across sibling contexts. Default behavior is unchanged; this is an opt-in mode for high-concurrency workloads. See [`--bot-gpu-emulation` modes](docs/guides/deployment/LINUX_GPU_BACKEND.md#gpu-emulation-modes).
+When running many per-context fingerprints under one browser instance (for example, 20+ concurrent BrowserContexts), launch with [`--bot-gpu-emulation=priority`](CLI_FLAGS.md#flag-bot-gpu-emulation) to prioritize GPU and WebGPU command-buffer scheduling across sibling contexts. Default behavior is unchanged; this is an opt-in mode for high-concurrency workloads. See [`--bot-gpu-emulation` modes](docs/guides/deployment/LINUX_GPU_BACKEND.md#gpu-emulation-modes).
 
 ## Related Documentation
 
-- [Guides](https://botbrowser.io/docs/) - Comprehensive guides for all BotBrowser features
+- [Guides](docs/guides/README.md) - Setup and troubleshooting by workflow
 - [CLI Flags Reference](CLI_FLAGS.md)
 - [Advanced Features](ADVANCED_FEATURES.md)
 - [Permission State Consistency](docs/guides/fingerprint/PERMISSIONS.md)
@@ -373,7 +373,7 @@ When running many per-context fingerprints under one browser instance (for examp
 - [Per-Context Proxy Example (Puppeteer)](examples/puppeteer/per_context_proxy.js)
 - [Per-Context Proxy Example (Playwright)](examples/playwright/nodejs/per_context_proxy.js)
 
-Related guides: [Multi-Account Isolation](https://botbrowser.io/docs/identity/multi-account-isolation/), [Per-Context Proxy](https://botbrowser.io/docs/network/per-context-proxy/), [Dynamic Proxy Switching](https://botbrowser.io/docs/network/dynamic-proxy-switching/)
+Related guides: [Multi-Account Isolation](docs/guides/identity/MULTI_ACCOUNT_ISOLATION.md), [Per-Context Proxy](docs/guides/network/PER_CONTEXT_PROXY.md), [Dynamic Proxy Switching](docs/guides/network/DYNAMIC_PROXY_SWITCHING.md)
 
 ---
 

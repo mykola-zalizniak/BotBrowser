@@ -163,7 +163,7 @@ await page.goto("https://example.com");
 
 - [Cookie Management](COOKIE_MANAGEMENT.md). Inject cookies for pre-authenticated sessions.
 - [Bookmark Seeding](BOOKMARK_SEEDING.md). Populate the bookmarks bar.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#behavior--protection-toggles). Full flag documentation.
+- [`--bot-inject-random-history`](../../../CLI_FLAGS.md#flag-bot-inject-random-history). CLI values and availability.
 
 ---
 

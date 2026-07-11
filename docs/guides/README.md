@@ -1,10 +1,16 @@
 # BotBrowser Guides
 
-> Comprehensive documentation for configuring, deploying, and verifying BotBrowser's fingerprint protection capabilities.
-
-These guides cover everything from initial setup to advanced deployment scenarios. Each guide is self-contained with prerequisites, code examples, and troubleshooting steps.
+Configuration, deployment, and verification guides. Each guide includes prerequisites, examples, and troubleshooting.
 
 ---
+
+<a id="reference"></a>
+## Reference
+
+| Guide | Description |
+|-------|-------------|
+| [CLI Flag Directory](../../CLI_FLAGS.md#flag-directory) | Find every documented flag by task, availability, and primary guide. |
+| [Advanced Features](../../ADVANCED_FEATURES.md#capabilities-index) | Browse capabilities by subsystem, then open the related flag or setup guide. |
 
 <a id="getting-started"></a>
 ## Getting Started

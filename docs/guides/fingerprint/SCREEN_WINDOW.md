@@ -128,7 +128,7 @@ BotBrowser controls all screen and window properties at the browser engine level
 
 ---
 
-**Related documentation:** [Advanced Features: Display & UI Control](../../../ADVANCED_FEATURES.md#complete-fingerprint-control) | [CLI Flags: Display & Input](../../../CLI_FLAGS.md#profile-configuration-override-flags)
+**Related documentation:** [Advanced Features: Display & UI Control](../../../ADVANCED_FEATURES.md#complete-fingerprint-control)
 
 ---
 

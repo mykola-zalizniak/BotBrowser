@@ -130,7 +130,7 @@ To verify protection is active:
 
 - [Performance Fingerprinting](PERFORMANCE.md). Control timing-based fingerprint signals.
 - [CPU Core Scaling Protection](CPU_CORE_SCALING.md). Constrain Worker parallelism to match claimed core count.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#behavior--protection-toggles). Complete flag documentation including `--bot-stack-seed`.
+- [`--bot-stack-seed`](../../../CLI_FLAGS.md#flag-bot-stack-seed). CLI values and availability.
 
 ---
 

@@ -188,7 +188,7 @@ This uses semicolon-separated patterns with wildcard support. It is simpler than
 
 ---
 
-**Related documentation:** [CLI Flags: Proxy Bypass Regex](../../../CLI_FLAGS.md#--proxy-bypass-rgx) | [Advanced Features](../../../ADVANCED_FEATURES.md) | [Dynamic Proxy Switching](../../../ADVANCED_FEATURES.md#dynamic-proxy-switching)
+**Related documentation:** [Advanced Features](../../../ADVANCED_FEATURES.md) | [Dynamic Proxy Switching](../../../ADVANCED_FEATURES.md#dynamic-proxy-switching)
 
 ---
 

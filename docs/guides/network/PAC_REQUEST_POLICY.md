@@ -276,7 +276,7 @@ PAC can select SOCKS5 routes for TCP traffic. QUIC/STUN UDP behavior still follo
 
 ---
 
-**Related documentation:** [CLI Flags: PAC-Like Request Callback](../../../CLI_FLAGS.md#pac-request-policy-ent-tier3) | [Advanced Features: Network Fingerprint Control](../../../ADVANCED_FEATURES.md#network-fingerprint-control)
+**Related documentation:** [Advanced Features: Network Fingerprint Control](../../../ADVANCED_FEATURES.md#network-fingerprint-control)
 
 ---
 

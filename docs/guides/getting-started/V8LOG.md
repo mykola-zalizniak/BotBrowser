@@ -107,7 +107,7 @@ await browser.close();
 
 ## Related Documentation
 
-- [CLI Flags Reference](../../../CLI_FLAGS.md#--bot-v8-log)
+
 - [V8Log Tool](../../../tools/v8log/)
 - [Automation Consistency Practices](AUTOMATION_CONSISTENCY.md)
 - [Profile Management](PROFILE_MANAGEMENT.md)

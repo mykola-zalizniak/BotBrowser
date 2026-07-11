@@ -132,7 +132,7 @@ chromium-browser \
 - [Canvas Fingerprint Protection](CANVAS.md). Deterministic noise for Canvas 2D rendering.
 - [Linux GPU Backend Selection](../deployment/LINUX_GPU_BACKEND.md). Pick and migrate between Mesa llvmpipe, SwiftShader, and lavapipe software rendering backends on Linux servers.
 - [Performance Optimization](../deployment/PERFORMANCE_OPTIMIZATION.md). General performance tuning for production workloads.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#profile-configuration-override-flags). Complete flag documentation.
+- [`--bot-config-webgpu`](../../../CLI_FLAGS.md#flag-bot-config-webgpu). CLI values and availability.
 
 ---
 

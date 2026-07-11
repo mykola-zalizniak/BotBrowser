@@ -282,7 +282,7 @@ args.push(`--bot-cookies='${JSON.stringify(cookies)}'`);
 
 - [Bookmark Seeding](BOOKMARK_SEEDING.md). Pre-populate bookmarks for session authenticity.
 - [History Seeding](HISTORY_SEEDING.md). Add browsing history for privacy protection.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#--bot-cookies). Full flag documentation.
+- [`--bot-cookies`](../../../CLI_FLAGS.md#flag-bot-cookies). CLI values and availability.
 - [Playwright Guide](../getting-started/PLAYWRIGHT.md). Framework integration basics.
 - [Per-Context Fingerprint](../../../PER_CONTEXT_FINGERPRINT.md). Context-scoped profile and session state.
 

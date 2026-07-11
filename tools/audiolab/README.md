@@ -51,7 +51,7 @@ AudioLab records every Web Audio API call so you can see exactly what tracking c
 
 ## Quick Start: Recording Audio Fingerprint Collection
 
-**Step 1: Start recording** (see [`--bot-audio-record-file`](../../CLI_FLAGS.md#--bot-audio-record-file))
+**Step 1: Start recording** (see [`--bot-audio-record-file`](../../CLI_FLAGS.md#flag-bot-audio-record-file))
 ```bash
 chromium \
   --bot-profile=/absolute/path/to/profile.enc \

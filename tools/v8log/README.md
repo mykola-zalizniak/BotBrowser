@@ -35,7 +35,7 @@ This positioning follows BotBrowser's privacy model. See [Fingerprint Privacy](.
 
 ## Quick Start
 
-See the CLI reference for [`--bot-v8-log`](../../CLI_FLAGS.md#--bot-v8-log) and [`--bot-v8-log-dir`](../../CLI_FLAGS.md#--bot-v8-log-dir).
+See the CLI reference for [`--bot-v8-log`](../../CLI_FLAGS.md#flag-bot-v8-log) and [`--bot-v8-log-dir`](../../CLI_FLAGS.md#flag-bot-v8-log-dir).
 
 ```bash
 mkdir -p /tmp/botbrowser-v8log
@@ -85,7 +85,6 @@ Example event:
 ## Related Documentation
 
 - [V8Log Guide](../../docs/guides/getting-started/V8LOG.md)
-- [CLI Flags Reference](../../CLI_FLAGS.md#--bot-v8-log)
 - [Automation Consistency Practices](../../docs/guides/getting-started/AUTOMATION_CONSISTENCY.md)
 
 ---

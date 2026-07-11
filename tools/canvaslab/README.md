@@ -43,7 +43,7 @@ CanvasLab records every Canvas 2D, WebGL, and WebGL2 API call so you can review 
 
 ## Quick Start: Recording Canvas Activity
 
-**Step 1: Start recording** (see [`--bot-canvas-record-file`](../../CLI_FLAGS.md#--bot-canvas-record-file))
+**Step 1: Start recording** (see [`--bot-canvas-record-file`](../../CLI_FLAGS.md#flag-bot-canvas-record-file))
 ```bash
 chromium \
   --bot-profile=/absolute/path/to/profile.enc \

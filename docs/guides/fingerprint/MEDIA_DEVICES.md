@@ -118,7 +118,7 @@ chromium-browser \
 
 - [Audio Fingerprint Protection](AUDIO.md). Control audio rendering and noise.
 - [Navigator Properties](NAVIGATOR_PROPERTIES.md). Other navigator-level fingerprint surfaces.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#profile-configuration-override-flags). Complete flag documentation.
+- [`--bot-config-media-devices`](../../../CLI_FLAGS.md#flag-bot-config-media-devices). CLI values and availability.
 
 ---
 

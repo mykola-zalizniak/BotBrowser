@@ -184,7 +184,7 @@ const browser = await chromium.launch({
 - [Browser Brand Alignment](BROWSER_BRAND_ALIGNMENT.md). Switch between Chrome, Edge, Brave, Opera, and more.
 - [Android Emulation](../platform/ANDROID_EMULATION.md). Full Android identity emulation on desktop.
 - [Android WebView](../platform/ANDROID_WEBVIEW.md). WebView-specific identity configuration.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#profile-configuration-override-flags). Complete identity flag documentation.
+- [Identity flags](../../../CLI_FLAGS.md#flag-group-identity). CLI values and availability.
 
 ---
 

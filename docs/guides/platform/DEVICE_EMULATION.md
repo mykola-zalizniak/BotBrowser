@@ -261,7 +261,7 @@ To verify device emulation is working correctly:
 - [Android Emulation](ANDROID_EMULATION.md). Mobile device emulation with touch support.
 - [Cross-Platform Profiles](CROSS_PLATFORM_PROFILES.md). Consistent device metrics across hosts.
 - [Multi-Account Isolation](../identity/MULTI_ACCOUNT_ISOLATION.md). Different device metrics per context.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#profile-configuration-override-flags). All display and input flags.
+- [Display and input flags](../../../CLI_FLAGS.md#flag-group-display). CLI values and availability.
 
 ---
 

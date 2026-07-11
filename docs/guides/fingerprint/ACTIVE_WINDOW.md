@@ -131,7 +131,7 @@ chromium-browser \
 
 ---
 
-**Related documentation:** [Advanced Features: Active Window Emulation](../../../ADVANCED_FEATURES.md#active-window-emulation) | [CLI Flags Reference](../../../CLI_FLAGS.md#behavior--protection-toggles)
+**Related documentation:** [Advanced Features: Active Window Emulation](../../../ADVANCED_FEATURES.md#active-window-emulation)
 
 ---
 
