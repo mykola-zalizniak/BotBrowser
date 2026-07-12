@@ -447,7 +447,8 @@ export class AppComponent implements AfterViewInit {
     }
 
     restartApp(): void {
-        Neutralino.app.restartProcess();
+        // Applies a staged update (swap-on-exit) when one is ready, else a plain restart.
+        this.updateService.applyUpdateAndRestart().catch(console.error);
     }
 
     get isAllSelected(): boolean {
