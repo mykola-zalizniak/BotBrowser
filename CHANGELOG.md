@@ -5,7 +5,7 @@
 
 ## [2026-07-11]
 ### Major
-- **Chromium Core -> 150.0.7871.46**: Updated the Chrome 150 release line to 150.0.7871.46. Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
+- **Chromium Core -> 150.0.7871.46**: Updated the BotBrowser 150 release line to 150.0.7871.46. Web Platform consistency, rendering accuracy, and security patches stay aligned with upstream Chrome.
 
 ### New
 - **PAC Synthetic Responses (`RESPONSE`, `RESPONSE_FILE`, ENT Tier3)**: Trusted `BotBrowserFindProxyForRequest(...)` callbacks can now provide controlled HTTP responses directly from approved file or embedded PAC sources.
@@ -17,7 +17,7 @@
 - **Per-Context Identity Lifecycle**: Strengthened profile application rules so identity-bearing settings are established before the first page or worker starts while supported live session controls remain available afterward.
 - **Profile-Backed Permission, Font, and Canvas Behavior**: Improved permission-state replay, local font handling, multilingual fallback, and wide-gamut Canvas 2D consistency.
 - **High-Concurrency and Headless Stability**: Improved per-context stability under heavy load, kept headless profile guidance in terminal output without visible windows, and reduced benign Linux container startup diagnostics.
-- **Profile Package Guidance**: Improved startup guidance for missing, invalid, expired, and version-mismatched profile packages, with clearer access paths for Chrome 150 profiles.
+- **Profile Package Guidance**: Improved startup guidance for missing, invalid, expired, and version-mismatched profile packages, with clearer access paths for BotBrowser 150 profiles.
 
 
 ## [2026-07-06]
@@ -32,11 +32,11 @@
 
 ## [2026-07-02]
 ### Major
-- **Chromium Core -> 150.0.7871.24**: Started the Chrome 150 release line with upstream Web Platform, rendering, and security updates.
-- **Profile Distribution Update**: Starting with Chrome 150, BotBrowser no longer publishes public demo profile bundles. Use subscription profiles or contact [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support) for a profile package that matches your release line.
+- **Chromium Core -> 150.0.7871.24**: Started the BotBrowser 150 release line with upstream Web Platform, rendering, and security updates.
+- **Profile Distribution Update**: Starting with BotBrowser 150, BotBrowser no longer publishes public demo profile bundles. Use subscription profiles or contact [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support) for a profile package that matches your release line.
 
 ### Improvements
-- **Release Line Consistency**: Improved maintained Chrome 149 and Chrome 150 behavior for profile-backed browser sessions.
+- **Release Line Consistency**: Improved maintained BotBrowser 149 and BotBrowser 150 behavior for profile-backed browser sessions.
 
 
 ## [2026-06-29]

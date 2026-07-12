@@ -19,7 +19,7 @@
 
 ### 1. Get a profile
 
-Use a profile package that matches the Chrome major version of your BotBrowser binary. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). Legacy public demo profiles remain in [profiles/](../../../profiles/) for older evaluation lines.
+Use a profile package that matches the major version of your BotBrowser binary. BotBrowser 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). Legacy public demo profiles remain in [profiles/](../../../profiles/) for older evaluation lines.
 
 ### 2. Launch with a profile
 
@@ -75,11 +75,11 @@ Both approaches reuse the same base hardware model. Use [Per-Context Fingerprint
 <a id="demo-profiles"></a>
 ### Legacy Demo Profiles
 
-Public demo profiles are included in the [profiles/](../../../profiles/) directory for legacy evaluation lines through Chrome 149. Chrome 150 and newer profile packages are not published as public demo bundles.
+Public demo profiles are included in the [profiles/](../../../profiles/) directory for legacy evaluation lines through Chrome 149. BotBrowser 150 and newer profile packages are not published as public demo bundles.
 
 **Limitations:**
 - Limited-time privacy research use only
-- Available only for public demo lines published before Chrome 150
+- Available only for public demo lines published before BotBrowser 150
 - No headless mode support
 - No automation framework support (Puppeteer, Playwright)
 - No extension loading
@@ -129,7 +129,7 @@ BotBrowser distinguishes the main profile startup conditions:
 - **Legacy demo profile**: the package belongs to a published pre-150 evaluation line and keeps its documented limitations.
 - **Version mismatch**: the profile major version does not match the BotBrowser release line.
 
-Headful launches show user-facing guidance for these states. Headless Chrome 150 writes the guidance to terminal output without opening a visible window, then follows the startup failure path.
+Headful launches show user-facing guidance for these states. Headless BotBrowser 150 writes the guidance to terminal output without opening a visible window, then follows the startup failure path.
 
 ### Checking available versions
 
@@ -261,7 +261,7 @@ Platform compatibility tiers:
 | Cannot use `--bot-profile` and `--bot-profile-dir` together | `--bot-profile-dir` takes precedence. Use one or the other. |
 | Profile changes have no effect | CLI `--bot-config-*` flags override profile `configs`. Check if a CLI flag is overriding your change. |
 | "Profile is damaged" or parse errors | Re-download the profile. Ensure the file was not corrupted during transfer. |
-| Demo profile limitations | Legacy demo profiles do not support headless mode or automation frameworks. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). |
+| Demo profile limitations | Legacy demo profiles do not support headless mode or automation frameworks. BotBrowser 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). |
 
 ---
 

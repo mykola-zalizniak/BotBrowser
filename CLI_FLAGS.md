@@ -164,7 +164,7 @@ Specifies the path to the BotBrowser profile file (.enc).
 - The profile determines the fingerprint, OS emulation, and privacy controls
 - A profile is reusable and can launch multiple browser processes or BrowserContexts; it is not a one-browser slot
 - Use a unique `--user-data-dir` for every browser process to keep storage and session state independent
-- Use a profile package that matches your BotBrowser major version. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain in the [profiles directory](profiles/) for older evaluation lines.
+- Use a profile package that matches your BotBrowser major version. BotBrowser 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain in the [profiles directory](profiles/) for older evaluation lines.
 
 <a id="flag-bot-profile-dir"></a>
 ### `--bot-profile-dir`

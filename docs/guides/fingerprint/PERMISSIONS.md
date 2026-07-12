@@ -33,7 +33,7 @@ Permission state follows the loaded profile together with the browser's normal s
 
 Browser permission results are visible through web APIs, page capability checks, workers, and browser UI decisions. BotBrowser keeps these paths aligned with the selected browser and platform profile family.
 
-Chrome 150 improves profile-backed permission mapping for launch profiles and per-context profiles. Permission queries and browser-side checks follow the active BrowserContext.
+BotBrowser 150 improves profile-backed permission mapping for launch profiles and per-context profiles. Permission queries and browser-side checks follow the active BrowserContext.
 
 For Per-Context Fingerprint, set the profile before creating the first page:
 
