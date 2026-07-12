@@ -67,7 +67,7 @@ When a profile is loaded, BotBrowser uses its built-in font libraries and render
 
 ### Canvas Color Spaces
 
-Chrome 150 keeps Canvas 2D protection active for standard and wide-gamut canvas color spaces, including `display-p3`. Color-space selection follows the page request while profile-backed replay and deterministic protection remain consistent with the session.
+BotBrowser 150 keeps Canvas 2D protection active for standard and wide-gamut canvas color spaces, including `display-p3`. Color-space selection follows the page request while profile-backed replay and deterministic protection remain consistent with the session.
 
 ---
 

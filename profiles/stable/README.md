@@ -1,6 +1,6 @@
 # BotBrowser Stable Profiles
 
-Chrome 150 profiles are delivered through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support), and are not published as public demo bundles in this repository.
+BotBrowser 150 profiles are delivered through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support), and are not published as public demo bundles in this repository.
 
 | Release line | Matching BotBrowser build | Profile files |
 |--------------|---------------------------|---------------|
@@ -10,7 +10,7 @@ Chrome 150 profiles are delivered through subscription or support at [support@bo
 
 Use a profile package with the matching BotBrowser major version. For example, v149 profiles require a v149 BotBrowser binary, and v150 profiles require a v150 BotBrowser binary.
 
-> **Access:** Chrome 150 profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). Legacy demo profiles can still be launched via [CLI](../../INSTALLATION.md#download--installation) or [Launcher](../../launcher/).
+> **Access:** BotBrowser 150 profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). Legacy demo profiles can still be launched via [CLI](../../INSTALLATION.md#download--installation) or [Launcher](../../launcher/).
 
 ---
 

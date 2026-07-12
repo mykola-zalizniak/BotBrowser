@@ -81,7 +81,7 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 
 **Step 1: Download**
 - [Latest release](https://github.com/botswin/BotBrowser/releases) for your OS
-- A matching profile package. Chrome 150 profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain available for earlier evaluation lines.
+- A matching profile package. BotBrowser 150 profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain available for earlier evaluation lines.
 
 **Step 2: Launch**
 - **GUI:** Use [BotBrowserLauncher](launcher/) for one-click profile selection and multi-instance management

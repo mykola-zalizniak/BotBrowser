@@ -10,7 +10,7 @@
 
 - **Ubuntu 20.04 or later** (x86_64 or arm64).
 - **BotBrowser Ubuntu binary** installed via dpkg or the install script. See [Installation Guide](../../../INSTALLATION.md).
-- **A matching profile package** (`.enc` for production). Chrome 150 profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support).
+- **A matching profile package** (`.enc` for production). BotBrowser 150 profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support).
 - **Root or sudo access** for installing system packages.
 
 > **Note:** Ubuntu/Linux binaries require an ENT Plan Tier 1 or higher subscription.
@@ -92,7 +92,7 @@ On a headless server, BotBrowser needs a few components that are normally presen
 
 4. **Profile-based fingerprinting.** All fingerprint properties (screen resolution, fonts, GPU info, etc.) come from the profile file, not from the server hardware. This means a Windows profile running on an Ubuntu server produces identical fingerprint output.
 
-5. **Headless profile guidance.** Chrome 150 does not open visible profile guidance windows in headless mode. Missing, invalid, expired, and version-mismatched profile states are written to terminal output and the process follows the startup failure path. GUI/headful launches keep user-facing profile guidance.
+5. **Headless profile guidance.** BotBrowser 150 does not open visible profile guidance windows in headless mode. Missing, invalid, expired, and version-mismatched profile states are written to terminal output and the process follows the startup failure path. GUI/headful launches keep user-facing profile guidance.
 
 ---
 
@@ -213,8 +213,8 @@ Add to cron for periodic checks:
 | High memory usage with many instances | Each instance uses 200-500 MB. Use `--bot-profile-dir` for random profile selection instead of launching extra instances. |
 | "Operation not permitted" with `--no-sandbox` | Run as a non-root user, or use `--no-sandbox` when running as root inside containers. |
 | Zombie processes accumulating | Use `--init` in Docker or `init: true` in docker-compose. For systemd, the service manager handles this. |
-| Browser exits without opening a page | Check terminal output for missing, invalid, expired, or version-mismatched profile guidance. Headless Chrome 150 does not show a visible startup window. |
-| Container logs mention unavailable desktop or graphics services | Confirm the browser reaches its debugging endpoint and pages load. Chrome 150 suppresses several benign startup diagnostics, but host libraries and the selected graphics backend must still be configured correctly. |
+| Browser exits without opening a page | Check terminal output for missing, invalid, expired, or version-mismatched profile guidance. Headless BotBrowser 150 does not show a visible startup window. |
+| Container logs mention unavailable desktop or graphics services | Confirm the browser reaches its debugging endpoint and pages load. BotBrowser 150 suppresses several benign startup diagnostics, but host libraries and the selected graphics backend must still be configured correctly. |
 
 ---
 

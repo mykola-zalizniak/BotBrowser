@@ -357,7 +357,7 @@ Supported live session controls remain available after identity sealing when the
 
 ## High-Concurrency Tuning
 
-Chrome 150.0.7871.46 improves stability for rapid BrowserContext churn and shared graphics and request workloads under load.
+BotBrowser 150.0.7871.46 improves stability for rapid BrowserContext churn and shared graphics and request workloads under load.
 
 When running many per-context fingerprints under one browser instance (for example, 20+ concurrent BrowserContexts), launch with [`--bot-gpu-emulation=priority`](CLI_FLAGS.md#flag-bot-gpu-emulation) to prioritize GPU and WebGPU command-buffer scheduling across sibling contexts. Default behavior is unchanged; this is an opt-in mode for high-concurrency workloads. See [`--bot-gpu-emulation` modes](docs/guides/deployment/LINUX_GPU_BACKEND.md#gpu-emulation-modes).
 
