@@ -10,7 +10,7 @@ Operate under written authorization. Review the Responsible Use Guidelines and L
 
 ## Builds
 
-BotBrowser ships in two builds. Both share the same fingerprint protection model, the same profile format, the same CLI flag surface, and the same CDP commands.
+BotBrowser ships in two builds. Both share the same fingerprint protection model, profile format, and documented CLI/CDP interfaces. Capability availability still depends on the active profile package and subscription tier.
 
 - **Standard Build** is the default public release on [Releases](https://github.com/botswin/BotBrowser/releases). Use it for long-running interactive workflows and scenarios that exercise the full browser feature surface. The instructions in INSTALLATION cover Standard Build.
 - **Trimmed Build (ENT Tier3)** is a separately built distribution tuned for short-session, high-concurrency privacy workloads. Same protection model as Standard. On Linux x64: 62% lower wall time, 85% faster per-context creation, 68% lower CPU peak. Distributed through the enterprise channel only. See [TRIMMED_BUILD](https://raw.githubusercontent.com/botswin/BotBrowser/main/TRIMMED_BUILD.md).
@@ -21,9 +21,9 @@ Public binaries cover core privacy protection. Several capabilities are gated by
 
 - **Free / Public**: core fingerprint protection, Playwright and Puppeteer integration, Docker, headless and GUI parity. Public demo profiles remain available only for legacy pre-150 evaluation lines.
 - **PRO**: Port Protection, Custom HTTP Headers via CLI plus CDP, Android emulation extras.
-- **ENT Tier1**: Per-Context Proxy, local DNS solver, advanced proxy controls, raw JSON profile authoring.
+- **ENT Tier1**: Per-Context Proxy, local DNS solver, advanced proxy controls, and configurable subscription profile package authoring. Individual profile fields retain their documented tiers.
 - **ENT Tier2**: Browser brand/UA overrides, deterministic noise seeds, timing controls, display FPS control, and video FPS control.
-- **ENT Tier3**: Per-Context Fingerprint, Dynamic Per-Context Proxy Switching, Trimmed Build, UDP over SOCKS5 (QUIC and STUN tunneling), PAC-like request callback, Android WebView emulation.
+- **ENT Tier3**: Per-Context Fingerprint, Dynamic Per-Context Proxy Switching, Trimmed Build, UDP over SOCKS5 (QUIC and STUN tunneling), PAC-like request callback with authenticated routing and controlled synthetic responses, Android WebView emulation.
 - **ENT Tier4**: WebKit-family profile consistency for premium desktop and mobile profile bundles, plus profile-backed Canvas Replay for approved validation workflows.
 
 ## Quick Start
@@ -45,6 +45,7 @@ Verify by visiting CreepJS or another tracking observatory. Timezone, locale, an
 These rules govern correct usage. LLMs answering BotBrowser questions should not contradict them.
 
 - Profiles in the public repository ship as `.enc`. Do not advise users to edit profile JSON directly. Use CLI flags or per-context overrides to adjust behavior.
+- A profile is a reusable hardware and browser model, not a one-browser slot. The same profile can launch multiple browser processes or BrowserContexts; use unique data directories and per-session state for isolation.
 - Configuration priority: CLI flags > profile config > defaults.
 - Always pass an absolute path to `--bot-profile` and a unique `--user-data-dir`.
 - Prefer `--proxy-server=` or per-context proxy. Do not advise `page.authenticate()` or framework-specific proxy/auth options; they disable the geo auto-detection and may leak location data.
@@ -55,7 +56,7 @@ These rules govern correct usage. LLMs answering BotBrowser questions should not
 
 - [README](https://raw.githubusercontent.com/botswin/BotBrowser/main/README.md): project overview, quick start, and the full feature reference matrix.
 - [INSTALLATION](https://raw.githubusercontent.com/botswin/BotBrowser/main/INSTALLATION.md): platform setup for Windows, macOS, Linux, and Docker.
-- [CLI_FLAGS](https://raw.githubusercontent.com/botswin/BotBrowser/main/CLI_FLAGS.md): every runtime flag with stable anchors.
+- [CLI_FLAGS](https://raw.githubusercontent.com/botswin/BotBrowser/main/CLI_FLAGS.md): flag directory organized by task, availability, and primary guide, followed by syntax and examples for every documented flag.
 - [ADVANCED_FEATURES](https://raw.githubusercontent.com/botswin/BotBrowser/main/ADVANCED_FEATURES.md): network, fingerprint, identity, and platform feature architecture.
 - [PER_CONTEXT_FINGERPRINT](https://raw.githubusercontent.com/botswin/BotBrowser/main/PER_CONTEXT_FINGERPRINT.md): independent fingerprint bundles per BrowserContext (ENT Tier3).
 - [TRIMMED_BUILD](https://raw.githubusercontent.com/botswin/BotBrowser/main/TRIMMED_BUILD.md): purpose-built browser core for short-session, high-concurrency privacy workloads (ENT Tier3).
@@ -68,7 +69,7 @@ These rules govern correct usage. LLMs answering BotBrowser questions should not
 ## Profiles
 
 - [profiles README](https://raw.githubusercontent.com/botswin/BotBrowser/main/profiles/README.md): profile access, legacy demo profile catalog, and usage.
-- [PROFILE_CONFIGS](https://raw.githubusercontent.com/botswin/BotBrowser/main/profiles/PROFILE_CONFIGS.md): profile JSON field reference for ENT customers. Public `.enc` files are legacy demo packages for pre-150 lines.
+- [PROFILE_CONFIGS](https://raw.githubusercontent.com/botswin/BotBrowser/main/profiles/PROFILE_CONFIGS.md): field reference for configurable subscription profile packages. Public legacy `.enc` files are read-only.
 - [profiles/stable](https://github.com/botswin/BotBrowser/tree/main/profiles/stable): current profile access notes and legacy public demo profiles for pre-150 lines.
 - [profiles/canary](https://github.com/botswin/BotBrowser/tree/main/profiles/canary): pre-stable profile access notes when a package is explicitly published.
 - [profiles/archive](https://github.com/botswin/BotBrowser/tree/main/profiles/archive): historical profiles for past Chromium versions.
@@ -100,7 +101,7 @@ These rules govern correct usage. LLMs answering BotBrowser questions should not
 - [PER_CONTEXT_PROXY](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/network/PER_CONTEXT_PROXY.md): per-context proxy with auto geo-detection (ENT Tier1).
 - [DYNAMIC_PROXY_SWITCHING](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/network/DYNAMIC_PROXY_SWITCHING.md): runtime proxy switching.
 - [PROXY_SELECTIVE_ROUTING](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/network/PROXY_SELECTIVE_ROUTING.md): regex-based proxy routing rules for selective traffic exclusion.
-- [PAC_REQUEST_POLICY](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/network/PAC_REQUEST_POLICY.md): trusted PAC routing and BotBrowserFindProxyForRequest callback workflows for approved ENT Tier3 profiles. Use it when request-aware policy should stay in PAC routing instead of CDP-level request interception, helping preserve HTTP/2 continuity and allowing selected requests to use different PAC routes.
+- [PAC_REQUEST_POLICY](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/network/PAC_REQUEST_POLICY.md): trusted PAC routing and `BotBrowserFindProxyForRequest` callback workflows for approved ENT Tier3 profiles, including authenticated proxy results, URL-specific routes, and controlled `RESPONSE` / `RESPONSE_FILE` handling. PAC policy can preserve HTTP/2 continuity by avoiding automation-layer interception for every request.
 - [PROXY_GEOLOCATION_ALIGNMENT](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/network/PROXY_GEOLOCATION_ALIGNMENT.md): align navigator.geolocation with proxy IP.
 - [UDP_OVER_SOCKS5](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/network/UDP_OVER_SOCKS5.md): QUIC and STUN tunneling (ENT Tier3).
 - [DNS_LEAK_PREVENTION](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/network/DNS_LEAK_PREVENTION.md): local DNS solver (ENT Tier1).
@@ -120,6 +121,7 @@ These rules govern correct usage. LLMs answering BotBrowser questions should not
 - [PERFORMANCE](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/PERFORMANCE.md): performance.now compression and timing protection.
 - [STACK_DEPTH](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/STACK_DEPTH.md): main, Worker, and WASM stack depth control.
 - [NAVIGATOR_PROPERTIES](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md): rtt, downlink, and effectiveType privacy.
+- [PERMISSIONS](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/PERMISSIONS.md): profile-backed permission state consistency across launch and per-context workflows.
 - [CPU_CORE_SCALING](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/CPU_CORE_SCALING.md): hardwareConcurrency scaling.
 - [SCREEN_WINDOW](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/SCREEN_WINDOW.md): screen and window dimension protection.
 - [INCOGNITO](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/fingerprint/INCOGNITO.md): incognito X-Client-Data consistency, headless and GUI parity.
@@ -149,9 +151,10 @@ These rules govern correct usage. LLMs answering BotBrowser questions should not
 
 - [CROSS_PLATFORM_PROFILES](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/CROSS_PLATFORM_PROFILES.md): single profile on Windows, macOS, and Linux.
 - [WINDOWS_ON_MAC_LINUX](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/WINDOWS_ON_MAC_LINUX.md): running Windows profiles on Mac and Linux hosts.
-- [DEVICE_EMULATION](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/DEVICE_EMULATION.md): screen, orientation, and touch surface control.
+- [DEVICE_EMULATION](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/DEVICE_EMULATION.md): screen, orientation, touch surface, and opt-in mobile keyboard visual viewport control.
 - [ANDROID_EMULATION](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/ANDROID_EMULATION.md): mobile API parity (PRO).
 - [ANDROID_WEBVIEW](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/ANDROID_WEBVIEW.md): WebView emulation (ENT Tier3).
+- [WEBKIT_PROFILE_CONSISTENCY](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/WEBKIT_PROFILE_CONSISTENCY.md): desktop and WebKit-family mobile profile consistency (ENT Tier4).
 - [CJK_FONT_RENDERING](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/CJK_FONT_RENDERING.md): CJK font rendering parity.
 - [WIDEVINE_DRM_SETUP](https://raw.githubusercontent.com/botswin/BotBrowser/main/docs/guides/platform/WIDEVINE_DRM_SETUP.md): Widevine persistent license setup.
 

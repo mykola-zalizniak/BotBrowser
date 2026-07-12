@@ -46,7 +46,7 @@ BotBrowser normalizes incognito-related differences at the browser engine level:
 
 4. **Timing consistency.** Storage operation timing is normalized to match profile expectations across both browsing modes.
 
-5. **`X-Client-Data` header consistency.** With [`--bot-enable-variations-in-context`](../../../CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2), incognito contexts send `X-Client-Data` headers on Google domains, same as regular browsing.
+5. **`X-Client-Data` header consistency.** With [`--bot-enable-variations-in-context`](../../../CLI_FLAGS.md#flag-bot-enable-variations-in-context) (ENT Tier2), incognito contexts send `X-Client-Data` headers on Google domains, same as regular browsing.
 
 ---
 

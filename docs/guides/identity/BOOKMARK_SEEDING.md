@@ -161,7 +161,7 @@ const browser = await chromium.launch({
 
 - [Cookie Management](COOKIE_MANAGEMENT.md). Inject cookies for session restoration.
 - [History Seeding](HISTORY_SEEDING.md). Add browsing history for privacy protection.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#--bot-bookmarks). Full flag documentation.
+- [`--bot-bookmarks`](../../../CLI_FLAGS.md#flag-bot-bookmarks). CLI values and availability.
 
 ---
 

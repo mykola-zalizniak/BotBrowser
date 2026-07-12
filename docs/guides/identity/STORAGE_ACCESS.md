@@ -158,7 +158,7 @@ Handle extracted data responsibly:
 
 ---
 
-**Related documentation:** [Storage Access Examples](../../../examples/storage-access/) | [Cookie Management CLI Flag](../../../CLI_FLAGS.md#--bot-cookies)
+**Related documentation:** [Storage Access Examples](../../../examples/storage-access/) | [`--bot-cookies`](../../../CLI_FLAGS.md#flag-bot-cookies)
 
 ---
 

@@ -31,6 +31,14 @@
   <img width="600" alt="BotBrowser GUI - Your Command Center" src="https://github.com/user-attachments/assets/0f003494-ec92-4c3a-b879-b08d3521a0fb">
 </div>
 
+<p align="center">
+  <a href="INSTALLATION.md">Install</a> |
+  <a href="CLI_FLAGS.md#flag-directory">CLI Flags</a> |
+  <a href="docs/guides/README.md">Guides</a> |
+  <a href="ADVANCED_FEATURES.md#capabilities-index">Advanced Features</a> |
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
+
 ---
 ## What Is BotBrowser?
 
@@ -73,7 +81,7 @@ All engineering focuses on privacy research, cross-platform tracking-resistance 
 
 **Step 1: Download**
 - [Latest release](https://github.com/botswin/BotBrowser/releases) for your OS
-- [Demo profile](profiles/) (any `.enc` file)
+- A matching profile package. BotBrowser 150 profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain available for earlier evaluation lines.
 
 **Step 2: Launch**
 - **GUI:** Use [BotBrowserLauncher](launcher/) for one-click profile selection and multi-instance management
@@ -112,14 +120,15 @@ await page.goto('https://abrahamjuliot.github.io/creepjs/');
 Examples: [Playwright](examples/playwright/) • [Puppeteer](examples/puppeteer/)
 
 **More options:**
-- Framework-less approach: [`--bot-script`](CLI_FLAGS.md#--bot-script) + [CDP](examples/bot-script/) (privileged context, earlier hook, fewer artifacts)
+- Framework-less approach: [`--bot-script`](CLI_FLAGS.md#flag-bot-script) + [CDP](examples/bot-script/) (privileged context, earlier hook, fewer artifacts)
 - Docker: [docker/README.md](docker/)
-- Full flags: [CLI_FLAGS.md](CLI_FLAGS.md)
+- Full flags: [CLI Flag Directory](CLI_FLAGS.md#flag-directory)
+- Setup guides: [docs/guides](docs/guides/)
 
 <a id="builds"></a>
 ## Builds
 
-BotBrowser ships in two builds. Both share the same fingerprint protection model, the same profile format, the same CLI flag surface, and the same CDP commands.
+BotBrowser ships in two builds. Both share the same fingerprint protection model, profile format, and documented CLI/CDP interfaces. Capability availability still depends on the active profile package and subscription tier.
 
 | | Standard Build | Trimmed Build (ENT Tier3) |
 |---|---|---|
@@ -140,46 +149,50 @@ Product overview, engineering design, FAQ: [TRIMMED_BUILD.md](TRIMMED_BUILD.md).
 
 > Configuration priority: [CLI flags](CLI_FLAGS.md) (highest) > [Profile configs](profiles/PROFILE_CONFIGS.md) > defaults. Timezone, locale, and language auto-derive from your proxy IP.
 
+<details>
+<summary><strong>Browse full feature catalog</strong></summary>
+
 ### Network & Proxy
 
 | Feature | Reference | Guide |
 |---------|-----------|-------|
-| Proxy with embedded credentials (HTTP/SOCKS5/SOCKS5H) | [Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration) | [Guide](https://botbrowser.io/docs/network/proxy-configuration/) |
-| Regex-based proxy routing rules | [--proxy-bypass-rgx](CLI_FLAGS.md#--proxy-bypass-rgx) | [Guide](https://botbrowser.io/docs/network/proxy-selective-routing/) |
-| Per-context proxy with auto geo-detection | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [Guide](https://botbrowser.io/docs/network/per-context-proxy/) |
-| Dynamic proxy switching at runtime | [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching) | [Guide](https://botbrowser.io/docs/network/dynamic-proxy-switching/) |
-| UDP over SOCKS5 (QUIC/STUN tunneling) | [UDP over SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) | [Guide](https://botbrowser.io/docs/network/udp-over-socks5/) |
-| PAC-like request callback (ENT Tier3) | [PAC-Like Request Callback](CLI_FLAGS.md#pac-request-policy-ent-tier3) | [Guide](docs/guides/network/PAC_REQUEST_POLICY.md) |
-| Local DNS solver | [--bot-local-dns](CLI_FLAGS.md#--bot-local-dns-ent-tier1) | [Guide](https://botbrowser.io/docs/network/dns-leak-prevention/) |
-| Port protection for local services | [--bot-port-protection](CLI_FLAGS.md#--bot-port-protection-pro) | [Guide](https://botbrowser.io/docs/network/port-protection/) |
-| WebRTC leak protection (SDP/ICE control) | [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection) | [Guide](https://botbrowser.io/docs/network/webrtc-leak-prevention/) |
+| Proxy with embedded credentials (HTTP/SOCKS5/SOCKS5H) | [--proxy-server](CLI_FLAGS.md#flag-proxy-server) | [Guide](docs/guides/network/PROXY_CONFIGURATION.md) |
+| Regex-based proxy routing rules | [--proxy-bypass-rgx](CLI_FLAGS.md#flag-proxy-bypass-rgx) | [Guide](docs/guides/network/PROXY_SELECTIVE_ROUTING.md) |
+| Per-context proxy with auto geo-detection | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [Guide](docs/guides/network/PER_CONTEXT_PROXY.md) |
+| Dynamic proxy switching at runtime | [Dynamic Proxy Switching](ADVANCED_FEATURES.md#dynamic-proxy-switching) | [Guide](docs/guides/network/DYNAMIC_PROXY_SWITCHING.md) |
+| UDP over SOCKS5 (QUIC/STUN tunneling) | [UDP over SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) | [Guide](docs/guides/network/UDP_OVER_SOCKS5.md) |
+| PAC-like request callback and synthetic responses (ENT Tier3) | [`--proxy-pac-url`](CLI_FLAGS.md#flag-proxy-pac-url) | [Guide](docs/guides/network/PAC_REQUEST_POLICY.md) |
+| Local DNS solver | [--bot-local-dns](CLI_FLAGS.md#flag-bot-local-dns) | [Guide](docs/guides/network/DNS_LEAK_PREVENTION.md) |
+| Port protection for local services | [--bot-port-protection](CLI_FLAGS.md#flag-bot-port-protection) | [Guide](docs/guides/network/PORT_PROTECTION.md) |
+| WebRTC leak protection (SDP/ICE control) | [WebRTC Leak Protection](ADVANCED_FEATURES.md#webrtc-leak-protection) | [Guide](docs/guides/network/WEBRTC_LEAK_PREVENTION.md) |
 
 ### Fingerprint & Rendering
 
 | Feature | Reference | Guide |
 |---------|-----------|-------|
-| Canvas / WebGL / WebGPU deterministic noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Canvas](https://botbrowser.io/docs/fingerprint/canvas/) · [WebGL](https://botbrowser.io/docs/fingerprint/webgl/) |
-| AudioContext noise calibration | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Guide](https://botbrowser.io/docs/fingerprint/audio/) |
-| Text metrics & ClientRects noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Guide](https://botbrowser.io/docs/fingerprint/font/) |
-| Deterministic noise seeds (reproducible per-tenant) | [--bot-noise-seed](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](https://botbrowser.io/docs/fingerprint/noise-seed-reproducibility/) |
-| Performance timing protection (27 browser operations) | [Performance Timing Protection](ADVANCED_FEATURES.md#performance-timing-protection) | [Guide](https://botbrowser.io/docs/fingerprint/performance/) |
-| Video FPS control for media workloads | [--bot-video-fps](CLI_FLAGS.md#--bot-video-fps) | [Guide](docs/guides/fingerprint/FPS_CONTROL.md#video-fps-control) |
-| Stack depth fingerprint control (main/Worker/WASM) | [Stack Depth Control](ADVANCED_FEATURES.md#stack-depth-control) | [Guide](https://botbrowser.io/docs/fingerprint/stack-depth/) |
-| Memory and storage quota control | [--bot-js-heap-size-limit / --bot-storage-quota](CLI_FLAGS.md#--bot-js-heap-size-limit) | [Guide](docs/guides/fingerprint/STORAGE_QUOTA.md#runtime-overrides) |
-| Network information privacy (rtt/downlink/effectiveType) | [Network Info Privacy](ADVANCED_FEATURES.md#network-info-privacy) | [Guide](https://botbrowser.io/docs/fingerprint/navigator-properties/) |
-| CPU core scaling protection | [CPU Core Scaling](ADVANCED_FEATURES.md#cpu-core-scaling) | [Guide](https://botbrowser.io/docs/fingerprint/cpu-core-scaling/) |
-| Cross-platform font engine (Win/Mac/Android) | [Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) | [Guide](https://botbrowser.io/docs/fingerprint/font/) |
-| GPU simulation on headless servers | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) | [Guide](https://botbrowser.io/docs/fingerprint/incognito/) |
+| Canvas / WebGL / WebGPU deterministic noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Canvas](docs/guides/fingerprint/CANVAS.md) · [WebGL](docs/guides/fingerprint/WEBGL.md) |
+| AudioContext noise calibration | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Guide](docs/guides/fingerprint/AUDIO.md) |
+| Text metrics & ClientRects noise | [Multi-Layer Noise](ADVANCED_FEATURES.md#multi-layer-fingerprint-noise) | [Guide](docs/guides/fingerprint/FONT.md) |
+| Deterministic noise seeds (reproducible per-tenant) | [--bot-noise-seed](CLI_FLAGS.md#flag-bot-noise-seed) | [Guide](docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md) |
+| Performance timing protection (27 browser operations) | [Performance Timing Protection](ADVANCED_FEATURES.md#performance-timing-protection) | [Guide](docs/guides/fingerprint/PERFORMANCE.md) |
+| Video FPS control for media workloads | [--bot-video-fps](CLI_FLAGS.md#flag-bot-video-fps) | [Guide](docs/guides/fingerprint/FPS_CONTROL.md#video-fps-control) |
+| Stack depth fingerprint control (main/Worker/WASM) | [Stack Depth Control](ADVANCED_FEATURES.md#stack-depth-control) | [Guide](docs/guides/fingerprint/STACK_DEPTH.md) |
+| Memory and storage quota control | [--bot-js-heap-size-limit / --bot-storage-quota](CLI_FLAGS.md#flag-bot-js-heap-size-limit) | [Guide](docs/guides/fingerprint/STORAGE_QUOTA.md#runtime-overrides) |
+| Network information privacy (rtt/downlink/effectiveType) | [Network Info Privacy](ADVANCED_FEATURES.md#network-info-privacy) | [Guide](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md) |
+| CPU core scaling protection | [CPU Core Scaling](ADVANCED_FEATURES.md#cpu-core-scaling) | [Guide](docs/guides/fingerprint/CPU_CORE_SCALING.md) |
+| Cross-platform font engine (Win/Mac/Android) | [Font Engine](ADVANCED_FEATURES.md#cross-platform-font-engine) | [Guide](docs/guides/fingerprint/FONT.md) |
+| Profile-backed permission states | [Complete Fingerprint Control](ADVANCED_FEATURES.md#complete-fingerprint-control) | [Guide](docs/guides/fingerprint/PERMISSIONS.md) |
+| GPU simulation on headless servers | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) | [Guide](docs/guides/fingerprint/INCOGNITO.md) |
 
 ### Identity & Platform
 
 | Feature | Reference | Guide |
 |---------|-----------|-------|
-| Cross-platform profile portability (Win / Mac / Linux) | [Advanced Features](ADVANCED_FEATURES.md) | [Guide](https://botbrowser.io/docs/platform/cross-platform-profiles/) |
-| Browser brand switching (Chrome/Edge/Brave/Opera) | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](https://botbrowser.io/docs/identity/browser-brand-alignment/) |
-| Custom User-Agent with full userAgentData control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](https://botbrowser.io/docs/identity/custom-user-agent/) |
-| Client Hints alignment (DPR, device-memory, UA-CH) | [Browser & OS](ADVANCED_FEATURES.md#browser-os-fingerprinting) | [Guide](https://botbrowser.io/docs/fingerprint/navigator-properties/) |
-| Android WebView emulation | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](https://botbrowser.io/docs/platform/android-webview/) |
+| Cross-platform profile portability (Win / Mac / Linux) | [Advanced Features](ADVANCED_FEATURES.md) | [Guide](docs/guides/platform/CROSS_PLATFORM_PROFILES.md) |
+| Browser brand switching (Chrome/Edge/Brave/Opera) | [`--bot-config-browser-brand`](CLI_FLAGS.md#flag-bot-config-browser-brand) | [Guide](docs/guides/identity/BROWSER_BRAND_ALIGNMENT.md) |
+| Custom User-Agent with full userAgentData control | [`--bot-config-ua-full-version`](CLI_FLAGS.md#flag-bot-config-ua-full-version) | [Guide](docs/guides/identity/CUSTOM_USER_AGENT.md) |
+| Client Hints alignment (DPR, device-memory, UA-CH) | [Browser & OS](ADVANCED_FEATURES.md#browser-os-fingerprinting) | [Guide](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md) |
+| Android WebView emulation | [`--bot-config-browser-brand`](CLI_FLAGS.md#flag-bot-config-browser-brand) | [Guide](docs/guides/platform/ANDROID_WEBVIEW.md) |
 | WebKit-family profile consistency (ENT Tier4) | [Feature Page](WEBKIT_PROFILE_CONSISTENCY.md) | [Guide](docs/guides/platform/WEBKIT_PROFILE_CONSISTENCY.md) |
 | Chrome behavior emulation (HTTP/2, HTTP/3, headers) | [Chrome Behavior](ADVANCED_FEATURES.md#chrome-behavior-emulation) | |
 
@@ -187,31 +200,34 @@ Product overview, engineering design, FAQ: [TRIMMED_BUILD.md](TRIMMED_BUILD.md).
 
 | Feature | Reference | Guide |
 |---------|-----------|-------|
-| Playwright / Puppeteer integration | [Examples](examples/) | [Playwright](https://botbrowser.io/docs/getting-started/playwright/) · [Puppeteer](https://botbrowser.io/docs/getting-started/puppeteer/) |
-| Framework-less bot-script (chrome.debugger API) | [--bot-script](CLI_FLAGS.md#--bot-script) | [Guide](https://botbrowser.io/docs/getting-started/bot-script/) |
-| Per-context fingerprint (multiple profiles per process) | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [Guide](https://botbrowser.io/docs/identity/multi-account-isolation/) |
-| Console message suppression | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](https://botbrowser.io/docs/fingerprint/console-suppression/) |
-| Headless / GUI parity | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) | [Guide](https://botbrowser.io/docs/fingerprint/incognito/) |
-| Mirror: distributed privacy consistency | [Mirror Documentation](tools/mirror/) | [Guide](https://botbrowser.io/docs/deployment/mirror-distributed/) |
-| CanvasLab: Canvas 2D / WebGL / WebGL2 recorder and ENT Tier4 Canvas Replay | [--bot-canvas-record-file](CLI_FLAGS.md#--bot-canvas-record-file) | [Guide](https://botbrowser.io/docs/proof/canvaslab/) |
-| AudioLab: Web Audio API recorder | [--bot-audio-record-file](CLI_FLAGS.md#--bot-audio-record-file) | [Guide](https://botbrowser.io/docs/proof/audiolab/) |
-| V8Log Forensics | [--bot-v8-log](CLI_FLAGS.md#--bot-v8-log) | [Guide](docs/guides/getting-started/V8LOG.md) · [Tool](tools/v8log/) |
+| Playwright / Puppeteer integration | [Examples](examples/) | [Playwright](docs/guides/getting-started/PLAYWRIGHT.md) · [Puppeteer](docs/guides/getting-started/PUPPETEER.md) |
+| Framework-less bot-script (chrome.debugger API) | [--bot-script](CLI_FLAGS.md#flag-bot-script) | [Guide](docs/guides/getting-started/BOT_SCRIPT.md) |
+| Per-context fingerprint (multiple profiles per process) | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [Guide](docs/guides/identity/MULTI_ACCOUNT_ISOLATION.md) |
+| Console message suppression | [--bot-disable-console-message](CLI_FLAGS.md#flag-bot-disable-console-message) | [Guide](docs/guides/fingerprint/CONSOLE_SUPPRESSION.md) |
+| Headless / GUI parity | [Headless Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) | [Guide](docs/guides/fingerprint/INCOGNITO.md) |
+| Mirror: distributed privacy consistency | [Mirror Documentation](tools/mirror/) | [Guide](docs/guides/deployment/MIRROR_DISTRIBUTED.md) |
+| CanvasLab: Canvas 2D / WebGL / WebGL2 recorder and ENT Tier4 Canvas Replay | [--bot-canvas-record-file](CLI_FLAGS.md#flag-bot-canvas-record-file) | [Guide](docs/guides/getting-started/CANVASLAB.md) |
+| AudioLab: Web Audio API recorder | [--bot-audio-record-file](CLI_FLAGS.md#flag-bot-audio-record-file) | [Guide](docs/guides/getting-started/AUDIOLAB.md) |
+| V8Log Forensics | [--bot-v8-log](CLI_FLAGS.md#flag-bot-v8-log) | [Guide](docs/guides/getting-started/V8LOG.md) · [Tool](tools/v8log/) |
 
 ### Session & Behavior
 
 | Feature | Reference | Guide |
 |---------|-----------|-------|
-| Cookie management (inline JSON or file) | [--bot-cookies](CLI_FLAGS.md#--bot-cookies) | [Guide](https://botbrowser.io/docs/identity/cookie-management/) |
-| Bookmark injection | [--bot-bookmarks](CLI_FLAGS.md#--bot-bookmarks) | [Guide](https://botbrowser.io/docs/identity/bookmark-seeding/) |
-| History injection (random or precise count) | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](https://botbrowser.io/docs/identity/history-seeding/) |
-| Incognito `X-Client-Data` consistency | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](https://botbrowser.io/docs/fingerprint/incognito/) |
-| Always-active windows (anti-focus-tracking) | [Active Window](ADVANCED_FEATURES.md#active-window-emulation) | [Guide](https://botbrowser.io/docs/fingerprint/active-window/) |
-| Custom HTTP headers (CLI + CDP) | [--bot-custom-headers](CLI_FLAGS.md#--bot-custom-headers-pro) | [Guide](https://botbrowser.io/docs/network/custom-http-headers/) |
-| Plaintext storage access (cookies, localStorage) | [Storage Access](examples/storage-access/) | [Guide](https://botbrowser.io/docs/identity/storage-access/) |
-| Precision FPS simulation | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](https://botbrowser.io/docs/fingerprint/fps-control/) |
-| Timing scale (performance.now compression) | [Behavior Toggles](CLI_FLAGS.md#behavior--protection-toggles) | [Guide](https://botbrowser.io/docs/fingerprint/performance/) |
-| Window/screen dimension control | [Profile Overrides](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](https://botbrowser.io/docs/platform/device-emulation/) |
-| Mobile screen orientation control | [--bot-config-orientation](CLI_FLAGS.md#profile-configuration-override-flags) | [Guide](https://botbrowser.io/docs/platform/device-emulation/) |
+| Cookie management (inline JSON or file) | [--bot-cookies](CLI_FLAGS.md#flag-bot-cookies) | [Guide](docs/guides/identity/COOKIE_MANAGEMENT.md) |
+| Bookmark injection | [--bot-bookmarks](CLI_FLAGS.md#flag-bot-bookmarks) | [Guide](docs/guides/identity/BOOKMARK_SEEDING.md) |
+| History injection (random or precise count) | [--bot-inject-random-history](CLI_FLAGS.md#flag-bot-inject-random-history) | [Guide](docs/guides/identity/HISTORY_SEEDING.md) |
+| Incognito `X-Client-Data` consistency | [--bot-enable-variations-in-context](CLI_FLAGS.md#flag-bot-enable-variations-in-context) | [Guide](docs/guides/fingerprint/INCOGNITO.md) |
+| Always-active windows (anti-focus-tracking) | [Active Window](ADVANCED_FEATURES.md#active-window-emulation) | [Guide](docs/guides/fingerprint/ACTIVE_WINDOW.md) |
+| Custom HTTP headers (CLI + CDP) | [--bot-custom-headers](CLI_FLAGS.md#flag-bot-custom-headers) | [Guide](docs/guides/network/CUSTOM_HTTP_HEADERS.md) |
+| Plaintext storage access (cookies, localStorage) | [Storage Access](examples/storage-access/) | [Guide](docs/guides/identity/STORAGE_ACCESS.md) |
+| Precision FPS simulation | [--bot-fps](CLI_FLAGS.md#flag-bot-fps) | [Guide](docs/guides/fingerprint/FPS_CONTROL.md) |
+| Timing scale (performance.now compression) | [--bot-time-scale](CLI_FLAGS.md#flag-bot-time-scale) | [Guide](docs/guides/fingerprint/PERFORMANCE.md) |
+| Window/screen dimension control | [--bot-config-window](CLI_FLAGS.md#flag-bot-config-window) | [Guide](docs/guides/fingerprint/SCREEN_WINDOW.md) |
+| Mobile screen orientation control | [--bot-config-orientation](CLI_FLAGS.md#flag-bot-config-orientation) | [Guide](docs/guides/platform/DEVICE_EMULATION.md) |
+| Mobile keyboard visual viewport control | [--bot-mobile-keyboard](CLI_FLAGS.md#flag-bot-mobile-keyboard) | [Guide](docs/guides/platform/DEVICE_EMULATION.md#mobile-keyboard-visual-viewport) |
+
+</details>
 
 <details>
 <summary><strong>Fingerprint Protection Implementation: Privacy Controls → Technical Design → Validation</strong></summary>
@@ -232,7 +248,7 @@ This reference maps privacy protection goals to BotBrowser implementation detail
 | Header to API parity | Client Hints headers DPR, device-memory, and UA-CH align with JavaScript reported values preventing header based identification | [ADVANCED_FEATURES#Browser & OS Fingerprinting](ADVANCED_FEATURES.md#browser-os-fingerprinting) |
 | Execution mode parity | GPU, WebGPU, and media signals remain identical whether running headless or in GUI mode | [ADVANCED_FEATURES#Headless & Incognito Compatibility](ADVANCED_FEATURES.md#headless-incognito-compatibility) |
 | DNS privacy | Use local DNS solver (ENT Tier1) for private resolution that avoids DNS leaks and provider restrictions, or use SOCKS5H to keep DNS within proxy tunnels | [CLI_FLAGS#Enhanced Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration) |
-| Public IP discovery | Customizable IP lookup backend for geo derivation via `--bot-ip-service` (supports comma-separated endpoints; BotBrowser races them and uses the fastest successful response) | [CLI_FLAGS#Enhanced Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration) |
+| Public IP discovery | Customizable IP lookup backend for geo derivation via `--bot-ip-service`; comma-separated endpoints are tried one at a time, with fallback when the active endpoint is unavailable | [CLI_FLAGS#--bot-ip-service](CLI_FLAGS.md#flag-bot-ip-service) |
 | Protocol conformance | HTTP/2 and HTTP/3 behavior matches Chrome specifications preventing protocol based differentiation | [ADVANCED_FEATURES#Chrome Behavior Emulation](ADVANCED_FEATURES.md#chrome-behavior-emulation) |
 | TLS behavior consistency | Network protocol behavior aligned with the active profile family across supported platforms | [CHANGELOG](CHANGELOG.md) |
 | DRM capability consistency | Widevine persistent license support with platform-appropriate license negotiation prevents tracking via EME capability fingerprinting | [ADVANCED_FEATURES](ADVANCED_FEATURES.md#complete-fingerprint-control) |
@@ -300,7 +316,7 @@ BotBrowser's engine is built in-house on top of Chromium, with no forks or exter
 
 ### Documentation
 
-- [Guides](https://botbrowser.io/docs/) - Step-by-step guides for proxy, fingerprint, identity, platform emulation, and deployment
+- [Guides](docs/guides/README.md) - Setup and troubleshooting by workflow
 - [llms.txt](llms.txt) - Indexed entry point for LLMs (project summary plus links to core docs and guides)
 - [Installation Guide](INSTALLATION.md) - Platform-specific setup, Docker deployment, troubleshooting
 - [Advanced Features](ADVANCED_FEATURES.md) - Architecture and design details

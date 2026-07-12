@@ -72,6 +72,8 @@ Screen and display characteristics are controlled through profile configuration:
 
 BotBrowser normalizes all CSS-related signals at the browser engine level. Color scheme, feature availability, rendering behavior, and system colors all match the profile's declared platform regardless of the host OS.
 
+BotBrowser 150 expands profile-backed browser-family consistency for CSS interface shape, supported feature inventory, computed style output, system colors, system fonts, and mobile CSS behavior. WebKit-family profiles apply their own profile family rules without changing Chromium-family sessions.
+
 ---
 
 <a id="troubleshooting"></a>

@@ -324,6 +324,7 @@ Expected. Different software rasterizers produce different pixel output for the 
 
 ## Related Documentation
 
+
 - [Headless Server Setup](HEADLESS_SERVER_SETUP.md) - base Xvfb and system package setup
 - [Docker Deployment](DOCKER_DEPLOYMENT.md) - full container template
 - [Performance Optimization](PERFORMANCE_OPTIMIZATION.md) - other levers for startup and throughput
@@ -331,7 +332,7 @@ Expected. Different software rasterizers produce different pixel output for the 
 - [WebGPU Fingerprint Protection](../fingerprint/WEBGPU.md) - how WebGPU adapter surfaces are controlled
 - [WebGL Fingerprinting](../fingerprint/WEBGL.md) - WebGL parameter consistency
 - [Noise Seed Reproducibility](../fingerprint/NOISE_SEED_REPRODUCIBILITY.md) - deterministic variance under `--bot-noise-seed`
-- [CLI Flags: `--bot-gpu-emulation`](../../../CLI_FLAGS.md#--bot-gpu-emulation) and [`--bot-noise-seed`](../../../CLI_FLAGS.md#--bot-noise-seed)
+- [CLI Flags: `--bot-gpu-emulation`](../../../CLI_FLAGS.md#flag-bot-gpu-emulation) and [`--bot-noise-seed`](../../../CLI_FLAGS.md#flag-bot-noise-seed)
 
 ---
 

@@ -1,14 +1,19 @@
 # BotBrowser Advanced Features
 
-Technical architecture and implementation details behind BotBrowser's fingerprint protection. This document covers the design and capabilities of each subsystem. For configuration syntax and usage examples, see the [CLI Flags Reference](CLI_FLAGS.md).
+Architecture and capability reference for BotBrowser fingerprint protection. For configuration syntax, availability, and setup, use the [CLI Flag Directory](CLI_FLAGS.md#flag-directory).
 
 > License tiers: Some capabilities show tier hints in parentheses (PRO, ENT Tier1/Tier2/Tier3/Tier4); those options are subscription-gated.
 
 ---
 
+<a id="capabilities-index"></a>
 ## Capabilities Index
 
-[navigator.webdriver removal](#chrome-behavior-emulation), [main-world isolation](#playwright-puppeteer-integration), [JS hook isolation](#playwright-puppeteer-integration), [Canvas noise](#multi-layer-fingerprint-noise), [Canvas replay (ENT Tier4)](#multi-layer-fingerprint-noise), [WebGL/WebGPU param control](#multi-layer-fingerprint-noise), [Skia anti-alias](#cross-platform-font-engine), [HarfBuzz shaping](#cross-platform-font-engine), [MediaDevices protection](#complete-fingerprint-control), [font list authenticity](#cross-platform-font-engine), [UA congruence](#browser-os-fingerprinting), [custom User-Agent (ENT Tier3)](CLI_FLAGS.md#profile-configuration-override-flags), [WebKit-family profile consistency (ENT Tier4)](#webkit-family-profile-consistency), [per-context proxy (ENT Tier1) geo](CLI_FLAGS.md#enhanced-proxy-configuration), [DNS-through-proxy](#network-fingerprint-control), [PAC-like request callback (ENT Tier3)](CLI_FLAGS.md#pac-request-policy-ent-tier3), [active window emulation](#active-window-emulation), [HTTP headers/HTTP2/HTTP3](#chrome-behavior-emulation), [headless parity](#headless-incognito-compatibility), [WebRTC SDP/ICE control](#webrtc-leak-protection), [TLS behavior consistency](#network-fingerprint-control), [port protection (PRO)](#port-protection), [dynamic proxy switching (ENT Tier3)](#dynamic-proxy-switching), [memory and storage quota controls](CLI_FLAGS.md#--bot-js-heap-size-limit), [video FPS control (ENT Tier2)](#video-fps-control), [distributed privacy consistency](#mirror-distributed-privacy-consistency), [CDP quick reference](#cdp-quick-reference)
+- **Network:** [architecture](#network-fingerprint-control), [PAC request policy](docs/guides/network/PAC_REQUEST_POLICY.md), [WebRTC](#webrtc-leak-protection), [port protection](#port-protection), [dynamic proxy switching](#dynamic-proxy-switching), [flags](CLI_FLAGS.md#flag-group-network)
+- **Fingerprint:** [rendering and audio](#multi-layer-fingerprint-noise), [fonts](#cross-platform-font-engine), [browser and OS](#browser-os-fingerprinting), [headless and incognito](#headless-incognito-compatibility), [flags](CLI_FLAGS.md#flag-group-rendering)
+- **Performance:** [timing](#performance-timing-protection), [stack depth](#stack-depth-control), [network information](#network-info-privacy), [storage and memory](#memory-storage-quota-controls), [video FPS](#video-fps-control), [flags](CLI_FLAGS.md#flag-group-rendering)
+- **Platform:** [device and platform](#device-platform-emulation), [WebKit-family profiles](#webkit-family-profile-consistency), [display and input](#complete-fingerprint-control), [identity flags](CLI_FLAGS.md#flag-group-identity), [display flags](CLI_FLAGS.md#flag-group-display)
+- **Automation:** [framework integration](#playwright-puppeteer-integration), [per-context fingerprint](#per-context-fingerprint), [Mirror](#mirror-distributed-privacy-consistency), [CDP](#cdp-quick-reference), [flags](CLI_FLAGS.md#flag-group-session)
 
 ---
 
@@ -16,7 +21,7 @@ Technical architecture and implementation details behind BotBrowser's fingerprin
 
 BotBrowser offers three configuration interfaces with a clear priority order:
 
-1. **CLI `--bot-config-*` flags** (highest priority): [CLI Flags Reference](CLI_FLAGS.md)
+1. **CLI `--bot-config-*` flags** (highest priority): [CLI Flag Directory](CLI_FLAGS.md#flag-directory)
 2. **Profile `configs` JSON** (medium priority): [Profile Configuration Guide](profiles/PROFILE_CONFIGS.md)
 3. **CDP commands** (runtime, per-context): [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) | [CDP Quick Reference](#cdp-quick-reference)
 
@@ -40,15 +45,15 @@ Smart auto-configuration: timezone, locale, and languages derive from your proxy
 - DNS-through-proxy plus credentialed proxy URLs keep browser-level geo signals protected
 - UDP-over-SOCKS5 tunnel (ENT Tier3) for QUIC/STUN so ICE presets are only needed when UDP is unavailable
 - The standard `--disable-quic` flag remains available for deployments that prefer TCP-based HTTP protocols while keeping SOCKS5 proxying
-- PAC-like request callback (ENT Tier3) for trusted PAC sources and approved request-aware policy workflows while preserving standard PAC routing behavior and helping maintain HTTP/2 continuity in automation-heavy sessions
-- Optional ICE control via [`--bot-webrtc-ice`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier1) when the proxy lacks UDP support
-- Chromium-level implementation: tunneling lives inside the network stack, no external proxy-chain hijacking
+- PAC-like request callback (ENT Tier3) for trusted PAC sources, authenticated PAC proxy routes, controlled synthetic responses, and request-aware policy workflows that preserve standard PAC routing behavior and help maintain HTTP/2 continuity in automation-heavy sessions
+- Optional ICE control via [`--bot-webrtc-ice`](CLI_FLAGS.md#flag-bot-webrtc-ice) (ENT Tier1) when the proxy lacks UDP support
+- Proxy routing remains browser-managed without an external proxy chain
 
 > Note: Many privacy-oriented browsers disable QUIC or skip UDP entirely. BotBrowser implements UDP-over-SOCKS5 directly inside Chromium's network stack so QUIC/STUN stay proxied and consistent with TCP traffic.
 
 For proxy configuration syntax and examples, see [CLI Flags: Enhanced Proxy Configuration](CLI_FLAGS.md#enhanced-proxy-configuration).
 
-**Related guides:** [Proxy Configuration](https://botbrowser.io/docs/network/proxy-configuration/) · [DNS Leak Prevention](https://botbrowser.io/docs/network/dns-leak-prevention/) · [UDP over SOCKS5](https://botbrowser.io/docs/network/udp-over-socks5/) · [WebRTC Leak Prevention](https://botbrowser.io/docs/network/webrtc-leak-prevention/) · [Port Protection](https://botbrowser.io/docs/network/port-protection/) · [Dynamic Proxy Switching](https://botbrowser.io/docs/network/dynamic-proxy-switching/)
+**Related guides:** [Proxy Configuration](docs/guides/network/PROXY_CONFIGURATION.md) · [DNS Leak Prevention](docs/guides/network/DNS_LEAK_PREVENTION.md) · [UDP over SOCKS5](docs/guides/network/UDP_OVER_SOCKS5.md) · [WebRTC Leak Prevention](docs/guides/network/WEBRTC_LEAK_PREVENTION.md) · [Port Protection](docs/guides/network/PORT_PROTECTION.md) · [Dynamic Proxy Switching](docs/guides/network/DYNAMIC_PROXY_SWITCHING.md)
 
 <a id="port-protection"></a>
 ### Port Protection (PRO)
@@ -60,7 +65,7 @@ Covers 30 commonly-probed ports across:
 - IPv6 loopback (`::1`)
 - `localhost` hostname
 
-Enable via CLI (`--bot-port-protection`) or profile JSON (`configs.portProtection`). See [CLI Flags](CLI_FLAGS.md#--bot-port-protection-pro) for details.
+Enable via CLI (`--bot-port-protection`) or profile JSON (`configs.portProtection`). See [`--bot-port-protection`](CLI_FLAGS.md#flag-bot-port-protection) for details.
 
 <a id="dynamic-proxy-switching"></a>
 ### Dynamic Per-Context Proxy Switching (ENT Tier3)
@@ -112,7 +117,7 @@ Deterministic noise generation prevents fingerprint collection while maintaining
 - **WebGPU**: Deterministic noise applied to WebGPU canvases by default so GPU-only probes inherit the same reproducible noise characteristics
 - **AudioContext**: Inaudible noise calibration (Chromium 141+) with cross-worker consistency
 - **ClientRects/TextRects**: Realistic font measurement variance with cross-worker consistency
-- **Deterministic noise seeds (ENT Tier2)**: Reproducible yet distinct noise fields per tenant; each seed shapes Canvas 2D, WebGL, WebGPU imagery, text metrics, HarfBuzz layout, ClientRects, and offline audio hashes. See [`--bot-noise-seed`](CLI_FLAGS.md#behavior--protection-toggles)
+- **Deterministic noise seeds (ENT Tier2)**: Reproducible yet distinct noise fields per tenant; each seed shapes Canvas 2D, WebGL, WebGPU imagery, text metrics, HarfBuzz layout, ClientRects, and offline audio hashes. See [`--bot-noise-seed`](CLI_FLAGS.md#flag-bot-noise-seed)
 
 Protection model:
 - Stable noise algorithms maintain session consistency while varying across different sessions
@@ -121,14 +126,14 @@ Protection model:
 
 For noise configuration flags, see [CLI Flags: Rendering, Noise & Media/RTC](CLI_FLAGS.md#profile-configuration-override-flags).
 
-**Related guides:** [Canvas](https://botbrowser.io/docs/fingerprint/canvas/) · [WebGL](https://botbrowser.io/docs/fingerprint/webgl/) · [Audio](https://botbrowser.io/docs/fingerprint/audio/) · [Noise Seed Reproducibility](https://botbrowser.io/docs/fingerprint/noise-seed-reproducibility/) · [Font](https://botbrowser.io/docs/fingerprint/font/)
+**Related guides:** [Canvas](docs/guides/fingerprint/CANVAS.md) · [WebGL](docs/guides/fingerprint/WEBGL.md) · [Audio](docs/guides/fingerprint/AUDIO.md) · [Noise Seed Reproducibility](docs/guides/fingerprint/NOISE_SEED_REPRODUCIBILITY.md) · [Font](docs/guides/fingerprint/FONT.md)
 
 <a id="active-window-emulation"></a>
 ### Active Window Emulation
 
 Maintains protected window state to prevent focus-based tracking even when the host window is unfocused.
 
-- [`--bot-always-active`](CLI_FLAGS.md#behavior--protection-toggles) (PRO, default true) maintains protected `blur` and `visibilitychange` event patterns, keeping `document.hidden=false`
+- [`--bot-always-active`](CLI_FLAGS.md#flag-bot-always-active) (PRO, default true) maintains protected `blur` and `visibilitychange` event patterns, keeping `document.hidden=false`
 - Protects against window-focus-based tracking heuristics that monitor caret blinking, FocusManager events, or inactive viewport throttling
 
 <a id="headless-incognito-compatibility"></a>
@@ -140,12 +145,12 @@ Consistent behavior across execution modes.
 - Full GPU context simulation without physical GPU
 - WebGL and WebGPU rendering consistency
 - Hardware-accelerated video decoding simulation
-- Automatic GPU rendering backend selection on Linux via [`--bot-gpu-emulation`](CLI_FLAGS.md#--bot-gpu-emulation). Detects and prefers system GPU/GL drivers when available, with shader caching enabled by default. Optional `--bot-gpu-emulation=priority` adds prioritized GPU/WebGPU command-buffer scheduling for high-concurrency BrowserContext workloads. For backend choice and flag migration on Linux servers, see [Linux GPU Backend Selection](https://botbrowser.io/docs/deployment/linux-gpu-backend/)
+- Automatic GPU rendering backend selection on Linux via [`--bot-gpu-emulation`](CLI_FLAGS.md#flag-bot-gpu-emulation). Detects and prefers system GPU/GL drivers when available, with shader caching enabled by default. Optional `--bot-gpu-emulation=priority` adds prioritized GPU/WebGPU command-buffer scheduling for high-concurrency BrowserContext workloads. For backend choice and flag migration on Linux servers, see [Linux GPU Backend Selection](docs/guides/deployment/LINUX_GPU_BACKEND.md)
 
 **Incognito-Mode Consistency:**
 - Fingerprint protection maintained in incognito mode
 - Consistent fingerprint between normal and incognito modes
-- `X-Client-Data` header consistency in incognito contexts via [`--bot-enable-variations-in-context`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2)
+- `X-Client-Data` header consistency in incognito contexts via [`--bot-enable-variations-in-context`](CLI_FLAGS.md#flag-bot-enable-variations-in-context) (ENT Tier2)
 
 <a id="webrtc-leak-protection"></a>
 ### WebRTC Leak Protection
@@ -161,10 +166,10 @@ Complete WebRTC fingerprint protection and network privacy.
 - MediaStream API protection across execution contexts
 - RTCPeerConnection behavior standardization
 - Network topology protection through controlled signal patterns
-- ICE server presets and custom lists via [`--bot-webrtc-ice`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier1) to standardize STUN and TURN endpoints observed by page JavaScript
+- ICE server presets and custom lists via [`--bot-webrtc-ice`](CLI_FLAGS.md#flag-bot-webrtc-ice) (ENT Tier1) to standardize STUN and TURN endpoints observed by page JavaScript
 - Combined with [UDP-over-SOCKS5](CLI_FLAGS.md#udp-over-socks5-ent-tier3) (ENT Tier3) for Chromium-level QUIC and STUN tunneling
 
-**Related guides:** [WebRTC Leak Prevention](https://botbrowser.io/docs/network/webrtc-leak-prevention/) · [Incognito Fingerprinting](https://botbrowser.io/docs/fingerprint/incognito/)
+**Related guides:** [WebRTC Leak Prevention](docs/guides/network/WEBRTC_LEAK_PREVENTION.md) · [Incognito Fingerprinting](docs/guides/fingerprint/INCOGNITO.md)
 
 <a id="chrome-behavior-emulation"></a>
 ### Chrome Behavior Emulation
@@ -185,6 +190,7 @@ Consistent Chrome-compatible behaviors and standardized API responses.
 
 ---
 
+<a id="device-platform-emulation"></a>
 ## Device & Platform Emulation
 
 <details>
@@ -206,6 +212,7 @@ Advanced font rendering with consistent results across hosts.
 - Rare symbol and Unicode character support
 - Cross-worker consistency
 - HarfBuzz text shaping integration
+- Profile-backed local font requests and request-by-name loading
 
 **Text-Rendering Features:**
 - Skia anti-aliasing integration
@@ -216,7 +223,7 @@ Advanced font rendering with consistent results across hosts.
 
 > **Implementation Detail:** Low-level rendering paths in Skia (2D/Canvas) and HarfBuzz (text shaping) are tuned to align metrics and glyph shaping across OS targets. Targeted WebGL/WebGPU parameter controls keep visual output stable across contexts.
 
-**Related guides:** [Font Fingerprinting](https://botbrowser.io/docs/fingerprint/font/) · [CJK Font Rendering](https://botbrowser.io/docs/platform/cjk-font-rendering/)
+**Related guides:** [Font Fingerprinting](docs/guides/fingerprint/FONT.md) · [CJK Font Rendering](docs/guides/platform/CJK_FONT_RENDERING.md)
 
 ### Cross-Platform Consistency
 
@@ -234,7 +241,7 @@ Maintains fingerprint and behavior consistency across different host systems.
 - Maintains identical touch and mouse event patterns
 - Emulates authentic device behavior across platforms
 
-**Related guides:** [Cross-Platform Profiles](https://botbrowser.io/docs/platform/cross-platform-profiles/) · [Windows on Mac/Linux](https://botbrowser.io/docs/platform/windows-on-mac-linux/) · [Android Emulation](https://botbrowser.io/docs/platform/android-emulation/) · [Device Emulation](https://botbrowser.io/docs/platform/device-emulation/)
+**Related guides:** [Cross-Platform Profiles](docs/guides/platform/CROSS_PLATFORM_PROFILES.md) · [Windows on Mac/Linux](docs/guides/platform/WINDOWS_ON_MAC_LINUX.md) · [Android Emulation](docs/guides/platform/ANDROID_EMULATION.md) · [Device Emulation](docs/guides/platform/DEVICE_EMULATION.md)
 
 ### Touch & Input Reliability
 
@@ -255,7 +262,8 @@ Comprehensive hardware emulation and fingerprint management.
 - Device pixel ratio emulation
 - Screen resolution and color depth control
 - Multi-monitor configuration simulation
-- Refresh rate and orientation control via [`--bot-config-orientation`](CLI_FLAGS.md#profile-configuration-override-flags) for mobile profiles, covering all orientation APIs and CSS media queries
+- Refresh rate and orientation control via [`--bot-config-orientation`](CLI_FLAGS.md#flag-bot-config-orientation) for mobile profiles, covering all orientation APIs and CSS media queries
+- Opt-in mobile keyboard visual viewport behavior via [`--bot-mobile-keyboard`](CLI_FLAGS.md#flag-bot-mobile-keyboard) for Android and WebKit-family mobile profiles
 
 **Device-Behavior Simulation:**
 - Authentic device memory reporting
@@ -271,21 +279,21 @@ Comprehensive hardware emulation and fingerprint management.
 
 <a id="performance-timing-protection"></a>
 
-**Performance Timing Protection** (ENT Tier2): Every device has a unique "speed signature": how fast it renders a Canvas path, compiles a WebGL shader, or measures a font. Tracking systems collect these execution times to build a hardware-level fingerprint. When multiple browser instances share the same hardware, their timing profiles are identical, making them vulnerable to correlation. [`--bot-time-seed=<integer>`](CLI_FLAGS.md#behavior--protection-toggles) (valid range: 1–UINT32_MAX, `0` = disabled) protects each instance with its own stable performance profile across 27 browser operations. This also covers `performance.getEntries()`, `performance.getEntriesByType("navigation")`, and `performance.timing` with authentic per-session redistribution of resource and navigation timing values.
+**Performance Timing Protection** (ENT Tier2): Every device has a unique "speed signature": how fast it renders a Canvas path, compiles a WebGL shader, or measures a font. Tracking systems collect these execution times to build a hardware-level fingerprint. When multiple browser instances share the same hardware, their timing profiles are identical, making them vulnerable to correlation. [`--bot-time-seed=<integer>`](CLI_FLAGS.md#flag-bot-time-seed) (valid range: 1-UINT32_MAX, `0` = disabled) protects each instance with its own stable performance profile across 27 browser operations. This also covers `performance.getEntries()`, `performance.getEntriesByType("navigation")`, and `performance.timing` with authentic per-session redistribution of resource and navigation timing values.
 
 > `--bot-time-seed` varies actual operation execution speeds (the workload). `--bot-time-scale` compresses `performance.now()` intervals globally (the clock). They protect against different tracking vectors and can be used together.
 
 <a id="stack-depth-control"></a>
 
-**Stack Depth Fingerprint Control** (ENT Tier2): JavaScript engines expose a measurable recursive call stack depth that varies by browser build, platform, and architecture. Tracking systems use this as a stable fingerprint signal. [`--bot-stack-seed`](CLI_FLAGS.md#behavior--protection-toggles) controls stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile's exact depth), `real` (use native depth), or a positive integer seed (1–UINT32_MAX) for per-session depth variation.
+**Stack Depth Fingerprint Control** (ENT Tier2): JavaScript engines expose a measurable recursive call stack depth that varies by browser build, platform, and architecture. Tracking systems use this as a stable fingerprint signal. [`--bot-stack-seed`](CLI_FLAGS.md#flag-bot-stack-seed) controls stack depth across main thread, Worker, and WASM contexts. Accepts `profile` (match profile's exact depth), `real` (use native depth), or a positive integer seed (1-UINT32_MAX) for per-session depth variation.
 
 <a id="network-info-privacy"></a>
 
-**Network Information Privacy**: `navigator.connection` properties (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers can reveal server-side network characteristics that contradict the profile's geographic identity. Enable [`--bot-network-info-override`](CLI_FLAGS.md#behavior--protection-toggles) or `configs.networkInfoOverride` to return profile-defined values.
+**Network Information Privacy**: `navigator.connection` properties (`rtt`, `downlink`, `effectiveType`, `saveData`) and corresponding Client Hints headers can reveal server-side network characteristics that contradict the profile's geographic identity. Enable [`--bot-network-info-override`](CLI_FLAGS.md#flag-bot-network-info-override) or `configs.networkInfoOverride` to return profile-defined values.
 
 <a id="memory-storage-quota-controls"></a>
 
-**Memory and Storage Quota Controls**: [`--bot-js-heap-size-limit`](CLI_FLAGS.md#--bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#--bot-storage-quota) let a session or context use profile values, native Chromium behavior, or explicit byte values for memory and storage quota policy.
+**Memory and Storage Quota Controls**: [`--bot-js-heap-size-limit`](CLI_FLAGS.md#flag-bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#flag-bot-storage-quota) let a session or context use profile values, native Chromium behavior, or explicit byte values for memory and storage quota policy.
 
 <a id="cpu-core-scaling"></a>
 
@@ -293,33 +301,33 @@ Comprehensive hardware emulation and fingerprint management.
 
 <a id="video-fps-control"></a>
 
-**Video FPS Control** (ENT Tier2): [`--bot-video-fps=<actual>[:<reported>]`](CLI_FLAGS.md#--bot-video-fps) separates video playback cadence from media FPS reporting for video-heavy workloads on profiles with Video FPS Control enabled. Use it when lower actual video cadence is acceptable and CPU density matters. For example, `--bot-video-fps=1:30` updates video frames at 1 FPS while keeping media reporting at 30 FPS. Visual pixel updates follow the actual cadence.
+**Video FPS Control** (ENT Tier2): [`--bot-video-fps=<actual>[:<reported>]`](CLI_FLAGS.md#flag-bot-video-fps) separates video playback cadence from media FPS reporting for video-heavy workloads on profiles with Video FPS Control enabled. Use it when lower actual video cadence is acceptable and CPU density matters. For example, `--bot-video-fps=1:30` updates video frames at 1 FPS while keeping media reporting at 30 FPS. Visual pixel updates follow the actual cadence.
 
-**Related guides:** [Performance](https://botbrowser.io/docs/fingerprint/performance/) · [Stack Depth](https://botbrowser.io/docs/fingerprint/stack-depth/) · [FPS Control](https://botbrowser.io/docs/fingerprint/fps-control/) · [Storage and Memory Consistency](https://botbrowser.io/docs/fingerprint/storage-quota/) · [Navigator Properties](https://botbrowser.io/docs/fingerprint/navigator-properties/)
+**Related guides:** [Performance](docs/guides/fingerprint/PERFORMANCE.md) · [Stack Depth](docs/guides/fingerprint/STACK_DEPTH.md) · [FPS Control](docs/guides/fingerprint/FPS_CONTROL.md) · [Storage and Memory Consistency](docs/guides/fingerprint/STORAGE_QUOTA.md) · [Navigator Properties](docs/guides/fingerprint/NAVIGATOR_PROPERTIES.md)
 
 <details>
 <summary><strong>Full details: Deep System Integration</strong></summary>
 
 ### Precise FPS Simulation (ENT Tier2)
 
-- Frame rate control via [`--bot-fps`](CLI_FLAGS.md#behavior--protection-toggles): `profile` (use profile data), `real` (native rate), or a number (e.g., `60`)
+- Frame rate control via [`--bot-fps`](CLI_FLAGS.md#flag-bot-fps): `profile` (use profile data), `real` (native rate), or a number (e.g., `60`)
 - requestAnimationFrame delay matching target FPS
 - Emulate target refresh rates (60Hz, 120Hz, 144Hz, etc.)
 - Simulate high-FPS macOS behavior on Ubuntu hosts (Ubuntu requires ENT Tier1)
 - Authentic vsync and frame timing patterns
-- Video playback cadence control via [`--bot-video-fps`](CLI_FLAGS.md#--bot-video-fps): `<actual>[:<reported>]`, such as `1:30` for lower decode/render cadence with 30 FPS media reporting, or `1:real` to report the media's reported cadence where available
+- Video playback cadence control via [`--bot-video-fps`](CLI_FLAGS.md#flag-bot-video-fps): `<actual>[:<reported>]`, such as `1:30` for lower decode/render cadence with 30 FPS media reporting, or `1:real` to report the media's reported cadence where available
 
 ### Performance Fingerprint Controls
 
 - Realistic memory allocation patterns and garbage collection timing
 - IndexedDB, localStorage, and Cache API response timing
 - JavaScript execution timing and WebAssembly performance simulation
-- Deterministic noise seeds via [`--bot-noise-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2, 1–UINT32_MAX) to stabilize noise distributions across sessions
-- Performance timing protection via [`--bot-time-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2): deterministic execution timing diversity across 27 browser operations, plus resource and navigation timing redistribution (see above)
-- Stack depth control via [`--bot-stack-seed`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2): `profile`, `real`, or integer seed for stack depth across main thread, Worker, and WASM contexts
-- Runtime timing scaling via [`--bot-time-scale`](CLI_FLAGS.md#behavior--protection-toggles) (ENT Tier2) to compress `performance.now()` deltas
-- Network information privacy via [`--bot-network-info-override`](CLI_FLAGS.md#behavior--protection-toggles): profile-defined `navigator.connection` values and Client Hints headers
-- Memory and storage quota controls via [`--bot-js-heap-size-limit`](CLI_FLAGS.md#--bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#--bot-storage-quota): `profile`, `real`, or explicit byte values
+- Deterministic noise seeds via [`--bot-noise-seed`](CLI_FLAGS.md#flag-bot-noise-seed) (ENT Tier2, 1-UINT32_MAX) to stabilize noise distributions across sessions
+- Performance timing protection via [`--bot-time-seed`](CLI_FLAGS.md#flag-bot-time-seed) (ENT Tier2): deterministic execution timing diversity across 27 browser operations, plus resource and navigation timing redistribution (see above)
+- Stack depth control via [`--bot-stack-seed`](CLI_FLAGS.md#flag-bot-stack-seed) (ENT Tier2): `profile`, `real`, or integer seed for stack depth across main thread, Worker, and WASM contexts
+- Runtime timing scaling via [`--bot-time-scale`](CLI_FLAGS.md#flag-bot-time-scale) (ENT Tier2) to compress `performance.now()` deltas
+- Network information privacy via [`--bot-network-info-override`](CLI_FLAGS.md#flag-bot-network-info-override): profile-defined `navigator.connection` values and Client Hints headers
+- Memory and storage quota controls via [`--bot-js-heap-size-limit`](CLI_FLAGS.md#flag-bot-js-heap-size-limit) and [`--bot-storage-quota`](CLI_FLAGS.md#flag-bot-storage-quota): `profile`, `real`, or explicit byte values
 - CPU core scaling: Worker threads automatically constrained to match `navigator.hardwareConcurrency` on Linux and Windows
 
 ### Extended Media Types & WebCodecs APIs
@@ -368,7 +376,7 @@ Comprehensive hardware emulation and fingerprint management.
 <a id="webkit-family-profile-consistency"></a>
 ### WebKit-Family Profile Consistency (ENT Tier4)
 
-WebKit-family Profile Consistency extends premium profiles beyond browser-brand metadata. The browser runtime, CSS behavior, media capability behavior, navigation headers, TLS behavior, HTTP/2 behavior, and per-context isolation are shaped to match the selected WebKit-family profile across supported host platforms.
+WebKit-family Profile Consistency extends premium profiles beyond browser-brand metadata. The browser runtime, workers, CSS behavior, fonts, canvas output, permission states, navigation headers, TLS behavior, HTTP/2 behavior, and per-context isolation are shaped to match the selected WebKit-family profile across supported host platforms.
 
 Supported profile bundles cover desktop and mobile WebKit-family identities. Use this capability for authorized privacy validation when a workflow needs browser-family consistency while keeping BotBrowser's profile, automation, and per-context control model.
 
@@ -396,10 +404,10 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 | Component | Capabilities |
 |-----------|-------------|
 | **Keyboard** | Layout emulation, key timing, input method simulation |
-| **Touch Interface** | Touch event simulation, gesture recognition, mobile patterns |
+| **Touch Interface** | Touch event simulation, gesture recognition, mobile patterns, opt-in mobile keyboard visual viewport behavior |
 | **Mouse Patterns** | Movement algorithms, click timing, scroll behavior |
 | **Languages** | Accept-Language headers, navigator.languages, speech recognition |
-| **Permissions** | API permission simulation, notification handling, media access |
+| **Permissions** | Profile-backed permission states, notification handling, media access, and per-context consistency |
 | **Navigation** | History management, referrer control, navigation timing |
 
 <a id="graphics-rendering-engine"></a>
@@ -407,7 +415,7 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 
 | Component | Capabilities |
 |-----------|-------------|
-| **Canvas** | 2D context noise, consistent image data, cross-worker consistency |
+| **Canvas** | 2D context noise, standard and wide-gamut color-space consistency, consistent image data, cross-worker consistency |
 | **WebGL** | Precision GPU micro-benchmarks, driver-specific behavior, extension simulation |
 | **WebGPU** | Modern GPU API support, compute shader capabilities, buffer management |
 | **Text Rendering** | HarfBuzz text shaping, cross-platform fonts, emoji rendering consistency |
@@ -417,7 +425,7 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 
 | Component | Capabilities |
 |-----------|-------------|
-| **Proxy** | Authentication embedding, credential management, geo-detection, PAC-like request callback |
+| **Proxy** | Authentication embedding, credential management, geo-detection, authenticated PAC routing, PAC-like request callback, controlled synthetic responses |
 | **WebRTC** | SDP control, ICE candidate filtering, media stream simulation |
 | **HTTP Headers** | Google-specific headers (ENT Tier2), Chrome behavior patterns, request timing |
 | **Media Devices** | AudioContext simulation, speech synthesis, device enumeration |
@@ -440,7 +448,7 @@ See [WebKit-family Profile Consistency](WEBKIT_PROFILE_CONSISTENCY.md) for the f
 
 ## Integration with Automation Frameworks
 
-### Framework-Less Automation ([`--bot-script`](CLI_FLAGS.md#--bot-script))
+### Framework-Less Automation ([`--bot-script`](CLI_FLAGS.md#flag-bot-script))
 
 Execute JavaScript with privileged `chrome.debugger` access, with no framework dependencies.
 
@@ -448,7 +456,7 @@ Execute JavaScript with privileged `chrome.debugger` access, with no framework d
 - **Privileged context.** Full `chrome.debugger` API access.
 - **Isolated execution.** Framework artifacts do not appear in page context.
 
-Documentation: [Bot Script Examples](examples/bot-script) · [Guide](https://botbrowser.io/docs/getting-started/bot-script/)
+Documentation: [Bot Script Examples](examples/bot-script) · [Guide](docs/guides/getting-started/BOT_SCRIPT.md)
 
 <a id="playwright-puppeteer-integration"></a>
 ### Playwright/Puppeteer Integration
@@ -460,7 +468,7 @@ Privacy-preserving integration with popular frameworks.
 - Eliminates framework-specific fingerprint signatures
 - ChromeDriver compatibility and Selenium Grid integration support
 
-**Related guides:** [Playwright](https://botbrowser.io/docs/getting-started/playwright/) · [Puppeteer](https://botbrowser.io/docs/getting-started/puppeteer/) · [Automation Consistency](https://botbrowser.io/docs/reference/automation-consistency/)
+**Related guides:** [Playwright](docs/guides/getting-started/PLAYWRIGHT.md) · [Puppeteer](docs/guides/getting-started/PUPPETEER.md) · [Automation Consistency](docs/guides/getting-started/AUTOMATION_CONSISTENCY.md)
 
 ---
 
@@ -469,7 +477,7 @@ Privacy-preserving integration with popular frameworks.
 
 Verify that privacy protection works consistently across platforms and networks. Run a controller instance and multiple clients to ensure all instances maintain identical privacy defenses.
 
-**[Complete Mirror documentation](tools/mirror/)** including setup, CLI flags, CDP examples, and troubleshooting. See also the [deployment guide](https://botbrowser.io/docs/deployment/mirror-distributed/).
+**[Complete Mirror documentation](tools/mirror/)** including setup, CLI flags, CDP examples, and troubleshooting. See also the [deployment guide](docs/guides/deployment/MIRROR_DISTRIBUTED.md).
 
 ---
 
@@ -492,11 +500,11 @@ All commands live under the `BotBrowser` CDP domain. Send them through a **brows
 | `setBrowserContextFlags` | browser | ENT Tier3 | Assign independent fingerprint flags to a BrowserContext | [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) |
 | `setBrowserContextProxy` | browser | ENT Tier3 | Switch proxy for a BrowserContext at runtime | [Dynamic Proxy Switching](#dynamic-proxy-switching) |
 | `clearBrowserContextProxy` | browser | ENT Tier3 | Remove proxy override from a BrowserContext | [Dynamic Proxy Switching](#dynamic-proxy-switching) |
-| `setCustomHeaders` | browser | PRO | Replace all custom HTTP request headers | [CLI Flags](CLI_FLAGS.md#--bot-custom-headers-pro) |
-| `getCustomHeaders` | browser | PRO | Retrieve current custom headers | [CLI Flags](CLI_FLAGS.md#--bot-custom-headers-pro) |
-| `addCustomHeader` | browser | PRO | Add or update a single custom header | [CLI Flags](CLI_FLAGS.md#--bot-custom-headers-pro) |
-| `removeCustomHeader` | browser | PRO | Remove a single custom header | [CLI Flags](CLI_FLAGS.md#--bot-custom-headers-pro) |
-| `clearCustomHeaders` | browser | PRO | Remove all custom headers | [CLI Flags](CLI_FLAGS.md#--bot-custom-headers-pro) |
+| `setCustomHeaders` | browser | PRO | Replace all custom HTTP request headers | [`--bot-custom-headers`](CLI_FLAGS.md#flag-bot-custom-headers) |
+| `getCustomHeaders` | browser | PRO | Retrieve current custom headers | [`--bot-custom-headers`](CLI_FLAGS.md#flag-bot-custom-headers) |
+| `addCustomHeader` | browser | PRO | Add or update a single custom header | [`--bot-custom-headers`](CLI_FLAGS.md#flag-bot-custom-headers) |
+| `removeCustomHeader` | browser | PRO | Remove a single custom header | [`--bot-custom-headers`](CLI_FLAGS.md#flag-bot-custom-headers) |
+| `clearCustomHeaders` | browser | PRO | Remove all custom headers | [`--bot-custom-headers`](CLI_FLAGS.md#flag-bot-custom-headers) |
 | `startMirrorController` | browser | ENT Tier3 | Start this instance as a Mirror controller | [Mirror](tools/mirror/) |
 | `startMirrorClient` | browser | ENT Tier3 | Connect this instance as a Mirror client | [Mirror](tools/mirror/) |
 | `stopMirror` | browser | ENT Tier3 | Stop Mirror controller or client role | [Mirror](tools/mirror/) |
@@ -508,10 +516,10 @@ All commands live under the `BotBrowser` CDP domain. Send them through a **brows
 
 ## Related Documentation
 
-- [CLI Flags Reference](CLI_FLAGS.md) - Complete command-line options and usage examples
+- [CLI Flag Directory](CLI_FLAGS.md#flag-directory) - Flags by task, tier, timing, and primary guide
 - [Profile Configuration](profiles/PROFILE_CONFIGS.md) - Profile JSON field reference
 - [Installation Guide](INSTALLATION.md) - Platform-specific setup
-- [Guides](https://botbrowser.io/docs/) - Step-by-step guides for proxy, fingerprint, identity, platform emulation, and deployment
+- [Guides](docs/guides/README.md) - Setup and troubleshooting by workflow
 - [Per-Context Fingerprint](PER_CONTEXT_FINGERPRINT.md) - Independent fingerprint per BrowserContext
 - [Validation Results](VALIDATION.md) - Research and testing data
 - [Mirror](tools/mirror/) - Distributed privacy consistency verification

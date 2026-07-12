@@ -121,6 +121,7 @@ BotBrowser controls all navigator properties at the browser engine level. Identi
 
 - [Screen and Window Protection](SCREEN_WINDOW.md). Display properties as privacy surfaces.
 - [Performance Fingerprinting](PERFORMANCE.md). Timing and connection data control.
+- [Permission State Consistency](PERMISSIONS.md). Profile-backed permission behavior across launch and per-context workflows.
 - [Speech Synthesis Protection](SPEECH_SYNTHESIS.md). Voice list consistency.
 - [CLI Flags Reference](../../../CLI_FLAGS.md). All identity and locale configuration flags.
 

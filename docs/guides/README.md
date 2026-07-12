@@ -1,10 +1,16 @@
 # BotBrowser Guides
 
-> Comprehensive documentation for configuring, deploying, and verifying BotBrowser's fingerprint protection capabilities.
-
-These guides cover everything from initial setup to advanced deployment scenarios. Each guide is self-contained with prerequisites, code examples, and troubleshooting steps.
+Configuration, deployment, and verification guides. Each guide includes prerequisites, examples, and troubleshooting.
 
 ---
+
+<a id="reference"></a>
+## Reference
+
+| Guide | Description |
+|-------|-------------|
+| [CLI Flag Directory](../../CLI_FLAGS.md#flag-directory) | Find every documented flag by task, availability, and primary guide. |
+| [Advanced Features](../../ADVANCED_FEATURES.md#capabilities-index) | Browse capabilities by subsystem, then open the related flag or setup guide. |
 
 <a id="getting-started"></a>
 ## Getting Started
@@ -35,7 +41,7 @@ These guides cover everything from initial setup to advanced deployment scenario
 | [Custom HTTP Headers](network/CUSTOM_HTTP_HEADERS.md) | Configure custom request headers for all outgoing browser traffic. |
 | [Port Protection](network/PORT_PROTECTION.md) | Block remote pages from scanning localhost and internal service ports. |
 | [UDP over SOCKS5](network/UDP_OVER_SOCKS5.md) | Route QUIC/STUN UDP traffic through SOCKS5 for consistent network identity. |
-| [PAC-Like Request Callback](network/PAC_REQUEST_POLICY.md) | Use trusted PAC scripts for standard routing and approved request callback workflows. |
+| [PAC-Like Request Callback](network/PAC_REQUEST_POLICY.md) | Use trusted PAC scripts for authenticated routing, URL-specific proxy policy, capture, and controlled synthetic responses. |
 | [Per-Context Proxy](network/PER_CONTEXT_PROXY.md) | Assign different proxies to different contexts for multi-identity automation. |
 | [Proxy Selective Routing](network/PROXY_SELECTIVE_ROUTING.md) | Control selective proxy routing with regex-based direct/proxied paths. |
 | [GeoIP Database](network/GEOIP_DATABASE.md) | Map proxy IPs to consistent timezone, locale, and language settings. |
@@ -53,6 +59,7 @@ These guides cover everything from initial setup to advanced deployment scenario
 | [Audio Fingerprinting](fingerprint/AUDIO.md) | Manage AudioContext-derived fingerprint signals with consistent behavior. |
 | [Performance Fingerprinting](fingerprint/PERFORMANCE.md) | Control timing-based fingerprint signals across browser performance APIs. |
 | [Navigator Properties](fingerprint/NAVIGATOR_PROPERTIES.md) | Keep navigator properties aligned across pages, workers, and headers. |
+| [Permission State Consistency](fingerprint/PERMISSIONS.md) | Keep permission queries and browser-side permission decisions aligned with the active profile and BrowserContext. |
 | [Screen and Window Fingerprinting](fingerprint/SCREEN_WINDOW.md) | Normalize screen/window metrics to avoid display-identity mismatches. |
 | [Speech Synthesis Fingerprinting](fingerprint/SPEECH_SYNTHESIS.md) | Control speech voice lists and TTS metadata exposure. |
 | [MIME and Codec Fingerprinting](fingerprint/MIME_CODEC.md) | Configure MIME/codec capability surfaces to match target identity. |

@@ -87,7 +87,7 @@ BotBrowser generates a complete, platform-consistent voice list at the browser e
 
 ---
 
-**Related documentation:** [Advanced Features: Complete Fingerprint Control](../../../ADVANCED_FEATURES.md#complete-fingerprint-control) | [CLI Flags: Rendering, Noise & Media/RTC](../../../CLI_FLAGS.md#profile-configuration-override-flags)
+**Related documentation:** [Advanced Features: Complete Fingerprint Control](../../../ADVANCED_FEATURES.md#complete-fingerprint-control)
 
 ---
 

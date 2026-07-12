@@ -104,7 +104,7 @@ chromium-browser \
 
 ---
 
-**Related documentation:** [Advanced Features: Port Protection](../../../ADVANCED_FEATURES.md#port-protection) | [CLI Flags Reference](../../../CLI_FLAGS.md#--bot-port-protection-pro)
+**Related documentation:** [Advanced Features: Port Protection](../../../ADVANCED_FEATURES.md#port-protection)
 
 ---
 

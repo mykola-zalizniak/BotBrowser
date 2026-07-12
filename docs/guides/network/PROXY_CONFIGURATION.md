@@ -186,13 +186,16 @@ Standard PAC routing works through `FindProxyForURL(url, host)`. Approved ENT Ti
 
 ```javascript
 function BotBrowserFindProxyForRequest(url, host, method, headersB64, bodyB64, bodyState) {
+  if (shExpMatch(url, "https://media.example.test/*")) {
+    return "SOCKS5 media-user:media-pass@media-proxy.example.net:1080";
+  }
   return "CONTINUE";
 }
 ```
 
-Keep PAC sources explicit and controlled. Use PAC auto-detect/WPAD only for standard routing. See [PAC-Like Request Callback](PAC_REQUEST_POLICY.md).
+Standard and request-aware PAC routes can include proxy credentials. Approved request callbacks loaded from `file:` or `data:` PAC sources can also return `RESPONSE <raw_http_response_b64>` or `RESPONSE_FILE <path>` for controlled synthetic responses. Keep PAC sources explicit and controlled. Use PAC auto-detect/WPAD only for standard routing. See [PAC-Like Request Callback](PAC_REQUEST_POLICY.md).
 
-The PAC callback guide documents the full parameter list, routing fallback behavior, and return-value rules.
+The PAC callback guide documents the full parameter list, URL-based proxy examples, routing fallback behavior, response rules, and trusted-source requirements.
 
 ---
 

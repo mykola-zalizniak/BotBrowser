@@ -19,7 +19,7 @@
 
 ### 1. Get a profile
 
-Use a profile package that matches the Chrome major version of your BotBrowser binary. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). Legacy public demo profiles remain in [profiles/](../../../profiles/) for older evaluation lines.
+Use a profile package that matches the major version of your BotBrowser binary. BotBrowser 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). Legacy public demo profiles remain in [profiles/](../../../profiles/) for older evaluation lines.
 
 ### 2. Launch with a profile
 
@@ -54,17 +54,17 @@ A BotBrowser profile is an encrypted file that defines the complete browser envi
 | Audio | AudioContext properties for consistent audio fingerprinting |
 | Platform | OS-specific behaviors, navigator properties, keyboard layout |
 
-**What a profile does not contain:** Proxy settings, timezone, locale, cookies, or browsing history. These are session-specific and configured separately through CLI flags or the `configs` block.
+The base identity does not depend on proxy, timezone, locale, cookies, or browsing history. These session settings can be supplied through CLI flags. Configurable subscription packages may also carry persistent defaults in the `configs` block.
 
 ### The device model analogy
 
-A profile is like a specific hardware configuration, for example "MacBook Pro M4 Max":
+A profile is like a specific hardware configuration, for example an M5 Max-class Mac. It is not tied to one browser process or one account. The same profile can launch multiple browsers and can also be assigned to multiple BrowserContexts.
 
-- **User A** uses the same profile with a US proxy, English locale, and EST timezone.
-- **User B** uses the same profile with a German proxy, German locale, and CET timezone.
-- **User C** uses the same profile with a Japanese proxy, Japanese locale, and JST timezone.
+For separate browser processes, each launch uses its own `user-data-dir`, cookies, proxy, locale, and other session settings.
 
-All three appear to use the same device type, but each has a distinct identity defined by their session settings.
+For BrowserContexts inside one process, storage, cookies, proxy, and context settings are isolated by the BrowserContext. BrowserContexts share the browser process and do not use separate `user-data-dir` values.
+
+Both approaches reuse the same base hardware model. Use [Per-Context Fingerprint](../../../PER_CONTEXT_FINGERPRINT.md) when multiple identities should share one browser process.
 
 ---
 
@@ -75,11 +75,11 @@ All three appear to use the same device type, but each has a distinct identity d
 <a id="demo-profiles"></a>
 ### Legacy Demo Profiles
 
-Public demo profiles are included in the [profiles/](../../../profiles/) directory for legacy evaluation lines through Chrome 149. Chrome 150 and newer profile packages are not published as public demo bundles.
+Public demo profiles are included in the [profiles/](../../../profiles/) directory for legacy evaluation lines through Chrome 149. BotBrowser 150 and newer profile packages are not published as public demo bundles.
 
 **Limitations:**
 - Limited-time privacy research use only
-- Available only for public demo lines published before Chrome 150
+- Available only for public demo lines published before BotBrowser 150
 - No headless mode support
 - No automation framework support (Puppeteer, Playwright)
 - No extension loading
@@ -111,11 +111,25 @@ Profiles are versioned to match BotBrowser binary versions. The binary and profi
 
 | Channel | Description |
 |---------|-------------|
-| **stable** | Current stable release, recommended for production |
-| **canary** | Early development release for testing upcoming features |
-| **archive** | Previous versions for compatibility testing |
+| **stable** | Current access notes and legacy public demo packages for pre-150 lines |
+| **canary** | Pre-stable packages only when explicitly published; none are currently published |
+| **archive** | Older public demo packages for compatibility testing |
 
-**Version matching rule:** A BotBrowser v146 binary requires v146 profiles. Using mismatched versions will result in a silent failure where the browser runs without fingerprint protection.
+**Version matching rule:** A BotBrowser v150 binary requires a v150 profile package. A missing, invalid, expired, or major-version-mismatched profile stops profile-backed startup and reports the corresponding profile state.
+
+<a id="startup-profile-states"></a>
+
+### Startup profile states
+
+BotBrowser distinguishes the main profile startup conditions:
+
+- **Missing profile**: no profile path was supplied or the file cannot be found.
+- **Invalid profile**: the package cannot be read or validated.
+- **Expired profile**: the subscription profile is outside its active period.
+- **Legacy demo profile**: the package belongs to a published pre-150 evaluation line and keeps its documented limitations.
+- **Version mismatch**: the profile major version does not match the BotBrowser release line.
+
+Headful launches show user-facing guidance for these states. Headless BotBrowser 150 writes the guidance to terminal output without opening a visible window, then follows the startup failure path.
 
 ### Checking available versions
 
@@ -154,7 +168,7 @@ chromium-browser \
 
 ### Profile `configs` block
 
-For settings that should persist across sessions, add a `configs` block to the profile JSON:
+Public legacy `.enc` files are read-only. If a subscription profile package is supplied for configuration, persistent settings can be stored in its `configs` block:
 
 ```json5
 {
@@ -198,7 +212,8 @@ This is useful for multi-instance deployments where you want fingerprint diversi
 
 With [Per-Context Fingerprint](../../../PER_CONTEXT_FINGERPRINT.md), `--bot-profile-dir` can also be passed through `botbrowserFlags` when creating a BrowserContext. That lets each context select a profile from the directory at creation time.
 
-### Same profile, different identities
+<a id="same-profile-multiple-browser-processes"></a>
+### Same Profile, Multiple Browser Processes
 
 Use one profile with different session settings to create distinct user sessions:
 
@@ -242,11 +257,11 @@ Platform compatibility tiers:
 | Problem | Solution |
 |---------|----------|
 | "Profile not found" error | Use an absolute path for `--bot-profile`. Relative paths resolve from the browser binary's directory. |
-| Browser runs without fingerprint protection | Verify the profile version matches the binary version. A v146 binary needs v146 profiles. |
+| Browser exits before navigation | Read the startup profile message and check for a missing, invalid, expired, or version-mismatched package. A v150 binary needs a v150 profile. |
 | Cannot use `--bot-profile` and `--bot-profile-dir` together | `--bot-profile-dir` takes precedence. Use one or the other. |
 | Profile changes have no effect | CLI `--bot-config-*` flags override profile `configs`. Check if a CLI flag is overriding your change. |
 | "Profile is damaged" or parse errors | Re-download the profile. Ensure the file was not corrupted during transfer. |
-| Demo profile limitations | Legacy demo profiles do not support headless mode or automation frameworks. Chrome 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). |
+| Demo profile limitations | Legacy demo profiles do not support headless mode or automation frameworks. BotBrowser 150 and newer profile packages are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support). |
 
 ---
 

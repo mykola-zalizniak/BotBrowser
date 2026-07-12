@@ -9,7 +9,7 @@
 ## Prerequisites
 
 - **BotBrowser binary** installed on your system. See [INSTALLATION.md](../../../INSTALLATION.md) for platform-specific setup.
-- **A profile file** (`.enc` for production, `.json` for local development). Use a profile package that matches your BotBrowser major version. Chrome 150 and newer profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain in [profiles/](../../../profiles/) for older evaluation lines.
+- **A profile file** (`.enc` for production, `.json` for local development). Use a profile package that matches your BotBrowser major version. BotBrowser 150 and newer profiles are available through subscription or support at [support@botbrowser.io](mailto:support@botbrowser.io) or [@botbrowser_support](https://t.me/botbrowser_support); legacy demo profiles remain in [profiles/](../../../profiles/) for older evaluation lines.
 - **A JavaScript file** containing your automation logic.
 - No Node.js, Playwright, or Puppeteer installation required.
 

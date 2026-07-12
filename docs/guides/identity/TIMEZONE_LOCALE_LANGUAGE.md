@@ -227,7 +227,7 @@ await page.goto("https://example.com");
 - [Proxy & Geolocation](../network/PROXY_GEOLOCATION_ALIGNMENT.md). How BotBrowser detects geographic information from proxies.
 - [Multi-Account Isolation](MULTI_ACCOUNT_ISOLATION.md). Different geographic identities per context.
 - [Cross-Platform Profiles](../platform/CROSS_PLATFORM_PROFILES.md). Consistent profiles across operating systems.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#profile-configuration-override-flags). All identity and locale flags.
+- [Identity flags](../../../CLI_FLAGS.md#flag-group-identity). CLI values and availability.
 
 ---
 

@@ -87,6 +87,14 @@ BotBrowser addresses cross-platform font consistency through built-in font libra
 
 **Result:** A Windows profile running on a Linux server produces identical font metrics, glyph rendering, and font enumeration results as it would on actual Windows hardware. DOM text renders exclusively from the embedded font bundles, so layouts never fall through to host fonts.
 
+<a id="fontface-fallback"></a>
+
+### FontFace and Fallback Behavior
+
+BotBrowser 150 improves profile-backed font handling for `FontFace` local sources, request-by-name loading, and multilingual fallback. Windows-target profiles also keep their font renderer preferences with the active BrowserContext, including per-context sessions running on another host platform.
+
+Keep `--bot-config-fonts=profile` when the profile font inventory and fallback policy should remain authoritative. Use `expand` only when the workflow intentionally allows host fallback beyond the profile bundle.
+
 ---
 
 <a id="verification"></a>
@@ -109,6 +117,7 @@ To verify protection is active:
 |---------|----------|
 | Font list shows host system fonts | Ensure `--bot-config-fonts=profile` is set. The `real` mode disables font protection. |
 | CJK text renders with missing glyphs | Verify the profile includes appropriate CJK fonts. Windows and macOS profiles include CJK support by default. |
+| A local FontFace name resolves differently across hosts | Use `--bot-config-fonts=profile` and a BotBrowser 150 profile package so local and request-by-name font handling follows the profile inventory. |
 | Font metrics differ between headless and headful mode | Both modes should produce identical metrics with a profile loaded. Check that the same profile and flags are used. |
 | ClientRects values vary between sessions | Use `--bot-noise-seed` for reproducible measurements. Without a fixed seed, noise varies per session. |
 

@@ -141,11 +141,10 @@ diff /tmp/canvaslab-linux.jsonl /tmp/canvaslab-macos.jsonl
 - [CanvasLab Documentation](../../../tools/canvaslab/). Complete reference including recording format, event types, replay viewer usage, and canvas fingerprint replay.
 - [Canvas Fingerprinting](../fingerprint/CANVAS.md). Configure Canvas noise and rendering consistency.
 - [WebGL Fingerprinting](../fingerprint/WEBGL.md). Manage WebGL parameter control.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#--bot-canvas-record-file). Flag documentation.
 
 ---
 
-**Related documentation:** [CanvasLab Tool](../../../tools/canvaslab/) | [CLI Flags: --bot-canvas-record-file](../../../CLI_FLAGS.md#--bot-canvas-record-file)
+**Related documentation:** [CanvasLab Tool](../../../tools/canvaslab/)
 
 ---
 

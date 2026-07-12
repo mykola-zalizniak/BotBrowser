@@ -156,11 +156,10 @@ chromium-browser \
 - [AudioLab Documentation](../../../tools/audiolab/). Complete reference including recording format, event types, and viewer usage.
 - [Audio Fingerprinting](../fingerprint/AUDIO.md). Configure audio noise and rendering consistency.
 - [CanvasLab](CANVASLAB.md). Similar forensics tool for Canvas 2D, WebGL, and WebGL2.
-- [CLI Flags Reference](../../../CLI_FLAGS.md#--bot-audio-record-file). Flag documentation.
 
 ---
 
-**Related documentation:** [AudioLab Tool](../../../tools/audiolab/) | [CLI Flags: --bot-audio-record-file](../../../CLI_FLAGS.md#--bot-audio-record-file)
+**Related documentation:** [AudioLab Tool](../../../tools/audiolab/)
 
 ---
 
