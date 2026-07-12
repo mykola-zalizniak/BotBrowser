@@ -39,7 +39,6 @@ For WebKit-family mobile profile workflows, add `--bot-mobile-keyboard` when edi
 - Keep proxy settings with the browser instance or BrowserContext that uses the profile.
 - Use BotBrowser 150.0.7871.46 or newer with a matching BotBrowser 150 profile package for the current WebKit-family consistency updates.
 - Validate desktop and mobile profile bundles separately.
-- Keep raw validation captures and profile internals out of public documents.
 
 **Related documentation:** [Feature Page](../../../WEBKIT_PROFILE_CONSISTENCY.md) | [Profile Management](../getting-started/PROFILE_MANAGEMENT.md) | [Per-Context Fingerprint](../../../PER_CONTEXT_FINGERPRINT.md) | [CLI Flags Reference](../../../CLI_FLAGS.md)
 
