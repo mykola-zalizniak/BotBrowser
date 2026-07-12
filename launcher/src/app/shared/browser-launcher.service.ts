@@ -418,6 +418,7 @@ export class BrowserLauncherService {
         // Default-on behavior flags: only emit when user explicitly overrides to OFF (matches BB default → no flag).
         if (opts?.behavior?.botDisableDebugger === false) args.push('--bot-disable-debugger=false');
         if (opts?.behavior?.botMobileForceTouch) args.push('--bot-mobile-force-touch');
+        if (opts?.behavior?.botMobileKeyboard) args.push('--bot-mobile-keyboard');
         if (opts?.behavior?.botAlwaysActive === false) args.push('--bot-always-active=false');
         if (opts?.behavior?.botDisableConsoleMessage === false) args.push('--bot-disable-console-message=false');
 

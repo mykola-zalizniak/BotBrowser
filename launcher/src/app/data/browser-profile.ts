@@ -83,6 +83,7 @@ export const OrientationOptions: OrientationOption[] = ['profile', 'landscape', 
 export interface BehaviorToggles {
     botDisableDebugger?: boolean;
     botMobileForceTouch?: boolean;
+    botMobileKeyboard?: boolean;
     botAlwaysActive?: boolean;
     botDisableConsoleMessage?: boolean;
 }

@@ -190,6 +190,7 @@ export class EditBrowserProfileComponent implements OnInit, AfterViewInit, OnDes
     readonly behaviorGroup = this.#formBuilder.group<BehaviorToggles>({
         botDisableDebugger: this.#injectedData?.launchOptions?.behavior?.botDisableDebugger ?? true,
         botMobileForceTouch: this.#injectedData?.launchOptions?.behavior?.botMobileForceTouch,
+        botMobileKeyboard: this.#injectedData?.launchOptions?.behavior?.botMobileKeyboard,
         botAlwaysActive: this.#injectedData?.launchOptions?.behavior?.botAlwaysActive ?? true,
         botDisableConsoleMessage: this.#injectedData?.launchOptions?.behavior?.botDisableConsoleMessage ?? true,
     });
